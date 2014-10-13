@@ -31,7 +31,9 @@ The generated source will be in *generated_files/dashcoin*.
 Customize the Dashcoin generator by writing your scripts in the following files:
 
 **custom/customize.sh** - customize coin's parameters
+
 **custom/customize-test.sh** - add custom tests for the generated code
+
 **custom/generate.sh** - custom actions after the coin is generated and tested
 
 Dashcoin generator can be customized to generate your own coin with its own parameters. You can even change the base coin to be different from Bytecoin like Monero or Boolberry with minimum efford.
