@@ -105,7 +105,7 @@ if [[ TESTS_PASSED == 1 ]]; then
 fi
 
 # Test CHECKPOINTS
-IFS=', ' read -a array <<< "${CHECKPOINTS}"
+IFS='}, ' read -a array <<< "${CHECKPOINTS}"
 for element in "${array[@]}"
 do
 	if [[ ${FILE_cryptonote_config} != *const\ CheckpointData\ *CHECKPOINTS\[\]*\=\ *${element}* ]]; then
