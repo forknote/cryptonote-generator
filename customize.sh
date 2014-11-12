@@ -16,15 +16,15 @@ set -o nounset
 . "config-loader.sh" $1
 
 # Set backup var for Mac OS X
+EXTENSION=""
 if [[ "$OSTYPE" == "darwin"* ]]; then
      EXTENSION=".original"
 fi
 
 # Set perl options
+PERL_EXTENTION="-i"
 if [[ "$OSTYPE" == "msys" ]]; then
 	PERL_EXTENTION="-i.bak"
-else 
-	PERL_EXTENTION="-i"
 fi
 
 # Make changes in src/CMakeLists.txt
