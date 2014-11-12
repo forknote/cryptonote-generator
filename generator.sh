@@ -7,6 +7,8 @@
 set -o errexit
 set -o nounset
 
+[ "$OSTYPE" != "win"* ] || die "Install Cygwin to use on Windows"
+
 # Set directory vars
 . "vars.cfg"
 
@@ -15,7 +17,7 @@ function finish {
 	# Remove temporary files if exist
 	echo "Remove temporary files..."
 	rm -f "${UPDATES_PATH}"
-	rm -rf "${TEMP_PATH}"
+#	rm -rf "${TEMP_PATH}"
 }
 trap finish EXIT
 

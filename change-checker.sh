@@ -7,7 +7,7 @@
 set -o errexit
 set -o nounset
 
-[ "$OSTYPE" != "win"* ] || die "Windows is not supported"
+[ "$OSTYPE" != "win"* ] || die "Install Cygwin to use on Windows"
 
 # Set directory vars
 . "vars.cfg"

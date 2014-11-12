@@ -8,7 +8,9 @@ The Dashcoin generator eleminates the need of core development team involved in 
 
 <sub><sup>* known exloits unrelated to hashrate attacks</sup></sub>
 
-*Currently the Dashcoin generator works only on Linux and Mac OS X.*
+## Requirements
+#### Windows
+Cygwin - https://cygwin.com
 
 ## Installation
 
