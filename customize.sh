@@ -36,8 +36,8 @@ perl -0777 ${PERL_EXTENTION} -pe "s/(const int\s+P2P_DEFAULT_PORT)\s+=\s+\d+/\$1
 perl -0777 ${PERL_EXTENTION} -pe "s/(const int\s+RPC_DEFAULT_PORT)\s+=\s+\d+/\$1       = ${RPC_DEFAULT_PORT}/" ${TEMP_PATH}"/src/cryptonote_config.h"
 perl -0777 ${PERL_EXTENTION} -pe "s/(const size_t\s+MAX_BLOCK_SIZE_INITIAL)\s+=\s+\d+ \* \d+/\$1       = ${MAX_BLOCK_SIZE_INITIAL}/" ${TEMP_PATH}"/src/cryptonote_config.h"
 perl -0777 ${PERL_EXTENTION} -pe "s/(const char\s+CRYPTONOTE_NAME\[\])\s+=\s+\"\w+\"/\$1       = \"${CRYPTONOTE_NAME}\"/" ${TEMP_PATH}"/src/cryptonote_config.h"
-perl -0777 ${PERL_EXTENTION} -pe "s/(const char\* const\s+SEED_NODES\[\] = {\\n).*?(\\n};)/\$1  ${SEED_NODES}\$2/s" ${TEMP_PATH}"/src/cryptonote_config.h"
-perl -0777 ${PERL_EXTENTION} -pe "s/(const CheckpointData\s+CHECKPOINTS\[\] = {\\n).*?(\\n};)/\$1  ${CHECKPOINTS}\$2/s" ${TEMP_PATH}"/src/cryptonote_config.h"
+perl -0777 ${PERL_EXTENTION} -pe "s/(const char\* const\s+SEED_NODES\[\] = {\\r?\\n).*?(\\r?\\n};)/\$1  ${SEED_NODES}\$2/s" ${TEMP_PATH}"/src/cryptonote_config.h"
+perl -0777 ${PERL_EXTENTION} -pe "s/(const CheckpointData\s+CHECKPOINTS\[\] = {\\r?\\n).*?(\\r?\\n};)/\$1  ${CHECKPOINTS}\$2/s" ${TEMP_PATH}"/src/cryptonote_config.h"
 perl -0777 ${PERL_EXTENTION} -pe "s/(const uint64_t\s+UPGRADE_HEIGHT)\s+=\s+\d+/\$1       = ${UPGRADE_HEIGHT}/" ${TEMP_PATH}"/src/cryptonote_config.h"
 perl -0777 ${PERL_EXTENTION} -pe "s/(const char\s+P2P_STAT_TRUSTED_PUB_KEY\[\])\s+=\s+\"\w+\"/\$1       = \"${P2P_STAT_TRUSTED_PUB_KEY}\"/" ${TEMP_PATH}"/src/cryptonote_config.h"
 

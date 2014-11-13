@@ -100,7 +100,7 @@ do
 	fi
 done
 
-if [[ TESTS_PASSED == 1 ]]; then
+if [ ${TESTS_PASSED} = 1 ]; then
 	echo "TEST PASSED - SEED_NODES change"
 fi
 
@@ -113,7 +113,7 @@ do
 		TESTS_PASSED=0
 	fi
 done
-if [[ TESTS_PASSED == 1 ]]; then
+if [ ${TESTS_PASSED} = 1 ]; then
 	echo "TEST PASSED - CHECKPOINTS change"
 fi
 FILE_cryptonote_config=""
