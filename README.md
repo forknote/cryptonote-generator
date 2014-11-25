@@ -28,6 +28,8 @@ Generating Dashcoin:
 
 The generated source will be in *generated_files/dashcoin*.
 
+Use *-c* flag to compile after the source generation. 
+
 ## Customization
 
 Customize the Dashcoin generator by writing your scripts in the following files:
