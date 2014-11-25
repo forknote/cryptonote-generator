@@ -21,8 +21,39 @@ function finish {
 }
 trap finish EXIT
 
+# Usage info
+show_help() {
+cat << EOF
+Usage: ${0##*/} [-hc] [FILE]...
+Reads a config FILE and generates source code. With no FILE
+use 'config.cfg' as default
+    
+    -h          display this help and exit
+    -c          compile the generated source
+EOF
+}   
+
+# A POSIX variable
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+# Initialize our own variables:
+COMPILE=0
+
+while getopts "h?c" opt; do
+    case "$opt" in
+    h|\?)
+        show_help
+        exit 0
+        ;;
+    c)  COMPILE=1
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
 # Setting config file
-CONFIG_FILE=${1:-${SCRIPTS_PATH}/config.cfg}
+CONFIG_FILE=${@:-${SCRIPTS_PATH}/config.cfg}
 if [[ "${CONFIG_FILE}" != /* ]]; then
 	CONFIG_FILE="${SCRIPTS_PATH}/${CONFIG_FILE}"
 fi
@@ -69,8 +100,9 @@ else
 	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
 	if [ ! -z "${UPDATES_PATH}"  ]; then
 		# Generate new coin
-		cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}"
+		cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
 
+		bash "${SCRIPTS_PATH}/compile.sh"
 		# Custom scripts
 		if [ -f "${CUSTOM_GENERATE_SCRIPT_PATH}"  ]; then
 			. "${CUSTOM_GENERATE_SCRIPT_PATH}"
