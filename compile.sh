@@ -5,16 +5,22 @@
 
 # Exit immediately if an error occurs, or if an undeclared variable is used
 set -o errexit
-set -o nounset
+
 
 [ "$OSTYPE" != "win"* ] || die "Windows is not supported"
 
 # Set directory vars
-echo "$(pwd)"
 . "vars.cfg"
 
 # Set config vars
-. "config-loader.sh"
+. libs/ticktick.sh
+CONFIG=`cat config.json`
+
+# File
+tickParse "$CONFIG"
+
+daemon_name=``daemon_name``
+CRYPTONOTE_NAME=``CRYPTONOTE_NAME``
 
 BUILD_PATH="${WORK_FOLDERS_PATH}/builds"
 MAC_BUILD_NAME="${CRYPTONOTE_NAME}-mac"

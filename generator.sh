@@ -26,7 +26,7 @@ show_help() {
 cat << EOF
 Usage: ${0##*/} [-hc] [FILE]...
 Reads a config FILE and generates source code. With no FILE
-use 'config.cfg' as default
+use 'config.json' as default
     
     -h          display this help and exit
     -c          compile the generated source
@@ -53,7 +53,7 @@ done
 shift $((OPTIND-1))
 
 # Setting config file
-CONFIG_FILE=${@:-${SCRIPTS_PATH}/config.cfg}
+CONFIG_FILE=${@:-${SCRIPTS_PATH}/config.json}
 if [[ "${CONFIG_FILE}" != /* ]]; then
 	CONFIG_FILE="${SCRIPTS_PATH}/${CONFIG_FILE}"
 fi
@@ -68,7 +68,7 @@ if [ -d "${BASE_COIN_PATH}" ]; then
 	git pull
 else
 	echo "Cloning Bytecoin..."
-	git clone git@github.com:amjuarez/bytecoin.git "${BASE_COIN_PATH}"
+	git clone https://github.com/amjuarez/bytecoin.git "${BASE_COIN_PATH}"
 fi
 
 echo "Make temporary base coin copy..."
@@ -76,36 +76,31 @@ echo "Make temporary base coin copy..."
 cp -af "${BASE_COIN_PATH}/." "${TEMP_PATH}"
 
 echo "Personalize base coin source..."
-bash "${SCRIPTS_PATH}/customize.sh" $CONFIG_FILE
+python "${SCRIPTS_PATH}/plugins/core/bytecoin-core.py" --config=$CONFIG_FILE --source=${TEMP_PATH}
 
-# Tests passed variable (0 - not passed, 1 - passed)
-TESTS_PASSED=1
-. "${SCRIPTS_PATH}/customize-test.sh" $CONFIG_FILE
-
-if [[ ${TESTS_PASSED} == 0 ]]; then
+# Tests
+bash "${SCRIPTS_PATH}/customize-test.sh" $CONFIG_FILE
+if [[ $? != 0 ]]; then
 	echo "A test failed. Deployment will not continue"
-else
-	echo "Tests passed successfully"
-	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
+	exit 1
+fi
 
-	echo "Create patch"
-	cd ${WORK_FOLDERS_PATH};
-	EXCLUDE_FROM_DIFF="-x '.git'"
-	if [ -d "${BASE_COIN_PATH}/build" ]; then
-		EXCLUDE_FROM_DIFF="${EXCLUDE_FROM_DIFF} -x 'build'"
-	fi
-	diff -Naur -x .git ${NEW_COIN_PATH##${WORK_FOLDERS_PATH}/} ${TEMP_PATH##${WORK_FOLDERS_PATH}/} > "${UPDATES_PATH}"  || [ $? -eq 1 ]
+echo "Tests passed successfully"
+[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
 
-	echo "Apply patch"
-	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
-	if [ ! -z "${UPDATES_PATH}"  ]; then
-		# Generate new coin
-		cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
+echo "Create patch"
+cd ${WORK_FOLDERS_PATH};
+EXCLUDE_FROM_DIFF="-x '.git'"
+if [ -d "${BASE_COIN_PATH}/build" ]; then
+	EXCLUDE_FROM_DIFF="${EXCLUDE_FROM_DIFF} -x 'build'"
+fi
+diff -Naur -x .git ${NEW_COIN_PATH##${WORK_FOLDERS_PATH}/} ${TEMP_PATH##${WORK_FOLDERS_PATH}/} > "${UPDATES_PATH}"  || [ $? -eq 1 ]
 
-		bash "${SCRIPTS_PATH}/compile.sh"
-		# Custom scripts
-		if [ -f "${CUSTOM_GENERATE_SCRIPT_PATH}"  ]; then
-			. "${CUSTOM_GENERATE_SCRIPT_PATH}"
-		fi
-	fi
+echo "Apply patch"
+[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
+if [ ! -z "${UPDATES_PATH}"  ]; then
+	# Generate new coin
+	cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
+
+	bash "${SCRIPTS_PATH}/compile.sh"
 fi

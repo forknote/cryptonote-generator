@@ -5,7 +5,6 @@
 
 # Exit immediately if an error occurs, or if an undeclared variable is used
 set -o errexit
-set -o nounset
 
 [ "$OSTYPE" != "win"* ] || die "Install Cygwin to use on Windows"
 
@@ -13,7 +12,25 @@ set -o nounset
 . "vars.cfg"
 
 # Set config vars
-. "config-loader.sh" $1
+. libs/ticktick.sh
+CONFIG=`cat $1`
+
+# File
+tickParse "$CONFIG"
+
+daemon_name=``daemon_name``
+CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX=``CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX``
+P2P_DEFAULT_PORT=``P2P_DEFAULT_PORT``
+RPC_DEFAULT_PORT=``RPC_DEFAULT_PORT``
+MAX_BLOCK_SIZE_INITIAL=``MAX_BLOCK_SIZE_INITIAL``
+CRYPTONOTE_NAME=``CRYPTONOTE_NAME``
+UPGRADE_HEIGHT=``UPGRADE_HEIGHT``
+P2P_STAT_TRUSTED_PUB_KEY=``P2P_STAT_TRUSTED_PUB_KEY``
+SEED_NODES=``SEED_NODES``
+CHECKPOINTS=``CHECKPOINTS``
+genesisCoinbaseTxHex=``genesisCoinbaseTxHex``
+BYTECOIN_NETWORK=``BYTECOIN_NETWORK``
+
 
 FILE_CMakeLists=$(<${TEMP_PATH}"/src/CMakeLists.txt")
 # Test daemon name change
@@ -22,7 +39,7 @@ then
 	echo "TEST PASSED - Daemon name change"
 else
 	echo "TEST FAILED - Daemon name change"
-	TESTS_PASSED=0
+	exit 2
 fi
 FILE_CMakeLists=""
 
@@ -33,7 +50,7 @@ then
 	echo "TEST PASSED - CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX change"
 else
 	echo "TEST FAILED - CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX change"
-	TESTS_PASSED=0
+	exit 2
 fi
 
 # Test P2P_DEFAULT_PORT
@@ -42,7 +59,7 @@ then
 	echo "TEST PASSED - P2P_DEFAULT_PORT change"
 else
 	echo "TEST FAILED - P2P_DEFAULT_PORT change"
-	TESTS_PASSED=0
+	exit 2
 fi
 
 # Test RPC_DEFAULT_PORT
@@ -51,17 +68,24 @@ then
 	echo "TEST PASSED - RPC_DEFAULT_PORT change"
 else
 	echo "TEST FAILED - RPC_DEFAULT_PORT change"
-	TESTS_PASSED=0
+	exit 2
 fi
 
+
+# The following test does not work with the json parser.
+# * is not parsed correctly
+
 # Test MAX_BLOCK_SIZE_INITIAL
-if [[ ${FILE_cryptonote_config} == *const\ size_t\ *MAX_BLOCK_SIZE_INITIAL\ *\=\ *${MAX_BLOCK_SIZE_INITIAL}* ]]
-then
-	echo "TEST PASSED - MAX_BLOCK_SIZE_INITIAL change"
-else
-	echo "TEST FAILED - MAX_BLOCK_SIZE_INITIAL change"
-	TESTS_PASSED=0
-fi
+MAX_BLOCK_SIZE_INITIAL=${MAX_BLOCK_SIZE_INITIAL//[\*]/\\\*}
+echo ${MAX_BLOCK_SIZE_INITIAL}
+exit 1
+#if [[ ${FILE_cryptonote_config} == *const\ size_t\ *MAX_BLOCK_SIZE_INITIAL\ *\=\ *${MAX_BLOCK_SIZE_INITIAL}* ]]
+#then
+#	echo "TEST PASSED - MAX_BLOCK_SIZE_INITIAL change"
+#else
+#	echo "TEST FAILED - MAX_BLOCK_SIZE_INITIAL change"
+#	exit 2
+#fi
 
 # Test CRYPTONOTE_NAME
 if [[ ${FILE_cryptonote_config} == *const\ char\ *CRYPTONOTE_NAME\[\]\ *=\ *\"${CRYPTONOTE_NAME}\"* ]]
@@ -69,7 +93,7 @@ then
 	echo "TEST PASSED - CRYPTONOTE_NAME change"
 else
 	echo "TEST FAILED - CRYPTONOTE_NAME change"
-	TESTS_PASSED=0
+	exit 2
 fi
 
 # Test UPGRADE_HEIGHT
@@ -78,7 +102,7 @@ then
 	echo "TEST PASSED - UPGRADE_HEIGHT change"
 else
 	echo "TEST FAILED - UPGRADE_HEIGHT change"
-	TESTS_PASSED=0
+	exit 2
 fi
 
 # Test P2P_STAT_TRUSTED_PUB_KEY
@@ -87,34 +111,25 @@ then
 	echo "TEST PASSED - P2P_STAT_TRUSTED_PUB_KEY change"
 else
 	echo "TEST FAILED - P2P_STAT_TRUSTED_PUB_KEY change"
-	TESTS_PASSED=0
+	exit 2
 fi
 
 # Test SEED_NODES
-IFS=', ' read -a array <<< "${SEED_NODES}"
-for element in "${array[@]}"
-do
-	if [[ ${FILE_cryptonote_config} != *const\ char\ *const\ *SEED_NODES\[\]\ *\=\ *{*${element}* ]]; then
-		echo "TEST FAILED - SEED_NODES change"
-		TESTS_PASSED=0
-	fi
-done
-
-if [ ${TESTS_PASSED} = 1 ]; then
+if [[ ${FILE_cryptonote_config} == *const\ char\*\ *const\ *SEED_NODES\[\]\ *\=\ *{\ *${SEED_NODES}\ *}\;* ]]
+then
 	echo "TEST PASSED - SEED_NODES change"
+else
+	echo "TEST FAILED - SEED_NODES change"
+	exit 2
 fi
 
 # Test CHECKPOINTS
-IFS='}, ' read -a array <<< "${CHECKPOINTS}"
-for element in "${array[@]}"
-do
-	if [[ ${FILE_cryptonote_config} != *const\ CheckpointData\ *CHECKPOINTS\[\]*\=\ *${element}* ]]; then
-		echo "TEST FAILED - CHECKPOINTS change"
-		TESTS_PASSED=0
-	fi
-done
-if [ ${TESTS_PASSED} = 1 ]; then
+if [[ ${FILE_cryptonote_config} == *${CHECKPOINTS}* ]]
+then
 	echo "TEST PASSED - CHECKPOINTS change"
+else
+	echo "TEST FAILED - CHECKPOINTS change"
+	exit 2
 fi
 FILE_cryptonote_config=""
 
@@ -125,23 +140,19 @@ then
 	echo "TEST PASSED - genesisCoinbaseTxHex change"
 else
 	echo "TEST FAILED - genesisCoinbaseTxHex change"
-	TESTS_PASSED=0
+	exit 2
 fi
 FILE_Currency=""
 
 
 FILE_p2p_networks=$(<${TEMP_PATH}"/src/p2p/p2p_networks.h")
 # Test BYTECOIN_NETWORK
-if [[ ${FILE_p2p_networks} == *const\ static\ boost::uuids::uuid\ BYTECOIN_NETWORK\ *\=\ *{\ {\ ${BYTECOIN_NETWORK}\ }\ }* ]]
+if [[ ${FILE_p2p_networks} == *const\ static\ boost::uuids::uuid\ BYTECOIN_NETWORK\ *\=\ *{\ {\ ${BYTECOIN_NETWORK}}\ }* ]]
 then
 	echo "TEST PASSED - BYTECOIN_NETWORK change"
 else
 	echo "TEST FAILED - BYTECOIN_NETWORK change"
-	TESTS_PASSED=0
+	exit 2
 fi
 FILE_p2p_networks=""
 
-# Custom tests
-if [ -f "${CUSTOM_CUSTOMIZE_TESTS_PATH}"  ]; then
-	. "${CUSTOM_CUSTOMIZE_TESTS_PATH}"
-fi
