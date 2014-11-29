@@ -1,10 +1,10 @@
-Dashcoin generator
+Cryptonote generator
 ==================
-## What is Dashcoin generator?
+## What is Cryptonote generator?
 
-The Dashcoin generator has a single purpose - to generate a personalized copy of Bytecoin, an anonymous p2p currency based on the Cryptonote technology.
+The Cryptonote generator has a single purpose - to generate a personalized coin based on Cryptonote technology.
 
-The Dashcoin generator eleminates the need of core development team involved in the creation of a cryptocurrency. This reduces the costs of running such a currency close to none. It also reduces dramatically the knowledge needed to create a feature rich, exploit free* cryptocurrency.
+The Cryptonote generator eleminates the need of core development team involved in the creation of a cryptocurrency. This reduces the costs of running such a currency close to none. It also reduces dramatically the knowledge needed to create a feature rich, exploit free* cryptocurrency.
 
 <sub><sup>* known exloits unrelated to hashrate attacks</sup></sub>
 
@@ -12,35 +12,27 @@ The Dashcoin generator eleminates the need of core development team involved in 
 #### Windows
 Cygwin - https://cygwin.com
 
+
 ## Installation
 
-	git clone https://github.com/dashcoin/dashcoin-generator.git
+	git clone https://github.com/dashcoin/cryptonote-generator.git
 
 ## Configuration
 
-The Dashcoin generator comes preconfigured. You can create custom configuration by coping **config.cfg** and renaming it.
+You can create custom configuration by coping **config.json** and renaming it. The default configuration will create Dashcoin, the first cryptocurrency created with the Cryptonote generator.
 
 ## Usage
 
-Generating Dashcoin:
-
-	bash generator.sh [PATH_TO_config.cfg]
+	bash generator.sh [PATH_TO_config.json]
 
 The generated source will be in *generated_files/dashcoin*.
 
 Use *-c* flag to compile after the source generation. 
 
-## Customization
+## Currencies
+List of Cryptonote currencies using the Cryptonote generator:
 
-Customize the Dashcoin generator by writing your scripts in the following files:
-
-**custom/customize.sh** - customize coin's parameters
-
-**custom/customize-test.sh** - add custom tests for the generated code
-
-**custom/generate.sh** - custom actions after the coin is generated and tested
-
-Dashcoin generator can be customized to generate your own coin with its own parameters. You can even change the base coin to be different from Bytecoin like Monero or Boolberry with minimum efford.
+[Dashcoin](http://dashcoin.net)
 
 	
 ## Contributing
