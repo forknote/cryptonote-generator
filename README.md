@@ -1,41 +1,138 @@
-Cryptonote generator
+cryptonote-generator
 ==================
-## What is Cryptonote generator?
 
-The Cryptonote generator has a single purpose - to generate a personalized coin based on Cryptonote technology.
+A python / bash Cryptonote source creator. Generate and compile new or maintain old code with a single command. 
 
-The Cryptonote generator eleminates the need of core development team involved in the creation of a cryptocurrency. This reduces the costs of running such a currency close to none. It also reduces dramatically the knowledge needed to create a feature rich, exploit free* cryptocurrency.
+#### Table of Contents
 
-<sub><sup>* known exloits unrelated to hashrate attacks</sup></sub>
+* [Features](#features)
+* [Community Support](#community--support)
+* [Pools Using This Software](#pools-using-this-software)
+* [Usage](#usage)
+  * [Requirements](#requirements)
+  * [Downloading & Installing](#1-downloading--installing)
+  * [Configuration](#2-configuration)
+  * [Generate coin](#3-generate-coin)
+* [Contributing](#contributing)
+* []
 
-## Requirements
-#### Windows
-Cygwin - https://cygwin.com
+#### Features
+
+* Cryptonote source code creation, based on the latest Bytecoin code
+* Plugin based code creation
+* Simple update for existing code
+* Compilation for
+  * Windows
+  * Ubuntu
+  * Mac OS X
+  
+### Community / Support
+
+* [CryptoNote Forum](https://forum.cryptonote.org/)
+* [Bytecoin Github](https://github.com/amjuarez/bytecoin)
+* [Dashcoin Announcement Thread](https://bitcointalk.org/index.php?topic=678232.0)
+* IRC (freenode)
+  * Support / general / development discussion join #dashcoin: [https://webchat.freenode.net/?channels=#dashcoin](https://webchat.freenode.net/?channels=#dashcoin)
 
 
-## Installation
+#### Coins Using This Software
 
-	git clone https://github.com/dashcoin/cryptonote-generator.git
+* [Dashcoin](http://dashcoin.net)
 
-## Configuration
+Usage
+===
 
-You can create custom configuration by coping **config.json** and renaming it. The default configuration will create Dashcoin, the first cryptocurrency created with the Cryptonote generator.
+#### Requirements
+* Cygwin - [https://cygwin.com](https://cygwin.com) (Windows only)
+* GCC 4.7.3 or later
+* or CMake 2.8.6 or later
+* Boost 1.53 or later (but don’t use 1.54)
 
-## Usage
 
-	bash generator.sh [PATH_TO_config.json]
+#### 1) Downloading & Installing
 
-The generated source will be in *generated_files/dashcoin*.
 
-Use *-c* flag to compile after the source generation. 
+Clone the repository:
 
-## Currencies
-List of Cryptonote currencies using the Cryptonote generator:
+```bash
+	git clone https://github.com/dashcoin/cryptonote-generator.git generator
+	cd generator
+```
 
-[Dashcoin](http://dashcoin.net)
+#### 2) Configuration
 
-	
-## Contributing
+
+*Warning for existing Cryptonote coins other than Dashcoin:* this software may or may not work with any given cryptonote coin.
+
+Copy the `config_example.json` file to `config.json` then overview each options and change any to match your preferred setup.
+
+
+Explanation for each field:
+
+
+```
+{
+	"core":{
+		/* Check uniqueness with Google and Map of Coins. */
+		"CRYPTONOTE_NAME":"dashcoin",
+		"daemon_name":"dashcoind",
+		/* Address prefix. Generate here: https://cryptonotestarter.org/inner.html */
+		"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":72,
+		"P2P_DEFAULT_PORT":29080,
+		"RPC_DEFAULT_PORT":29081,
+		/* Seed nodes. Use at least 2 */
+		"SEED_NODES":"\"162.243.247.45:29080\", \"146.185.191.90:29080\", \"104.131.132.129:29080\", \"128.199.146.243:29080\"",
+		/* Array with checkpoints. */
+		"CHECKPOINTS":"{28000, \"70d2531151529ac00bf875281e15f51324934bc85e5733dcd92e1ccb1a665ff8\"}, {40000, \"c181ec9223a91fef8658c7aa364c093c41c28d250870ca1ed829bf74f0abf038\"}, {55000, \"5289fe9f2dce8f51441019b9fbc85c70ad85ff49a666ef0109f3269890c6af6d\"}, {70000, \"193e335f34b8b8f1fab3857111cb668c2720340e80176a25155071e573481acb\"}, {87500, \"cce8a035f34457ec1098ab41e5949cac3db00ebff3503e26f36bfa057543095a\"}, {91453, \"ad46d069bb2726a9bc5962cda6b2108376c0b95c157da0f09ee32458f486d87f\"}",
+		/* Created with connectivity_tool. Leave empty if not needed */
+		"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
+		/* Generated with --print-genesis-tx argument. Will come with better way soon */
+		"genesisCoinbaseTxHex":"010a01ff0001ffffffffffff0f029b2e4c0271c0b42e7c53291a94d1c0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
+		/* Random hex, identifier for your network */
+		"BYTECOIN_NETWORK":"0x12, 0x11, 0x21, 0x11, 0x11, 0x10, 0x41, 0x01, 0x13, 0x11, 0x00, 0x12, 0x12, 0x11, 0x01, 0x10",
+		/* Total amount of coins to be emitted. Most of CryptoNote-based coins use (uint64_t)(-1) (equals to 18446744073709551616). You can define number explicitly (for example UINT64_C(858986905600000000)). */
+		"MONEY_SUPPLY":"static_cast<uint64_t>(-1)",
+		/* Visualize here https://cryptonotestarter.org/inner.html */
+		"EMISSION_SPEED_FACTOR":18,
+		/* In seconds. */
+		"DIFFICULTY_TARGET":120,
+		/* 10^6. Equals to 0.01 in Dashcoin */
+		"MINIMUM_FEE":1000000,
+		/* 10^6. Equals to 0.01 in Dashcoin */
+		"DEFAULT_DUST_THRESHOLD":1000000,
+		/* Number of atom units in a coin. 10^8 in Dashcoin */
+		"COIN":100000000,
+		/* The pow from the previews value */
+		"CRYPTONOTE_DISPLAY_DECIMAL_POINT":8,
+		/* For new coins, remove this. For old coins, use future block. IT WILL HARDFORK YOUR COIN AT THIS BLOCK */
+		"UPGRADE_HEIGHT":91452,
+		/* Max initial block size */
+		"MAX_BLOCK_SIZE_INITIAL":"25 * 1024"
+	}
+}
+
+```
+
+#### 3) Generate coin
+
+```bash
+bash generator.sh
+```
+
+The file `config.json` is used by default but a file can be specified using the `-f file` command argument, for example:
+
+```bash
+bash generator.sh -f config_dashcoin.json
+```
+
+If you compile on VPS with no swap defined you have to remove the default '-j' compile flag using the `-c <string>` command argument, for example:
+```bash
+bash generator.sh -c ''
+```
+*the default -c value is '-j'*
+
+
+#### Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -44,3 +141,20 @@ List of Cryptonote currencies using the Cryptonote generator:
 5. Create new Pull Request
 
 Plugins must be located in *plugins* folder.
+
+
+Donations
+---------
+* BTC: `1EYiA8o1KsDZxMHXvptxXyaVwuhTVNBMFp`
+* BCN: `21YR5mw5BF2ah3yVE3kbhkjDwvuv21VR6D7hnpm4zHveDsvq5WEwyTxXLXNwtU5K4Pen89ZZzJ81fB3vxHABEUJCAhxXz2v`
+* DSH: `D3z2DDWygoZU4NniCNa4oMjjKi45dC2KHUWUyD1RZ1pfgnRgcHdfLVQgh5gmRv4jwEjCX5LoLERAf5PbjLS43Rkd8vFUM1m`
+* XMR: `47LEJyhCgNFcoz6U8x7tUk6LEHe38NobAfn4ou8d588jY5nddvgEANLMMcwxsbfbkJRw4xPwcG583Gq189hjusShEyk9FXz`
+
+*Donate XMR if you want to XMR version to be developed*
+
+License
+-------
+Released under the GNU General Public License v2
+
+http://www.gnu.org/licenses/gpl-2.0.html
+	

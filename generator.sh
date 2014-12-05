@@ -24,12 +24,12 @@ trap finish EXIT
 # Usage info
 show_help() {
 cat << EOF
-Usage: ${0##*/} [-hc] [FILE]...
-Reads a config FILE and generates source code. With no FILE
-use 'config.json' as default
-    
+Usage: ${0##*/} [-h] [-f FILE] [-c <string>]
+Reads a config file and creates and compiles Cryptonote coin. "config.json" as default
+
     -h          display this help and exit
-    -c          compile the generated source
+    -f          config file
+    -c          compile arguments
 EOF
 }   
 
@@ -37,15 +37,18 @@ EOF
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 # Initialize our own variables:
-COMPILE=0
+CONFIG_FILE='config.json'
+COMPILE_ARGS='-j'
 
-while getopts "h?c" opt; do
+while getopts "h?f:c:" opt; do
     case "$opt" in
     h|\?)
         show_help
         exit 0
         ;;
-    c)  COMPILE=1
+    f)  CONFIG_FILE=${OPTARG}
+        ;;
+    c)  COMPILE_ARGS=${OPTARG}
         ;;
     esac
 done
@@ -53,9 +56,8 @@ done
 shift $((OPTIND-1))
 
 # Setting config file
-CONFIG_FILE=${@:-${SCRIPTS_PATH}/config.json}
 if [[ "${CONFIG_FILE}" != /* ]]; then
-	CONFIG_FILE="${SCRIPTS_PATH}/${CONFIG_FILE}"
+	CONFIG_FILE="${CONFIG_PATH}/${CONFIG_FILE}"
 fi
 
 if [ ! -f ${CONFIG_FILE} ]; then
@@ -75,13 +77,14 @@ echo "Make temporary base coin copy..."
 [ -d "${TEMP_PATH}" ] || mkdir -p "${TEMP_PATH}"
 cp -af "${BASE_COIN_PATH}/." "${TEMP_PATH}"
 
+# Plugins
 echo "Personalize base coin source..."
-python "${SCRIPTS_PATH}/plugins/core/bytecoin-core.py" --config=$CONFIG_FILE --source=${TEMP_PATH}
+python "${SCRIPTS_PATH}/plugins/core/bytecoin.py" --config=$CONFIG_FILE --source=${TEMP_PATH}
 
 # Tests
-bash "${SCRIPTS_PATH}/customize-test.sh" $CONFIG_FILE
+bash "${SCRIPTS_PATH}/plugins/tests/core/bytecoin-test.sh" $CONFIG_FILE
 if [[ $? != 0 ]]; then
-	echo "A test failed. Deployment will not continue"
+	echo "A test failed. Generation will not continue"
 	exit 1
 fi
 
@@ -102,5 +105,5 @@ if [ ! -z "${UPDATES_PATH}"  ]; then
 	# Generate new coin
 	cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
 
-	bash "${SCRIPTS_PATH}/compile.sh"
+	bash "${SCRIPTS_PATH}/compile.sh" -f $CONFIG_FILE -c $COMPILE_ARGS
 fi

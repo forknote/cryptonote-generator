@@ -10,17 +10,41 @@ set -o errexit
 [ "$OSTYPE" != "win"* ] || die "Windows is not supported"
 
 # Set directory vars
-. "vars.cfg"
+. "vars.cfg"  
+
+# Load libs
+. "lib/ticktick.sh"
+
+# A POSIX variable
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+
+while getopts "h?f:c:" opt; do
+    case "$opt" in
+    f)  CONFIG_FILE=${OPTARG}
+        ;;
+    c)  COMPILE_ARGS=${OPTARG}
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ -z "${CONFIG_FILE}" ]; then
+    exit 1
+fi
+echo "compile:"
+echo ${CONFIG_FILE}
+echo ${COMPILE_ARGS}
 
 # Set config vars
-. libs/ticktick.sh
-CONFIG=`cat config.json`
+CONFIG=`cat $CONFIG_FILE`
 
 # File
 tickParse "$CONFIG"
 
-daemon_name=``daemon_name``
-CRYPTONOTE_NAME=``CRYPTONOTE_NAME``
+daemon_name=``core.daemon_name``
+CRYPTONOTE_NAME=``core.CRYPTONOTE_NAME``
 
 BUILD_PATH="${WORK_FOLDERS_PATH}/builds"
 MAC_BUILD_NAME="${CRYPTONOTE_NAME}-mac"
@@ -31,20 +55,13 @@ WINDOWS_BUILD_NAME="${CRYPTONOTE_NAME}-windows"
 cd ${NEW_COIN_PATH}
 rm -rf build; mkdir -p build/release; cd build/release
 
-# I do not set -j on linux compile because it breaks
-# when I try to compile on fresh installed Ubuntu
-MAKE_EXTENSION=''
-if [[ "$OSTYPE" == "darwin"* ]]; then
-	MAKE_EXTENSION="-j"
-fi
-
 # Compile!
 if [[ "$OSTYPE" == "msys" ]]; then
 	cmake -DBOOST_ROOT=C:\sdk\boost_1_55_0 -DBOOST_LIBRARYDIR=C:\sdk\boost_1_55_0\lib64-msvc-11.0 -G "Visual Studio 11 Win64" ".."
-	msbuild.exe Project.sln /p:Configuration=Release
+	msbuild.exe Project.sln /p:Configuration=Release ${COMPILE_ARGS}
 else
 	cmake -D STATIC=ON -D ARCH="x86-64" -D CMAKE_BUILD_TYPE=Release ../..
-	MAKE_STATUS=$( make ${MAKE_EXTENSION} )
+	MAKE_STATUS=$( make ${COMPILE_ARGS} )
 fi
 
 if [[ $? == "0" ]]; then
