@@ -13,8 +13,9 @@ A python / bash Cryptonote source creator. Generate and compile new or maintain 
   * [Downloading & Installing](#1-downloading--installing)
   * [Configuration](#2-configuration)
   * [Generate coin](#3-generate-coin)
+* [Examples](#examples)
+  * [Dashcoin](#1-dashcoin)
 * [Contributing](#contributing)
-* []
 
 #### Features
 
@@ -72,43 +73,56 @@ Explanation for each field:
 
 ```
 {
-	"core":{
-		/* Check uniqueness with Google and Map of Coins. */
-		"CRYPTONOTE_NAME":"dashcoin",
-		"daemon_name":"dashcoind",
-		/* Address prefix. Generate here: https://cryptonotestarter.org/inner.html */
-		"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":72,
-		"P2P_DEFAULT_PORT":29080,
-		"RPC_DEFAULT_PORT":29081,
-		/* Seed nodes. Use at least 2 */
-		"SEED_NODES":"\"162.243.247.45:29080\", \"146.185.191.90:29080\", \"104.131.132.129:29080\", \"128.199.146.243:29080\"",
-		/* Array with checkpoints. */
-		"CHECKPOINTS":"{28000, \"70d2531151529ac00bf875281e15f51324934bc85e5733dcd92e1ccb1a665ff8\"}, {40000, \"c181ec9223a91fef8658c7aa364c093c41c28d250870ca1ed829bf74f0abf038\"}, {55000, \"5289fe9f2dce8f51441019b9fbc85c70ad85ff49a666ef0109f3269890c6af6d\"}, {70000, \"193e335f34b8b8f1fab3857111cb668c2720340e80176a25155071e573481acb\"}, {87500, \"cce8a035f34457ec1098ab41e5949cac3db00ebff3503e26f36bfa057543095a\"}, {91453, \"ad46d069bb2726a9bc5962cda6b2108376c0b95c157da0f09ee32458f486d87f\"}",
-		/* Created with connectivity_tool. Leave empty if not needed */
-		"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
-		/* Generated with --print-genesis-tx argument. Will come with better way soon */
-		"genesisCoinbaseTxHex":"010a01ff0001ffffffffffff0f029b2e4c0271c0b42e7c53291a94d1c0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
-		/* Random hex, identifier for your network */
-		"BYTECOIN_NETWORK":"0x12, 0x11, 0x21, 0x11, 0x11, 0x10, 0x41, 0x01, 0x13, 0x11, 0x00, 0x12, 0x12, 0x11, 0x01, 0x10",
-		/* Total amount of coins to be emitted. Most of CryptoNote-based coins use (uint64_t)(-1) (equals to 18446744073709551616). You can define number explicitly (for example UINT64_C(858986905600000000)). */
-		"MONEY_SUPPLY":"static_cast<uint64_t>(-1)",
-		/* Visualize here https://cryptonotestarter.org/inner.html */
-		"EMISSION_SPEED_FACTOR":18,
-		/* In seconds. */
-		"DIFFICULTY_TARGET":120,
-		/* 10^6. Equals to 0.01 in Dashcoin */
-		"MINIMUM_FEE":1000000,
-		/* 10^6. Equals to 0.01 in Dashcoin */
-		"DEFAULT_DUST_THRESHOLD":1000000,
-		/* Number of atom units in a coin. 10^8 in Dashcoin */
-		"COIN":100000000,
-		/* The pow from the previews value */
-		"CRYPTONOTE_DISPLAY_DECIMAL_POINT":8,
-		/* For new coins, remove this. For old coins, use future block. IT WILL HARDFORK YOUR COIN AT THIS BLOCK */
-		"UPGRADE_HEIGHT":91452,
-		/* Max initial block size */
-		"MAX_BLOCK_SIZE_INITIAL":"25 * 1024"
-	}
+"core":{
+	/* Check uniqueness with Google and Map of Coins. */
+	"CRYPTONOTE_NAME":"dashcoin",
+	"daemon_name":"dashcoind",
+
+	/* Address prefix. Generate here: https://cryptonotestarter.org/inner.html */
+	"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":72,
+
+	"P2P_DEFAULT_PORT":29080,
+	"RPC_DEFAULT_PORT":29081,
+
+	/* Seed nodes. Use at least 2 */
+	"SEED_NODES":"\"162.243.247.45:29080\", \"146.185.191.90:29080\", \"104.131.132.129:29080\", \"128.199.146.243:29080\"",
+
+	/* Array with checkpoints. */
+	"CHECKPOINTS":"{28000, \"70d2531151529ac00bf875281e15f51324934bc85e5733dcd92e1ccb1a665ff8\"}, {40000, \"c181ec9223a91fef8658c7aa364c093c41c28d250870ca1ed829bf74f0abf038\"}, {55000, \"5289fe9f2dce8f51441019b9fbc85c70ad85ff49a666ef0109f3269890c6af6d\"}, {70000, \"193e335f34b8b8f1fab3857111cb668c2720340e80176a25155071e573481acb\"}, {87500, \"cce8a035f34457ec1098ab41e5949cac3db00ebff3503e26f36bfa057543095a\"}, {91453, \"ad46d069bb2726a9bc5962cda6b2108376c0b95c157da0f09ee32458f486d87f\"}",
+	
+	/* Created with connectivity_tool. Leave empty if not needed */
+	"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
+
+	/* Generated with --print-genesis-tx argument. */
+	"genesisCoinbaseTxHex":"010a01ff0001ffffffffffff0f029b2e4c0271c0b42e7c53291a94d1c0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
+
+	/* Random hex, identifier for your network */
+	"BYTECOIN_NETWORK":"0x12, 0x11, 0x21, 0x11, 0x11, 0x10, 0x41, 0x01, 0x13, 0x11, 0x00, 0x12, 0x12, 0x11, 0x01, 0x10",
+
+	/* Visualize here https://cryptonotestarter.org/inner.html  */
+	/* Total amount of coins to be emitted. Most of CryptoNote-based coins use (uint64_t)(-1) (equals to 18446744073709551616).
+	   You can define number explicitly (for example UINT64_C(858986905600000000)). */
+	"MONEY_SUPPLY":"static_cast<uint64_t>(-1)",
+	"EMISSION_SPEED_FACTOR":18,
+	"DIFFICULTY_TARGET":120,   // In seconds
+
+	"MINIMUM_FEE":1000000,   // 10^6. Equals to 0.01 in Dashcoin
+	"DEFAULT_DUST_THRESHOLD":1000000,
+	"COIN":100000000,    // Number of atom units in a coin. 10^8 in Dashcoin
+	"CRYPTONOTE_DISPLAY_DECIMAL_POINT":8,    // The pow from the previews value
+
+	"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW":10,    // in blocks
+	"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE":20000,    // in bytes
+
+	/* USED ONLY IN OLD COINS. IF YOU UPDATE CHANGE THIS TO YOUR OLD CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE */
+	"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1":10000,
+
+	/* For new coins, remove this. For old coins, use future block. IT WILL HARDFORK YOUR COIN AT THIS BLOCK */
+	"UPGRADE_HEIGHT":91452,
+
+	/* Max initial block size */
+	"MAX_BLOCK_SIZE_INITIAL":"25 * 1024"
+}
 }
 
 ```
@@ -132,6 +146,32 @@ bash generator.sh -c ''
 *the default -c value is '-j'*
 
 
+### Examples
+
+#### 1) Dashcoin
+```
+/* config.json */
+
+{
+	"core":{
+		"daemon_name":"dashcoind",
+		"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":72,
+		"P2P_DEFAULT_PORT":29080,
+		"RPC_DEFAULT_PORT":29081,
+		"MAX_BLOCK_SIZE_INITIAL":"25 * 1024",
+		"CRYPTONOTE_NAME":"dashcoin",
+		"SEED_NODES":"\"162.243.247.45:29080\", \"146.185.191.90:29080\", \"104.131.132.129:29080\", \"128.199.146.243:29080\"",
+		"CHECKPOINTS":"{28000, \"70d2531151529ac00bf875281e15f51324934bc85e5733dcd92e1ccb1a665ff8\"}, {40000, \"c181ec9223a91fef8658c7aa364c093c41c28d250870ca1ed829bf74f0abf038\"}, {55000, \"5289fe9f2dce8f51441019b9fbc85c70ad85ff49a666ef0109f3269890c6af6d\"}, {70000, \"193e335f34b8b8f1fab3857111cb668c2720340e80176a25155071e573481acb\"}, {87500, \"cce8a035f34457ec1098ab41e5949cac3db00ebff3503e26f36bfa057543095a\"}, {91453, \"ad46d069bb2726a9bc5962cda6b2108376c0b95c157da0f09ee32458f486d87f\"}",
+		"UPGRADE_HEIGHT":91452,
+		"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
+		"genesisCoinbaseTxHex":"010a01ff0001ffffffffffff0f029b2e4c0271c0b42e7c53291a94d1c0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
+		"BYTECOIN_NETWORK":"0x12, 0x11, 0x21, 0x11, 0x11, 0x10, 0x41, 0x01, 0x13, 0x11, 0x00, 0x12, 0x12, 0x11, 0x01, 0x10"
+	}
+}
+
+```
+
+
 #### Contributing
 
 1. Fork it
@@ -146,8 +186,8 @@ Plugins must be located in *plugins* folder.
 Donations
 ---------
 * BTC: `1EYiA8o1KsDZxMHXvptxXyaVwuhTVNBMFp`
-* BCN: `21YR5mw5BF2ah3yVE3kbhkjDwvuv21VR6D7hnpm4zHveDsvq5WEwyTxXLXNwtU5K4Pen89ZZzJ81fB3vxHABEUJCAhxXz2v`
 * DSH: `D3z2DDWygoZU4NniCNa4oMjjKi45dC2KHUWUyD1RZ1pfgnRgcHdfLVQgh5gmRv4jwEjCX5LoLERAf5PbjLS43Rkd8vFUM1m`
+* BCN: `21YR5mw5BF2ah3yVE3kbhkjDwvuv21VR6D7hnpm4zHveDsvq5WEwyTxXLXNwtU5K4Pen89ZZzJ81fB3vxHABEUJCAhxXz2v`
 * XMR: `47LEJyhCgNFcoz6U8x7tUk6LEHe38NobAfn4ou8d588jY5nddvgEANLMMcwxsbfbkJRw4xPwcG583Gq189hjusShEyk9FXz`
 
 *Donate XMR if you want to XMR version to be developed*

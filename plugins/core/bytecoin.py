@@ -55,6 +55,12 @@ if 'MINIMUM_FEE' in config['core']:
 	MINIMUM_FEE_re = re.compile(r"(const uint64_t MINIMUM_FEE\s+=\s+UINT64_C\()\d+\)", re.IGNORECASE)
 if 'DEFAULT_DUST_THRESHOLD' in config['core']:
 	DEFAULT_DUST_THRESHOLD_re = re.compile(r"(const uint64_t DEFAULT_DUST_THRESHOLD\s+=\s+UINT64_C\()\d+\)", re.IGNORECASE)
+if 'CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW' in config['core']:
+	CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re = re.compile(r"(const size_t\s+CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\s+=)\s+\d+", re.IGNORECASE)
+if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE' in config['core']:
+	CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re = re.compile(r"(const size_t\s+CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\s+=)\s+\d+", re.IGNORECASE)
+if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1' in config['core']:
+	CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1_re = re.compile(r"(const size_t\s+CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\s+=)\s+\d+", re.IGNORECASE)
 if 'MAX_BLOCK_SIZE_INITIAL' in config['core']:
 	MAX_BLOCK_SIZE_INITIAL_re = re.compile(r"(const size_t\s+MAX_BLOCK_SIZE_INITIAL\s+=)\s+\d+ \* \d+", re.IGNORECASE)
 
@@ -78,6 +84,12 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 		line = MINIMUM_FEE_re.sub("\\1 %s)" % config['core']['MINIMUM_FEE'], line)
 	if 'DEFAULT_DUST_THRESHOLD' in config['core']:
 		line = DEFAULT_DUST_THRESHOLD_re.sub("\\1 %s)" % config['core']['DEFAULT_DUST_THRESHOLD'], line)
+	if 'CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW' in config['core']:
+		line = CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re.sub("\\1 %s" % config['core']['CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW'], line)
+	if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE' in config['core']:
+		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re.sub("\\1 %s" % config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE'], line)
+	if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1' in config['core']:
+		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1_re.sub("\\1 %s" % config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1'], line)
 	if 'MAX_BLOCK_SIZE_INITIAL' in config['core']:
 		line = MAX_BLOCK_SIZE_INITIAL_re.sub("\\1 %s" % config['core']['MAX_BLOCK_SIZE_INITIAL'], line)
 	if 'UPGRADE_HEIGHT' in config['core']:
