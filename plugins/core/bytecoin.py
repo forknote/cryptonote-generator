@@ -3,8 +3,6 @@ import sys
 import re
 import json
 import argparse
-import os.path
-import subprocess
 
 parser = argparse.ArgumentParser()
 
@@ -70,8 +68,12 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	line = CRYPTONOTE_NAME_re.sub("\\1 \"%s\"" % config['core']['CRYPTONOTE_NAME'], line)
 	line = P2P_DEFAULT_PORT_re.sub("\\1 %s" % config['core']['P2P_DEFAULT_PORT'], line)
 	line = RPC_DEFAULT_PORT_re.sub("\\1 %s" % config['core']['RPC_DEFAULT_PORT'], line)
-	line = P2P_STAT_TRUSTED_PUB_KEY_re.sub("\\1 \"%s\"" % config['core']['P2P_STAT_TRUSTED_PUB_KEY'], line)
 	line = CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX_re.sub("\\1 %s" % config['core']['CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX'], line)
+
+	if 'P2P_STAT_TRUSTED_PUB_KEY' in config['core']:
+		line = P2P_STAT_TRUSTED_PUB_KEY_re.sub("\\1 \"%s\"" % config['core']['P2P_STAT_TRUSTED_PUB_KEY'], line)
+	else:
+		line = P2P_STAT_TRUSTED_PUB_KEY_re.sub("\\1 \"%s\"" % "", line)
 	if 'MONEY_SUPPLY' in config['core']:
 		line = MONEY_SUPPLY_re.sub("\\1 %s" % config['core']['MONEY_SUPPLY'], line)
 	if 'EMISSION_SPEED_FACTOR' in config['core']:
@@ -109,7 +111,10 @@ cryptonote_config_file = open(paths['cryptonote_config'],'r')
 cryptonote_config_content = cryptonote_config_file.read()
 cryptonote_config_file.close()
 cryptonote_config_content = SEED_NODES_re.sub("\\1 %s \\2" % config['core']['SEED_NODES'], cryptonote_config_content)
-cryptonote_config_content = CHECKPOINTS_re.sub("\\1 %s \\2" % config['core']['CHECKPOINTS'], cryptonote_config_content)
+if 'CHECKPOINTS' in config['core']:
+	cryptonote_config_content = CHECKPOINTS_re.sub("\\1 %s \\2" % config['core']['CHECKPOINTS'], cryptonote_config_content)
+else:
+	cryptonote_config_content = CHECKPOINTS_re.sub("\\1 %s \\2" % "", cryptonote_config_content)
 cryptonote_config_file = open(paths['cryptonote_config'], "w")
 cryptonote_config_file.write(cryptonote_config_content)
 cryptonote_config_file.close()

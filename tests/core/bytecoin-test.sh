@@ -66,6 +66,7 @@ else
 fi
 
 # Test P2P_STAT_TRUSTED_PUB_KEY
+__tick_data_core_P2P_STAT_TRUSTED_PUB_KEY=${__tick_data_core_P2P_STAT_TRUSTED_PUB_KEY:-}
 if [[ ${FILE_cryptonote_config} == *const\ char\ *P2P_STAT_TRUSTED_PUB_KEY\[\]\ *\=\ *\"${__tick_data_core_P2P_STAT_TRUSTED_PUB_KEY}\"* ]]
 then
 	echo "TEST PASSED - P2P_STAT_TRUSTED_PUB_KEY change"
@@ -84,6 +85,7 @@ else
 fi
 
 # Test CHECKPOINTS
+__tick_data_core_CHECKPOINTS=${__tick_data_core_CHECKPOINTS:-}
 if [[ ${FILE_cryptonote_config} == *${__tick_data_core_CHECKPOINTS}* ]]
 then
 	echo "TEST PASSED - CHECKPOINTS change"
