@@ -5,12 +5,14 @@
 
 # Exit immediately if an error occurs, or if an undeclared variable is used
 set -o errexit
-set -o nounset
 
 [ "$OSTYPE" != "win"* ] || die "Install Cygwin to use on Windows"
 
 # Set directory vars
 . "vars.cfg"
+
+# Load libs
+. "lib/ticktick.sh"
 
 # Perform cleanup on exit
 function finish {
@@ -65,12 +67,25 @@ if [ ! -f ${CONFIG_FILE} ]; then
 	exit
 fi
 
+# Set config vars
+CONFIG=`cat $CONFIG_FILE`
+
+# File
+set -f
+tickParse "$CONFIG"
+set +f
+
+__my_variables=($(set | grep ^__tick_data | awk -F= '{print $1}'))
+for __variable in "${__my_variables[@]}"; do
+    export "$__variable"
+done
+
 if [ -d "${BASE_COIN_PATH}" ]; then
 	echo "Updating Bytecoin..."
 	git pull
 else
 	echo "Cloning Bytecoin..."
-	git clone https://github.com/amjuarez/bytecoin.git "${BASE_COIN_PATH}"
+	git clone ``git`` "${BASE_COIN_PATH}"
 fi
 
 echo "Make temporary base coin copy..."
@@ -79,14 +94,40 @@ cp -af "${BASE_COIN_PATH}/." "${TEMP_PATH}"
 
 # Plugins
 echo "Personalize base coin source..."
-python "${SCRIPTS_PATH}/plugins/core/bytecoin.py" --config=$CONFIG_FILE --source=${TEMP_PATH}
+PLUGINS_LEN=``plugins.length()``
+COUNTER=0
+while [  $COUNTER -lt $PLUGINS_LEN ]; do
+	plugin=`` plugins.shift() ``
+	extension=${plugin##*.}
+	if [[ ${extension} == "py" ]]; then
+		python "${PLUGINS_PATH}/${plugin}" --config=$CONFIG_FILE --source=${TEMP_PATH}
+	elif [[ ${extension} == "sh" ]]; then
+		bash "${PLUGINS_PATH}/${plugin}" -f $CONFIG_FILE -s ${TEMP_PATH}
+	fi
+	let COUNTER=COUNTER+1
+done
 
 # Tests
-bash "${SCRIPTS_PATH}/plugins/tests/core/bytecoin-test.sh" $CONFIG_FILE
-if [[ $? != 0 ]]; then
-	echo "A test failed. Generation will not continue"
-	exit 1
-fi
+echo "Execute tests..."
+TESTS_LEN=`` tests.length() ``
+COUNTER=0
+while [  $COUNTER -lt $TESTS_LEN ]; do
+	test=`` tests.shift() ``
+	extension=${test##*.}
+	if [[ ${extension} == "py" ]]; then
+		python "${TESTS_PATH}/${test}" --config=$CONFIG_FILE --source=${TEMP_PATH}
+	elif [[ ${extension} == "sh" ]]; then
+		bash "${TESTS_PATH}/${test}" -f $CONFIG_FILE -s ${TEMP_PATH}
+	fi
+
+	# Exit if test fails
+	if [[ $? != 0 ]]; then
+		echo "A test failed. Generation will not continue"
+		exit 1
+	fi
+
+	let COUNTER=COUNTER+1
+done
 
 echo "Tests passed successfully"
 [ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"

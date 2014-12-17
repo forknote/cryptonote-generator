@@ -1,4 +1,7 @@
 {
+	"git": "https://github.com/amjuarez/bytecoin.git",
+	"plugins": [ "core/bytecoin.py" ],
+	"tests": [ "core/bytecoin-test.sh" ],
 	"core":{
 		"CRYPTONOTE_NAME":"dashcoin",
 		"daemon_name":"dashcoind",

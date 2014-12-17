@@ -3,6 +3,8 @@ import sys
 import re
 import json
 import argparse
+import os.path
+import subprocess
 
 parser = argparse.ArgumentParser()
 
@@ -130,3 +132,4 @@ for line in fileinput.input(paths['p2p_networks'], inplace=True):
 	line = BYTECOIN_NETWORK_re.sub("\\1 { { %s} };" % config['core']['BYTECOIN_NETWORK'], line)
 	# sys.stdout is redirected to the file
 	sys.stdout.write(line)
+

@@ -12,9 +12,6 @@ set -o errexit
 # Set directory vars
 . "vars.cfg"  
 
-# Load libs
-. "lib/ticktick.sh"
-
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
@@ -37,19 +34,11 @@ echo "compile:"
 echo ${CONFIG_FILE}
 echo ${COMPILE_ARGS}
 
-# Set config vars
-CONFIG=`cat $CONFIG_FILE`
-
-# File
-tickParse "$CONFIG"
-
-daemon_name=``core.daemon_name``
-CRYPTONOTE_NAME=``core.CRYPTONOTE_NAME``
 
 BUILD_PATH="${WORK_FOLDERS_PATH}/builds"
-MAC_BUILD_NAME="${CRYPTONOTE_NAME}-mac"
-LINUX_BUILD_NAME="${CRYPTONOTE_NAME}-linux"
-WINDOWS_BUILD_NAME="${CRYPTONOTE_NAME}-windows"
+MAC_BUILD_NAME="${__tick_data_core_CRYPTONOTE_NAME}-mac"
+LINUX_BUILD_NAME="${__tick_data_core_CRYPTONOTE_NAME}-linux"
+WINDOWS_BUILD_NAME="${__tick_data_core_CRYPTONOTE_NAME}-windows"
 
 
 cd ${NEW_COIN_PATH}
@@ -73,7 +62,7 @@ case "$OSTYPE" in
   msys*) 	rm -f ${BUILD_PATH}/${WINDOWS_BUILD_NAME}.zip
 	rm -rf ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 	mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-	cp ${NEW_COIN_PATH}/build/release/src/${daemon_name} ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
+	cp ${NEW_COIN_PATH}/build/release/src/${__tick_data_core_daemon_name} ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 	cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 	rm -rf "${NEW_COIN_PATH}/build"
 	cd ${BUILD_PATH}
@@ -82,7 +71,7 @@ case "$OSTYPE" in
   darwin*)  	rm -f ${BUILD_PATH}/${MAC_BUILD_NAME}.zip
 	rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}
 	mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}
-	cp ${NEW_COIN_PATH}/build/release/src/${daemon_name} ${BUILD_PATH}/${MAC_BUILD_NAME}
+	cp ${NEW_COIN_PATH}/build/release/src/${__tick_data_core_daemon_name} ${BUILD_PATH}/${MAC_BUILD_NAME}
 	cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 	rm -rf "${NEW_COIN_PATH}/build"
 	cd ${BUILD_PATH}
@@ -91,7 +80,7 @@ case "$OSTYPE" in
   *)	rm -r ${BUILD_PATH}/${LINUX_BUILD_NAME}.tar.gz
 	rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}
 	mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}
-	cp ${NEW_COIN_PATH}/build/release/src/${daemon_name} ${BUILD_PATH}/${LINUX_BUILD_NAME}
+	cp ${NEW_COIN_PATH}/build/release/src/${__tick_data_core_daemon_name} ${BUILD_PATH}/${LINUX_BUILD_NAME}
 	cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
 	rm -rf "${NEW_COIN_PATH}/build"
 	cd ${BUILD_PATH}
