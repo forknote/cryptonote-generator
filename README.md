@@ -242,10 +242,10 @@ Plugins must be located in *plugins* folder.
 
 Donations
 ---------
-* <sup><sub>BTC: `1EYiA8o1KsDZxMHXvptxXyaVwuhTVNBMFp`</sup></sub>
-* <sup><sub>DSH: `D3z2DDWygoZU4NniCNa4oMjjKi45dC2KHUWUyD1RZ1pfgnRgcHdfLVQgh5gmRv4jwEjCX5LoLERAf5PbjLS43Rkd8vFUM1m`</sup></sub>
-* <sup><sub>BCN: `21YR5mw5BF2ah3yVE3kbhkjDwvuv21VR6D7hnpm4zHveDsvq5WEwyTxXLXNwtU5K4Pen89ZZzJ81fB3vxHABEUJCAhxXz2v`</sup></sub>
-* <sup><sub>XMR: `47LEJyhCgNFcoz6U8x7tUk6LEHe38NobAfn4ou8d588jY5nddvgEANLMMcwxsbfbkJRw4xPwcG583Gq189hjusShEyk9FXz`</sup></sub>
+* BTC: `1EYiA8o1KsDZxMHXvptxXyaVwuhTVNBMFp`
+* DSH: <sup><sub>`D3z2DDWygoZU4NniCNa4oMjjKi45dC2KHUWUyD1RZ1pfgnRgcHdfLVQgh5gmRv4jwEjCX5LoLERAf5PbjLS43Rkd8vFUM1m`</sup></sub>
+* BCN: <sup><sub>`21YR5mw5BF2ah3yVE3kbhkjDwvuv21VR6D7hnpm4zHveDsvq5WEwyTxXLXNwtU5K4Pen89ZZzJ81fB3vxHABEUJCAhxXz2v`</sup></sub>
+* XMR: <sup><sub>`47LEJyhCgNFcoz6U8x7tUk6LEHe38NobAfn4ou8d588jY5nddvgEANLMMcwxsbfbkJRw4xPwcG583Gq189hjusShEyk9FXz`</sup></sub>
 
 *Donate XMR if you want to XMR version to be developed*
 
