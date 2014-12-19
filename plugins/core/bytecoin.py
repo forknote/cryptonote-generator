@@ -110,7 +110,13 @@ CHECKPOINTS_re = re.compile(r"(const CheckpointData\s+CHECKPOINTS\[\] = {)[^;]+(
 cryptonote_config_file = open(paths['cryptonote_config'],'r')
 cryptonote_config_content = cryptonote_config_file.read()
 cryptonote_config_file.close()
-cryptonote_config_content = SEED_NODES_re.sub("\\1 %s \\2" % config['core']['SEED_NODES'], cryptonote_config_content)
+
+seeds = ""
+for seed in config['core']['SEED_NODES']:
+	seeds += "\"" + seed + "\", "
+seeds = seeds[:-2]
+cryptonote_config_content = SEED_NODES_re.sub("\\1 %s \\2" % seeds, cryptonote_config_content)
+
 if 'CHECKPOINTS' in config['core']:
 	cryptonote_config_content = CHECKPOINTS_re.sub("\\1 %s \\2" % config['core']['CHECKPOINTS'], cryptonote_config_content)
 else:

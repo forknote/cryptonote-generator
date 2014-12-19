@@ -80,15 +80,18 @@ for __variable in "${__my_variables[@]}"; do
     export "$__variable"
 done
 
+# Define coin paths
+export BASE_COIN_PATH="${WORK_FOLDERS_PATH}/"``base_coin[name]``
+export NEW_COIN_PATH="${WORK_FOLDERS_PATH}/"``core[CRYPTONOTE_NAME]``
 if [ -d "${BASE_COIN_PATH}" ]; then
-	echo "Updating Bytecoin..."
+	echo "Updating "``base_coin[name]``"..."
 	git pull
 else
-	echo "Cloning Bytecoin..."
-	git clone ``git`` "${BASE_COIN_PATH}"
+	echo "Cloning "``base_coin[name]``"..."
+	git clone ``base_coin[git]`` "${BASE_COIN_PATH}"
 fi
 
-echo "Make temporary base coin copy..."
+echo "Make temporary "``base_coin[name]``" copy..."
 [ -d "${TEMP_PATH}" ] || mkdir -p "${TEMP_PATH}"
 cp -af "${BASE_COIN_PATH}/." "${TEMP_PATH}"
 

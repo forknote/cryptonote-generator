@@ -8,9 +8,6 @@ set -o errexit
 
 [ "$OSTYPE" != "win"* ] || die "Install Cygwin to use on Windows"
 
-# Set directory vars
-. "vars.cfg"
-
 # src/CMakeLists.txt
 FILE_CMakeLists=$(<${TEMP_PATH}"/src/CMakeLists.txt")
 

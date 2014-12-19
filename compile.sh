@@ -9,8 +9,6 @@ set -o errexit
 
 [ "$OSTYPE" != "win"* ] || die "Windows is not supported"
 
-# Set directory vars
-. "vars.cfg"  
 
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
