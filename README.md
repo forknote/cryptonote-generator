@@ -249,6 +249,10 @@ Donations
 
 *Donate XMR if you want to XMR version to be developed*
 
+Additional credits
+------------------
+* [piotaak](url=https://github.com/piotaak) (tests for cryptonotecoin-core plugin)
+
 License
 -------
 Released under the GNU General Public License v2
