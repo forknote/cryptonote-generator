@@ -73,6 +73,14 @@ else
 	exit 2
 fi
 
+# Test genesisCoinbaseTxHex
+__tick_data_core_genesisCoinbaseTxHex=${__tick_data_core_genesisCoinbaseTxHex:-}
+if [[ ${FILE_cryptonote_config} =~ define\ *GENESIS_COINBASE_TX_HEX\ *\"${__tick_data_core_genesisCoinbaseTxHex}\"* ]]; then
+	echo "TEST PASSED - EMISSION_SPEED_FACTOR change"
+else
+	echo "TEST FAILED - EMISSION_SPEED_FACTOR change"
+	exit 2
+fi
 
 # MONEY_SUPPLY
 if [ -n "$__tick_data_core_MONEY_SUPPLY" ]; then
@@ -155,7 +163,6 @@ else
 	exit 2
 fi
 fi
-
 
 FILE_cryptonote_config=""
 

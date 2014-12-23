@@ -7,7 +7,7 @@ A python / bash Cryptonote source creator. Generate and compile new or maintain 
 
 * [Features](#features)
 * [Community Support](#community--support)
-* [Pools Using This Software](#pools-using-this-software)
+* [Coins Using This Software](#coins-using-this-software)
 * [Usage](#usage)
   * [Requirements](#requirements)
   * [Downloading & Installing](#1-downloading--installing)
@@ -107,7 +107,7 @@ Explanation for each field:
 	/* Created with connectivity_tool. Leave empty if not needed */
 	"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
 
-	/* Generated with --print-genesis-tx argument. */
+	/* Genesis! Leave empty for new coins */
 	"genesisCoinbaseTxHex":"010a01ff0001ffffffffffff0f029b2e4c0271c0b42e7c53291a94d1c0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
 
 	/* Random hex, identifier for your network */
@@ -251,7 +251,7 @@ Donations
 
 Additional credits
 ------------------
-* [piotaak](url=https://github.com/piotaak) (tests for cryptonotecoin-core plugin)
+* [piotaak](https://github.com/piotaak) (tests for cryptonotecoin-core plugin)
 
 License
 -------
