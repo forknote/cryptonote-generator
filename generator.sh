@@ -11,16 +11,14 @@ set -o errexit
 # Set directory vars
 . "vars.cfg"
 
-# Load libs
-. "lib/ticktick.sh"
-
 # Perform cleanup on exit
 function finish {
 	# Remove temporary files if exist
 	echo "Remove temporary files..."
 	rm -f "${UPDATES_PATH}"
+	rm -f "${BASH_CONFIG}"
 	rm -rf "${TEMP_PATH}"
-	rm -rf "${TEMP_GENESIS_PATH}"
+#	rm -rf "${TEMP_GENESIS_PATH}"
 }
 trap finish EXIT
 
@@ -41,85 +39,83 @@ function generate_genesis {
 	echo "Clone genesis coin..."
 	git clone ${genesis_coin_git} "${TEMP_GENESIS_PATH}"
 
-	export NEW_COIN_PATH=${TEMP_GENESIS_PATH}
+	# Exit if genesis coin is not created
+	if [ ! -d "${TEMP_GENESIS_PATH}" ]; then
+		echo "Genesis coin was not cloned"
+		echo "Abort clone generation"
+		exit 4
+	fi
+
+	export NEW_COIN_PATH="${TEMP_GENESIS_PATH}"
 
 	echo "Modify genesis coin"
-	python "${PLUGINS_PATH}/${genesis_coin_plugin}" --config=$CONFIG_FILE --source=${TEMP_GENESIS_PATH}
+	python "${PLUGINS_PATH}/${genesis_coin_plugin}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
 
 	echo "Test genesis coin"
-	TEMP_PATH_OLD=${TEMP_PATH}
-	export TEMP_PATH=${TEMP_GENESIS_PATH}
-	bash "${TESTS_PATH}/${genesis_coin_test}"
-	export TEMP_PATH=${TEMP_PATH_OLD}
+	bash "${TESTS_PATH}/${genesis_coin_test}" -d "${TEMP_GENESIS_PATH}"
 
 	bash "${SCRIPTS_PATH}/compile.sh" -c $COMPILE_ARGS
 
-	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/``core[daemon_name]`` --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
+	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name]} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
 	GENESIS_COINBASE_TX_HEX=${GENESIS_COINBASE_TX_HEX:1:${#GENESIS_COINBASE_TX_HEX}-2}
 	echo Genesis block : ${GENESIS_COINBASE_TX_HEX}
-	export __tick_data_core_genesisCoinbaseTxHex="${GENESIS_COINBASE_TX_HEX}"
+	export __CONFIG_core_genesisCoinbaseTxHex="${GENESIS_COINBASE_TX_HEX}"
 	sed -i ${EXTENSION} "s/\(\"genesisCoinbaseTxHex\"\:\).*/\1\"${GENESIS_COINBASE_TX_HEX}\",/" $CONFIG_FILE
 }
 
 # Generate source code and compile 
 function generate_coin {
 	# Define coin paths
-	export BASE_COIN_PATH="${WORK_FOLDERS_PATH}/"``base_coin[name]``
-	export NEW_COIN_PATH="${WORK_FOLDERS_PATH}/"``core[CRYPTONOTE_NAME]``
+	export BASE_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_base_coin_name}"
+	export NEW_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_core_CRYPTONOTE_NAME}"
 	if [ -d "${BASE_COIN_PATH}" ]; then
-		echo "Updating "``base_coin[name]``"..."
+		echo "Updating ${__CONFIG_base_coin_name}..."
 		git pull
 	else
-		echo "Cloning "``base_coin[name]``"..."
-		git clone ``base_coin[git]`` "${BASE_COIN_PATH}"
+		echo "Cloning ${__CONFIG_base_coin_name}..."
+		git clone "${__CONFIG_base_coin_git}" "${BASE_COIN_PATH}"
 	fi
 
-	echo "Make temporary "``base_coin[name]``" copy..."
+	# Exit if base coin does not exists
+	if [ ! -d "${BASE_COIN_PATH}" ]; then
+		echo "Base coin does not exists"
+		echo "Abort clone generation"
+		exit 4
+	fi
+
+	echo "Make temporary ${__CONFIG_base_coin_name} copy..."
 	[ -d "${TEMP_PATH}" ] || mkdir -p "${TEMP_PATH}"
 	cp -af "${BASE_COIN_PATH}/." "${TEMP_PATH}"
 
 	# Plugins
 	echo "Personalize base coin source..."
-	PLUGINS_LEN=``plugins.length()``
-	COUNTER=0
-	while [  $COUNTER -lt $PLUGINS_LEN ]; do
-		plugin=`` plugins.shift() ``
+	for plugin in "${__CONFIG_plugins[@]}"
+	do
 		extension=${plugin##*.}
 		if [[ ${extension} == "py" ]]; then
 			python "${PLUGINS_PATH}/${plugin}" --config=$CONFIG_FILE --source=${TEMP_PATH}
 		elif [[ ${extension} == "sh" ]]; then
 			bash "${PLUGINS_PATH}/${plugin}" -f $CONFIG_FILE -s ${TEMP_PATH}
 		fi
-		let COUNTER=COUNTER+1
 	done
 
-	# Tests
+	# Execute tests
 	echo "Execute tests..."
-	TESTS_LEN=`` tests.length() ``
-	COUNTER=0
-	while [  $COUNTER -lt $TESTS_LEN ]; do
-		test=`` tests.shift() ``
+	for test in "${__CONFIG_tests[@]}"
+	do
 		extension=${test##*.}
 		if [[ ${extension} == "py" ]]; then
-			python "${TESTS_PATH}/${test}" --config=$CONFIG_FILE --source=${TEMP_PATH}
+			python "${TESTS_PATH}/${test}" --config="$CONFIG_FILE" --source="${TEMP_PATH}"
 		elif [[ ${extension} == "sh" ]]; then
-			bash "${TESTS_PATH}/${test}" -d ${TEMP_PATH}
+			bash "${TESTS_PATH}/${test}" -d "${TEMP_PATH}"
 		fi
-
-		# Exit if test fails
-		if [[ $? != 0 ]]; then
-			echo "A test failed. Generation will not continue"
-			exit 1
-		fi
-
-		let COUNTER=COUNTER+1
 	done
-
 	echo "Tests passed successfully"
+
 	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
 
 	echo "Create patch"
-	cd ${WORK_FOLDERS_PATH};
+	cd "${WORK_FOLDERS_PATH}";
 	EXCLUDE_FROM_DIFF="-x '.git'"
 	if [ -d "${BASE_COIN_PATH}/build" ]; then
 		EXCLUDE_FROM_DIFF="${EXCLUDE_FROM_DIFF} -x 'build'"
@@ -132,7 +128,7 @@ function generate_coin {
 		# Generate new coin
 		cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
 
-		bash "${SCRIPTS_PATH}/compile.sh" -c $COMPILE_ARGS -z
+		bash "${SCRIPTS_PATH}/compile.sh" -c "$COMPILE_ARGS" -z
 	fi
 }
 
@@ -180,20 +176,19 @@ if [ ! -f ${CONFIG_FILE} ]; then
 	exit
 fi
 
-# Set config vars
-CONFIG=`cat $CONFIG_FILE`
+[ -d "${WORK_FOLDERS_PATH}" ] || mkdir -p "${WORK_FOLDERS_PATH}"
 
-# File
-set -f
-tickParse "$CONFIG"
-set +f
+# Get environment environment_variables
+python "lib/environment_variables.py" --config=$CONFIG_FILE --output=$BASH_CONFIG
+if [ ! -f ${BASH_CONFIG} ]; then
+	echo "Config file was not translated to bash."
+	echo "Abort coin generation"
+	exit 3
+fi
+source ${BASH_CONFIG}
 
-__my_variables=($(set | grep ^__tick_data | awk -F= '{print $1}'))
-for __variable in "${__my_variables[@]}"; do
-    export "$__variable"
-done
-
-if [ -z ``core[genesisCoinbaseTxHex]`` ]; then
+# A baby is born
+if [ -z ${__CONFIG_core_genesisCoinbaseTxHex} ]; then
 	generate_genesis
 fi
 generate_coin

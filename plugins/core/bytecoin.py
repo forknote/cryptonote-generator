@@ -73,7 +73,7 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	if 'P2P_STAT_TRUSTED_PUB_KEY' in config['core']:
 		line = P2P_STAT_TRUSTED_PUB_KEY_re.sub("\\1 \"%s\"" % config['core']['P2P_STAT_TRUSTED_PUB_KEY'], line)
 	else:
-		line = P2P_STAT_TRUSTED_PUB_KEY_re.sub("\\1 \"%s\"" % "", line)
+		line = P2P_STAT_TRUSTED_PUB_KEY_re.sub("\\1 \"\"", line)
 	if 'MONEY_SUPPLY' in config['core']:
 		line = MONEY_SUPPLY_re.sub("\\1 %s" % config['core']['MONEY_SUPPLY'], line)
 	if 'EMISSION_SPEED_FACTOR' in config['core']:

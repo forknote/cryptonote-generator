@@ -44,15 +44,15 @@ fi
 # Move and zip binaries
 if [[ $archive == "1" ]]; then
 	BUILD_PATH="${WORK_FOLDERS_PATH}/builds"
-	MAC_BUILD_NAME="${__tick_data_core_CRYPTONOTE_NAME}-mac"
-	LINUX_BUILD_NAME="${__tick_data_core_CRYPTONOTE_NAME}-linux"
-	WINDOWS_BUILD_NAME="${__tick_data_core_CRYPTONOTE_NAME}-windows"
+	MAC_BUILD_NAME="${__CONFIG_core_CRYPTONOTE_NAME}-mac"
+	LINUX_BUILD_NAME="${__CONFIG_core_CRYPTONOTE_NAME}-linux"
+	WINDOWS_BUILD_NAME="${__CONFIG_core_CRYPTONOTE_NAME}-windows"
 
 	case "$OSTYPE" in
 	  msys*) 	rm -f ${BUILD_PATH}/${WINDOWS_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/${__tick_data_core_daemon_name} ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		rm -rf "${NEW_COIN_PATH}/build"
 		cd ${BUILD_PATH}
@@ -61,7 +61,7 @@ if [[ $archive == "1" ]]; then
 	  darwin*)  	rm -f ${BUILD_PATH}/${MAC_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/${__tick_data_core_daemon_name} ${BUILD_PATH}/${MAC_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 		rm -rf "${NEW_COIN_PATH}/build"
 		cd ${BUILD_PATH}
@@ -70,7 +70,7 @@ if [[ $archive == "1" ]]; then
 	  *)	rm -r ${BUILD_PATH}/${LINUX_BUILD_NAME}.tar.gz
 		rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/${__tick_data_core_daemon_name} ${BUILD_PATH}/${LINUX_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		rm -rf "${NEW_COIN_PATH}/build"
 		cd ${BUILD_PATH}
