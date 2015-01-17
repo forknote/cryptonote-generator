@@ -54,29 +54,27 @@ if [[ $archive == "1" ]]; then
 		mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_daemon_name}.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-# This line does not work for some reason
-#		rm -rf "${NEW_COIN_PATH}/build"
 		cd ${BUILD_PATH}
-# zip command does not work on windows. TODO		
-#		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
+		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
+		rm -rf "${NEW_COIN_PATH}/build"
 		;;
 	  darwin*)  	rm -f ${BUILD_PATH}/${MAC_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
-		rm -rf "${NEW_COIN_PATH}/build"
 		cd ${BUILD_PATH}
 		zip -r ${MAC_BUILD_NAME}.zip ${MAC_BUILD_NAME}/
+		rm -rf "${NEW_COIN_PATH}/build"
 		;;
 	  *)	rm -r ${BUILD_PATH}/${LINUX_BUILD_NAME}.tar.gz
 		rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
-		rm -rf "${NEW_COIN_PATH}/build"
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
+		rm -rf "${NEW_COIN_PATH}/build"
 		;;
 	esac
 fi

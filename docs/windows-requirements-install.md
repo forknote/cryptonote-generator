@@ -3,6 +3,7 @@
 1. Install MinGW (default install) <br />
 http://sourceforge.net/projects/mingw/files/Installer/mingw-get-setup.exe/download
   * Select 'msys-base' from the install options
+  * Select 'msys-patch (bin)' and 'msys-zip' from All Packages
   * Select 'Apply changes' from Installation menu
 2. Add msys to path by executing the following in command prompt (you must run it as admin):
 ```

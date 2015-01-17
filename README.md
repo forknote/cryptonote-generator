@@ -158,7 +158,7 @@ By default, the cryptonote generator is not using multithread. I strongly recomm
 
 ###### Windows:
 ```bash
-bash generator.sh -c '/m:3'
+bash generator.sh -c '/maxcpucount:3'
 ```
 
 ###### Linux / Mac OS X:
