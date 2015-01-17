@@ -18,7 +18,7 @@ function finish {
 	rm -f "${UPDATES_PATH}"
 	rm -f "${BASH_CONFIG}"
 	rm -rf "${TEMP_PATH}"
-#	rm -rf "${TEMP_GENESIS_PATH}"
+	rm -rf "${TEMP_GENESIS_PATH}"
 }
 trap finish EXIT
 
@@ -149,7 +149,7 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 # Initialize our own variables:
 CONFIG_FILE='config.json'
-COMPILE_ARGS='-j'
+COMPILE_ARGS=''
 
 while getopts "h?f:c:" opt; do
     case "$opt" in

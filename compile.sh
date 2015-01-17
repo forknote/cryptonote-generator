@@ -30,8 +30,8 @@ rm -rf build; mkdir -p build/release; cd build/release
 
 # Compile!
 if [[ "$OSTYPE" == "msys" ]]; then
-	cmake -DBOOST_ROOT=C:\sdk\boost_1_55_0 -DBOOST_LIBRARYDIR=C:\sdk\boost_1_55_0\lib64-msvc-11.0 -G "Visual Studio 11 Win64" ".."
-	msbuild.exe Project.sln /p:Configuration=Release ${COMPILE_ARGS}
+	cmake -G "Visual Studio 11 Win64" "..\.."
+	msbuild.exe Project.sln /property:Configuration=Release ${COMPILE_ARGS}
 else
 	cmake -D STATIC=ON -D ARCH="x86-64" -D CMAKE_BUILD_TYPE=Release ../..
 	MAKE_STATUS=$( make ${COMPILE_ARGS} )
@@ -52,11 +52,13 @@ if [[ $archive == "1" ]]; then
 	  msys*) 	rm -f ${BUILD_PATH}/${WINDOWS_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		rm -rf "${NEW_COIN_PATH}/build"
+		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_daemon_name}.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
+# This line does not work for some reason
+#		rm -rf "${NEW_COIN_PATH}/build"
 		cd ${BUILD_PATH}
-		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
+# zip command does not work on windows. TODO		
+#		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
 		;;
 	  darwin*)  	rm -f ${BUILD_PATH}/${MAC_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}

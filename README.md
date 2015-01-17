@@ -45,10 +45,11 @@ Usage
 ===
 
 #### Requirements
-* Cygwin - [https://cygwin.com](https://cygwin.com) (Windows only)
-* GCC 4.7.3 or later
-* or CMake 2.8.6 or later
-* Boost 1.53 or later (but don’t use 1.54)
+* Windows - follow this instructions
+* Linux / Mac OS X
+  * GCC 4.7.3 or later
+  * or CMake 2.8.6 or later
+  * Boost 1.53 or later (but don’t use 1.54)
 
 
 #### 1) Downloading & Installing
@@ -153,11 +154,17 @@ The file `config.json` is used by default but a file can be specified using the 
 bash generator.sh -f config_dashcoin.json
 ```
 
-If you compile on VPS with no swap defined you have to remove the default '-j' compile flag using the `-c <string>` command argument, for example:
+By default, the cryptonote generator is not using multithread. I strongly recommend to use this arguments, if you are not building on a on VPS with no swap defined
+
+###### Windows:
 ```bash
-bash generator.sh -c ''
+bash generator.sh -c '/m:3'
 ```
-*the default -c value is '-j'*
+
+###### Linux / Mac OS X:
+```bash
+bash generator.sh -c '-j3'
+```
 
 
 ### Examples
