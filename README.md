@@ -45,7 +45,7 @@ Usage
 ===
 
 #### Requirements
-* Windows - follow this instructions
+* Windows - [follow this instructions](https://github.com/dashcoin/cryptonote-generator/blob/master/docs/windows-requirements-install.md)
 * Linux / Mac OS X
   * GCC 4.7.3 or later
   * or CMake 2.8.6 or later
