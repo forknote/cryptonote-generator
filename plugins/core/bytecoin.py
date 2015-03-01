@@ -95,7 +95,7 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1' in config['core']:
 		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1']), line)
 	if 'MAX_BLOCK_SIZE_INITIAL' in config['core']:
-		line = MAX_BLOCK_SIZE_INITIAL_re.sub("\\1 %s" % int(config['core']['MAX_BLOCK_SIZE_INITIAL']), line)
+		line = MAX_BLOCK_SIZE_INITIAL_re.sub("\\1 %s" % config['core']['MAX_BLOCK_SIZE_INITIAL'], line)
 	if 'UPGRADE_HEIGHT' in config['core']:
 		line = UPGRADE_HEIGHT_re.sub("\\1 %s" % int(config['core']['UPGRADE_HEIGHT']), line)
 	else:
