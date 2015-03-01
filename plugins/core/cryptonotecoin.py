@@ -68,27 +68,27 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	else:
 		line = MONEY_SUPPLY_re.sub("\\1 %s" % "static_cast<uint64_t>(-1)", line)
 	if 'EMISSION_SPEED_FACTOR' in config['core']:
-		line = EMISSION_SPEED_FACTOR_re.sub("\\1 (%s)" % config['core']['EMISSION_SPEED_FACTOR'], line)
+		line = EMISSION_SPEED_FACTOR_re.sub("\\1 (%s)" % int(config['core']['EMISSION_SPEED_FACTOR']), line)
 	if 'DIFFICULTY_TARGET' in config['core']:
-		line = DIFFICULTY_TARGET_re.sub("\\1 %s" % config['core']['DIFFICULTY_TARGET'], line)
+		line = DIFFICULTY_TARGET_re.sub("\\1 %s" % int(config['core']['DIFFICULTY_TARGET']), line)
 	if 'COIN' in config['core']:
-		line = COIN_re.sub("\\1 %s" % config['core']['COIN'], line)
+		line = COIN_re.sub("\\1 %s" % int(config['core']['COIN']), line)
 	else:
 		line = COIN_re.sub("\\1 %s" % "100000000", line)
 	if 'CRYPTONOTE_DISPLAY_DECIMAL_POINT' in config['core']:
-		line = CRYPTONOTE_DISPLAY_DECIMAL_POINT_re.sub("\\1 %s" % config['core']['CRYPTONOTE_DISPLAY_DECIMAL_POINT'], line)
+		line = CRYPTONOTE_DISPLAY_DECIMAL_POINT_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_DISPLAY_DECIMAL_POINT']), line)
 	else:
 		line = CRYPTONOTE_DISPLAY_DECIMAL_POINT_re.sub("\\1 %s" % "8", line)
 	if 'MINIMUM_FEE' in config['core']:
-		line = MINIMUM_FEE_re.sub("\\1 %s" % config['core']['MINIMUM_FEE'], line)
+		line = MINIMUM_FEE_re.sub("\\1 %s" % int(config['core']['MINIMUM_FEE']), line)
 	else:
 		line = MINIMUM_FEE_re.sub("\\1 %s" % "1000000", line)
 	if 'CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW' in config['core']:
-		line = CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re.sub("\\1 %s" % config['core']['CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW'], line)
+		line = CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW']), line)
 	else:
 		line = CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re.sub("\\1 %s" % "10", line)
 	if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE' in config['core']:
-		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re.sub("\\1 %s" % config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE'], line)
+		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE']), line)
 
 	line = genesisCoinbaseTxHex_re.sub("\\1 \"%s\";" % config['core']['genesisCoinbaseTxHex'], line)
 

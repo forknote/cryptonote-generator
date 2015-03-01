@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Initial source: OpenBazaar 
 #
 # configure.sh - Setup your Dashcoin development environment in one step.
 #
@@ -13,8 +14,7 @@
 # if you can't modify it to make it better, please open an issue with a full
 # error report at https://github.com/dashcoin/cryptonote-generator.git/issues/new
 #
-# Credits: OpenBazaar 
-#
+# Credits: Dashcoin
 #
 
 #exit on error
@@ -42,7 +42,7 @@ function brewUpgrade {
     then
       if ! brew upgrade; then
         echo ""
-        echo "There were errors when attempting to 'brew upgrade' and there could be issues with the installation of OpenBazaar."
+        echo "There were errors when attempting to 'brew upgrade' and there could be issues with the installation of Cryptonote generator."
         echo ""
         read -p "Press [Enter] to continue anyway or [ctrl + c] to exit and fix those errors."
       fi
@@ -66,7 +66,7 @@ function installMac {
   fi
 
   # install gpg/sqlite3/python/wget/openssl/zmq if they aren't installed
-  for dep in cmake boost
+  for dep in cmake boost python
   do
     if ! command_exists $dep ; then
       brew install $dep
@@ -78,7 +78,7 @@ function installMac {
 
 function doneMessage {
   echo ""
-  echo "Dashcoin configuration finished."
+  echo "Cryptonote generator configuration finished."
   echo "type 'bash generator.sh [-h] [-f FILE] [-c <string>]' to generate Cryptonote coin."
   echo ""
   echo ""
@@ -97,7 +97,7 @@ function installUbuntu {
 
   sudo add-apt-repository ppa:boost-latest/ppa
   sudo apt-get update
-  sudo apt-get -y install gcc-4.8 g++-4.8 libboost1.55-all-dev git cmake
+  sudo apt-get -y install python-dev gcc-4.8 g++-4.8 libboost1.55-all-dev git cmake build-essential
 
   doneMessage
 }

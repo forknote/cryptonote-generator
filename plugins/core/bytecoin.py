@@ -66,8 +66,8 @@ if 'MAX_BLOCK_SIZE_INITIAL' in config['core']:
 
 for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	line = CRYPTONOTE_NAME_re.sub("\\1 \"%s\"" % config['core']['CRYPTONOTE_NAME'], line)
-	line = P2P_DEFAULT_PORT_re.sub("\\1 %s" % config['core']['P2P_DEFAULT_PORT'], line)
-	line = RPC_DEFAULT_PORT_re.sub("\\1 %s" % config['core']['RPC_DEFAULT_PORT'], line)
+	line = P2P_DEFAULT_PORT_re.sub("\\1 %s" % int(config['core']['P2P_DEFAULT_PORT']), line)
+	line = RPC_DEFAULT_PORT_re.sub("\\1 %s" % int(config['core']['RPC_DEFAULT_PORT']), line)
 	line = CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX_re.sub("\\1 %s" % config['core']['CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX'], line)
 
 	if 'P2P_STAT_TRUSTED_PUB_KEY' in config['core']:
@@ -77,27 +77,27 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	if 'MONEY_SUPPLY' in config['core']:
 		line = MONEY_SUPPLY_re.sub("\\1 %s" % config['core']['MONEY_SUPPLY'], line)
 	if 'EMISSION_SPEED_FACTOR' in config['core']:
-		line = EMISSION_SPEED_FACTOR_re.sub("\\1 %s" % config['core']['EMISSION_SPEED_FACTOR'], line)
+		line = EMISSION_SPEED_FACTOR_re.sub("\\1 %s" % int(config['core']['EMISSION_SPEED_FACTOR']), line)
 	if 'DIFFICULTY_TARGET' in config['core']:
-		line = DIFFICULTY_TARGET_re.sub("\\1 %s" % config['core']['DIFFICULTY_TARGET'], line)
+		line = DIFFICULTY_TARGET_re.sub("\\1 %s" % int(config['core']['DIFFICULTY_TARGET']), line)
 	if 'COIN' in config['core']:
-		line = COIN_re.sub("\\1 %s)" % config['core']['COIN'], line)
+		line = COIN_re.sub("\\1 %s)" % int(config['core']['COIN']), line)
 	if 'CRYPTONOTE_DISPLAY_DECIMAL_POINT' in config['core']:
-		line = CRYPTONOTE_DISPLAY_DECIMAL_POINT_re.sub("\\1 %s" % config['core']['CRYPTONOTE_DISPLAY_DECIMAL_POINT'], line)
+		line = CRYPTONOTE_DISPLAY_DECIMAL_POINT_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_DISPLAY_DECIMAL_POINT']), line)
 	if 'MINIMUM_FEE' in config['core']:
-		line = MINIMUM_FEE_re.sub("\\1 %s)" % config['core']['MINIMUM_FEE'], line)
+		line = MINIMUM_FEE_re.sub("\\1 %s)" % int(config['core']['MINIMUM_FEE']), line)
 	if 'DEFAULT_DUST_THRESHOLD' in config['core']:
-		line = DEFAULT_DUST_THRESHOLD_re.sub("\\1 %s)" % config['core']['DEFAULT_DUST_THRESHOLD'], line)
+		line = DEFAULT_DUST_THRESHOLD_re.sub("\\1 %s)" % int(config['core']['DEFAULT_DUST_THRESHOLD']), line)
 	if 'CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW' in config['core']:
-		line = CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re.sub("\\1 %s" % config['core']['CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW'], line)
+		line = CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW']), line)
 	if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE' in config['core']:
-		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re.sub("\\1 %s" % config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE'], line)
+		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE']), line)
 	if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1' in config['core']:
-		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1_re.sub("\\1 %s" % config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1'], line)
+		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1']), line)
 	if 'MAX_BLOCK_SIZE_INITIAL' in config['core']:
-		line = MAX_BLOCK_SIZE_INITIAL_re.sub("\\1 %s" % config['core']['MAX_BLOCK_SIZE_INITIAL'], line)
+		line = MAX_BLOCK_SIZE_INITIAL_re.sub("\\1 %s" % int(config['core']['MAX_BLOCK_SIZE_INITIAL']), line)
 	if 'UPGRADE_HEIGHT' in config['core']:
-		line = UPGRADE_HEIGHT_re.sub("\\1 %s" % config['core']['UPGRADE_HEIGHT'], line)
+		line = UPGRADE_HEIGHT_re.sub("\\1 %s" % int(config['core']['UPGRADE_HEIGHT']), line)
 	else:
 		line = UPGRADE_HEIGHT_re.sub("\\1 %s" % "1", line)
 
