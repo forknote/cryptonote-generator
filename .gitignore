@@ -1,5 +1,3 @@
 .DS_Store
 /generated_files
-/examples/config_darknote.json
-/plugins/extended-wallet-rpc.py
 config.json
