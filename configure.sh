@@ -95,9 +95,8 @@ function installUbuntu {
   # print commands
   set -x
 
-  sudo add-apt-repository ppa:boost-latest/ppa
   sudo apt-get update
-  sudo apt-get -y install python-dev gcc-4.8 g++-4.8 libboost1.55-all-dev git cmake build-essential
+  sudo apt-get -y install build-essential python-dev gcc-4.8 g++-4.8 git cmake libboost1.55-all-dev
 
   doneMessage
 }

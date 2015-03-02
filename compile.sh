@@ -34,7 +34,7 @@ if [[ "$OSTYPE" == "msys" ]]; then
 	msbuild.exe Project.sln /property:Configuration=Release ${COMPILE_ARGS}
 else
 	cmake -D STATIC=ON -D ARCH="x86-64" -D CMAKE_BUILD_TYPE=Release ../..
-	MAKE_STATUS=$( make ${COMPILE_ARGS} )
+	make ${COMPILE_ARGS}
 fi
 
 if [[ $? == "0" ]]; then

@@ -54,7 +54,7 @@ function generate_genesis {
 	echo "Test genesis coin"
 	bash "${TESTS_PATH}/${genesis_coin_test}" -d "${TEMP_GENESIS_PATH}"
 
-	bash "${SCRIPTS_PATH}/compile.sh" -c $COMPILE_ARGS
+	bash "${SCRIPTS_PATH}/compile.sh" ${COMPILE_ARGS_OPTION}
 
 	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name]} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
 	GENESIS_COINBASE_TX_HEX=${GENESIS_COINBASE_TX_HEX:1:${#GENESIS_COINBASE_TX_HEX}-2}
@@ -128,7 +128,7 @@ function generate_coin {
 		# Generate new coin
 		cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
 
-		bash "${SCRIPTS_PATH}/compile.sh" -c "$COMPILE_ARGS" -z
+		bash "${SCRIPTS_PATH}/compile.sh" -z ${COMPILE_ARGS_OPTION}
 	fi
 }
 
@@ -165,6 +165,9 @@ while getopts "h?f:c:" opt; do
 done
 
 shift $((OPTIND-1))
+
+COMPILE_ARGS_OPTION=${COMPILE_ARGS:+-c \"}${COMPILE_ARGS}${COMPILE_ARGS:+\"}
+
 
 # Setting config file
 if [[ "${CONFIG_FILE}" != /* ]]; then
