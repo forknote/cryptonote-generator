@@ -67,7 +67,7 @@ if [[ $archive == "1" ]]; then
 		zip -r ${MAC_BUILD_NAME}.zip ${MAC_BUILD_NAME}/
 		rm -rf "${NEW_COIN_PATH}/build"
 		;;
-	  *)	rm -r ${BUILD_PATH}/${LINUX_BUILD_NAME}.tar.gz
+	  *)	rm -f ${BUILD_PATH}/${LINUX_BUILD_NAME}.tar.gz
 		rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${LINUX_BUILD_NAME}
@@ -75,6 +75,6 @@ if [[ $archive == "1" ]]; then
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
 		rm -rf "${NEW_COIN_PATH}/build"
-		;;
+		;
 	esac
 fi
