@@ -51,7 +51,7 @@ MINIMUM_FEE_re = re.compile(r"(#define DEFAULT_FEE)", re.IGNORECASE)
 CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW_re = re.compile(r"(#define CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW)", re.IGNORECASE)
 if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE' in config['core']:
 	CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re = re.compile(r"(#define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE)\s+\d+", re.IGNORECASE)
-genesisCoinbaseTxHex_re = re.compile(r"(#define GENESIS_COINBASE_TX_HEX)\s+\"\w*\"", re.IGNORECASE)
+genesisCoinbaseTxHex_re = re.compile(r"(#define GENESIS_COINBASE_TX_HEX)\s+\"?\w*\"?", re.IGNORECASE)
 
 for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	line = CRYPTONOTE_NAME_re.sub("\\1 \"%s\"" % config['core']['CRYPTONOTE_NAME'], line)
@@ -90,7 +90,7 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 	if 'CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE' in config['core']:
 		line = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE']), line)
 
-	line = genesisCoinbaseTxHex_re.sub("\\1 \"%s\";" % config['core']['genesisCoinbaseTxHex'], line)
+	line = genesisCoinbaseTxHex_re.sub("\\1 \"%s\"" % config['core']['genesisCoinbaseTxHex'], line)
 
 	# sys.stdout is redirected to the file
 	sys.stdout.write(line)

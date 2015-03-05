@@ -75,6 +75,6 @@ if [[ $archive == "1" ]]; then
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
 		rm -rf "${NEW_COIN_PATH}/build"
-		;
+		;;
 	esac
 fi

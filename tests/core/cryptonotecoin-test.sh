@@ -90,10 +90,10 @@ fi
 
 # Test genesisCoinbaseTxHex
 if [ -n "$__CONFIG_core_genesisCoinbaseTxHex" ]; then
-if [[ ${FILE_cryptonote_config} == define\ *GENESIS_COINBASE_TX_HEX\ *\""${__CONFIG_core_genesisCoinbaseTxHex}"\"* ]]; then
-	echo "TEST PASSED - EMISSION_SPEED_FACTOR change"
+if [[ ${FILE_cryptonote_config} == *\#define\ *GENESIS_COINBASE_TX_HEX\ *\""${__CONFIG_core_genesisCoinbaseTxHex}"\"* ]]; then
+	echo "TEST PASSED - genesisCoinbaseTxHex change"
 else
-	echo "TEST FAILED - EMISSION_SPEED_FACTOR change"
+	echo "TEST FAILED - genesisCoinbaseTxHex change"
 	exit 2
 fi
 fi
