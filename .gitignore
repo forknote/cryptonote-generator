@@ -1,3 +1,6 @@
 .DS_Store
 /generated_files
 config.json
+config.json.original
+/examples/config_dashcoin_fork.json
+

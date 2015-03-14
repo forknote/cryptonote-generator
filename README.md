@@ -10,7 +10,7 @@ A python / bash Cryptonote source creator. Generate and compile new or maintain 
   * [Downloading & Installing](#1-downloading--installing)
   * [Configuration](#2-configuration)
   * [Generate coin](#3-generate-coin)
-* [Examples (real life)](#examples)
+* [Examples (real life)](#examples_real_life)
   * [Dashcoin](#1-dashcoin)
 * [Coins Using This Software](#coins-using-this-software)
 * [Community / Support](#community--support)
@@ -151,7 +151,7 @@ By default, the cryptonote generator is not using multithread. I strongly recomm
 
 ### Examples (real life)
 
-#### 1) Dashcoin (Ubuntu / mac)
+#### 1) Dashcoin
 1. Downloading & Installing & Code Generation:
 
 ```
