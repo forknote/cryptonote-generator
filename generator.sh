@@ -56,7 +56,7 @@ function generate_genesis {
 
 	bash "${SCRIPTS_PATH}/compile.sh" ${COMPILE_ARGS_OPTION}
 
-	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name]} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
+	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
 	GENESIS_COINBASE_TX_HEX=${GENESIS_COINBASE_TX_HEX:1:${#GENESIS_COINBASE_TX_HEX}-2}
 	echo Genesis block : ${GENESIS_COINBASE_TX_HEX}
 	export __CONFIG_core_genesisCoinbaseTxHex="${GENESIS_COINBASE_TX_HEX}"
