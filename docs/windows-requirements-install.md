@@ -15,7 +15,7 @@ http://git-scm.com/download/win
 https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx
 5. Add path to .NET framework by executing the following in command prompt (you must run it as admin):
     ```
-    SETX PATH "%PATH%;C:\Windows\Microsoft.NET\Framework\v4.0.30319" /M
+    SETX PATH "%PATH%;C:\Program Files (x86)\MSBuild\12.0\bin\amd64" /M
     ```
 6. Download and install boost binaries boost_1_57_0-msvc-12.0-64.exe from http://sourceforge.net/projects/boost/files/boost-binaries into c:\local\boost_1_57_0<br />
 http://sourceforge.net/projects/boost/files/boost-binaries/1.57.0/boost_1_57_0-msvc-12.0-64.exe/download
@@ -27,6 +27,6 @@ http://sourceforge.net/projects/boost/files/boost-binaries/1.57.0/boost_1_57_0-m
     ```
 8. Install the latest version of Cmake (http://www.cmake.org):<br />
 Version in the time of writing:
-http://www.cmake.org/files/v3.2/cmake-3.2.1-win32-x86.exe
+http://www.cmake.org/files/v3.1.2/cmake-3.2.1-win32-x86.exe
 9. Install Python 2.7 (http://python.org):<br />
 https://www.python.org/ftp/python/2.7.9/python-2.7.9.amd64.msi
