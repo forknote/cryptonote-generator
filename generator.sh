@@ -54,13 +54,13 @@ function generate_genesis {
 	echo "Test genesis coin"
 	bash "${TESTS_PATH}/${genesis_coin_test}" -d "${TEMP_GENESIS_PATH}"
 
-	bash "${SCRIPTS_PATH}/compile.sh" ${COMPILE_ARGS_OPTION}
+	bash "${SCRIPTS_PATH}/compile.sh" -c "${COMPILE_ARGS}"
 
-	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
+	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
 	GENESIS_COINBASE_TX_HEX=${GENESIS_COINBASE_TX_HEX:1:${#GENESIS_COINBASE_TX_HEX}-2}
 	echo Genesis block : ${GENESIS_COINBASE_TX_HEX}
-	export __CONFIG_core_genesisCoinbaseTxHex="${GENESIS_COINBASE_TX_HEX}"
-	sed -i ${EXTENSION} "s/\(\"genesisCoinbaseTxHex\"\:\).*/\1\"${GENESIS_COINBASE_TX_HEX}\",/" $CONFIG_FILE
+	export __CONFIG_core_GENESIS_COINBASE_TX_HEX="${GENESIS_COINBASE_TX_HEX}"
+	sed -i ${EXTENSION} "s/\(\"GENESIS_COINBASE_TX_HEX\"\:\).*/\1\"${GENESIS_COINBASE_TX_HEX}\",/" $CONFIG_FILE
 }
 
 # Generate source code and compile 
@@ -101,6 +101,7 @@ function generate_coin {
 
 	# Execute tests
 	echo "Execute tests..."
+	export __CONFIG_plugins_text="${__CONFIG_plugins[@]}"
 	for test in "${__CONFIG_tests[@]}"
 	do
 		extension=${test##*.}
@@ -128,7 +129,7 @@ function generate_coin {
 		# Generate new coin
 		cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
 
-		bash "${SCRIPTS_PATH}/compile.sh" -z ${COMPILE_ARGS_OPTION}
+		bash "${SCRIPTS_PATH}/compile.sh" -c "${COMPILE_ARGS}" -z
 	fi
 }
 
@@ -166,9 +167,6 @@ done
 
 shift $((OPTIND-1))
 
-COMPILE_ARGS_OPTION=${COMPILE_ARGS:+-c \"}${COMPILE_ARGS}${COMPILE_ARGS:+\"}
-
-
 # Setting config file
 if [[ "${CONFIG_FILE}" != /* ]]; then
 	CONFIG_FILE="${CONFIG_PATH}/${CONFIG_FILE}"
@@ -191,7 +189,7 @@ fi
 source ${BASH_CONFIG}
 
 # A baby is born
-if [ -z ${__CONFIG_core_genesisCoinbaseTxHex} ]; then
+if [ -z ${__CONFIG_core_GENESIS_COINBASE_TX_HEX} ]; then
 	generate_genesis
 fi
 generate_coin

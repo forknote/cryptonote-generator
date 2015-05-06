@@ -12,11 +12,11 @@ set -o errexit
 FILE_CMakeLists=$(<${TEMP_PATH}"/src/CMakeLists.txt")
 
 # Test daemon name change
-if [[ ${FILE_CMakeLists} == *set_property\(TARGET\ daemon\ PROPERTY\ OUTPUT_NAME*"${__CONFIG_core_daemon_name}"* ]]
+if [[ ${FILE_CMakeLists} == *set_property\(TARGET\ daemon\ PROPERTY\ OUTPUT_NAME*"${__CONFIG_core_DAEMON_NAME}"* ]]
 then
-	echo "TEST PASSED - Daemon name change"
+	echo "TEST PASSED - DAEMON_NAME change"
 else
-	echo "TEST FAILED - Daemon name change"
+	echo "TEST FAILED - DAEMON_NAME change"
 	exit 2
 fi
 
@@ -89,6 +89,7 @@ then
 	echo "TEST PASSED - CHECKPOINTS change"
 else
 	echo "TEST FAILED - CHECKPOINTS change"
+	echo "${__CONFIG_core_CHECKPOINTS}"
 	exit 2
 fi
 fi
@@ -224,19 +225,31 @@ fi
 FILE_cryptonote_config=""
 
 
-# src/cryptonote_core/Currency.cpp
-FILE_Currency=$(<${TEMP_PATH}"/src/cryptonote_core/Currency.cpp")
-
+# TODO: refactor this
 # Test genesisCoinbaseTxHex
-if [[ ${FILE_Currency} == *std::string\ genesisCoinbaseTxHex\ *\=\ *\""${__CONFIG_core_genesisCoinbaseTxHex}"\"* ]]
-then
-	echo "TEST PASSED - genesisCoinbaseTxHex change"
+if [[ " ${__CONFIG_plugins_text} " == *"multiply.py"* ]]; then
+	# src/cryptonote_config.h
+	FILE_cryptonote_config=$(<${TEMP_PATH}"/src/cryptonote_config.h")
+	if [[ ${FILE_cryptonote_config} == *const\ char\ *GENESIS_COINBASE_TX_HEX\[\]\ *=\ *\""${__CONFIG_core_GENESIS_COINBASE_TX_HEX}"\"* ]]
+	then
+		echo "TEST PASSED - GENESIS_COINBASE_TX_HEX change (multiply)"
+	else
+		echo "TEST FAILED - GENESIS_COINBASE_TX_HEX change (multiply)"
+		exit 2
+	fi
+	FILE_cryptonote_config=""
 else
-	echo "TEST FAILED - genesisCoinbaseTxHex change"
-	exit 2
+	# src/cryptonote_core/Currency.cpp
+	FILE_Currency=$(<${TEMP_PATH}"/src/cryptonote_core/Currency.cpp")
+	if [[ ${FILE_Currency} == *std::string\ genesisCoinbaseTxHex\ *\=\ *\""${__CONFIG_core_GENESIS_COINBASE_TX_HEX}"\"* ]]
+	then
+		echo "TEST PASSED - GENESIS_COINBASE_TX_HEX change"
+	else
+		echo "TEST FAILED - GENESIS_COINBASE_TX_HEX change"
+		exit 2
+	fi
+	FILE_Currency=""
 fi
-FILE_Currency=""
-
 
 # src/p2p/p2p_networks.h
 FILE_p2p_networks=$(<${TEMP_PATH}"/src/p2p/p2p_networks.h")

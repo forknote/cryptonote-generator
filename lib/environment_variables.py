@@ -8,7 +8,7 @@ def convert_to_bash ( entity, prefix ):
 		if isinstance(value, dict):
 			convert_to_bash(entity[key], prefix + key + '_')
 		elif isinstance(value, list):
-			print "export " + str(prefix) + str(key) + "=(" + ",".join(json.dumps(str(item)) for item in value) + ")"
+			print "export " + str(prefix) + str(key) + "=(" + " ".join(json.dumps(str(item)) for item in value) + ")"
 		elif isinstance(value, int):
 			print "export " + str(prefix) + str(key) + "=" + str(value)
 		else:

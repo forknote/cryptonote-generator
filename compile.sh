@@ -34,6 +34,7 @@ if [[ "$OSTYPE" == "msys" ]]; then
 	msbuild.exe Project.sln /property:Configuration=Release ${COMPILE_ARGS}
 else
 	cmake -D STATIC=ON -D ARCH="x86-64" -D CMAKE_BUILD_TYPE=Release ../..
+	echo "make ${COMPILE_ARGS}"
 	make ${COMPILE_ARGS}
 fi
 
@@ -52,7 +53,7 @@ if [[ $archive == "1" ]]; then
 	  msys*) 	rm -f ${BUILD_PATH}/${WINDOWS_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_daemon_name}.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_DAEMON_NAME}.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cd ${BUILD_PATH}
 		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
@@ -61,7 +62,7 @@ if [[ $archive == "1" ]]; then
 	  darwin*)  	rm -f ${BUILD_PATH}/${MAC_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${MAC_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cd ${BUILD_PATH}
 		zip -r ${MAC_BUILD_NAME}.zip ${MAC_BUILD_NAME}/
@@ -70,7 +71,7 @@ if [[ $archive == "1" ]]; then
 	  *)	rm -f ${BUILD_PATH}/${LINUX_BUILD_NAME}.tar.gz
 		rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}
-		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_daemon_name} ${BUILD_PATH}/${LINUX_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
