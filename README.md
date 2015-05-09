@@ -123,6 +123,9 @@ Explanation for each field:
 
 	/* Max initial block size */
 	"MAX_BLOCK_SIZE_INITIAL":"25 * 1024"
+
+	/* Max initial block size */
+	"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY":"24 * 60 * 60 / 120"
 }
 }
 

@@ -62,31 +62,6 @@ void print_genesis_tx_hex() {
 }
     """)
 
-daemon_delete_text_5 = "cryptonote::Transaction tx = cryptonote::CurrencyBuilder().generateGenesisTransaction();"
-
-daemon_insert_text_5 = textwrap.dedent("""\
-  cryptonote::CurrencyBuilder currencyBuilder;
-  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));
-  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));
-  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));
-  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));
-  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));
-  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));
-  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));
-  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));
-  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));
-  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));
-  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT) != 0)
-  {
-    currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));
-  }
-  cryptonote::Transaction tx = currencyBuilder.generateGenesisTransaction();
-""")
-
-
-if "multiply.py" in config['plugins']:
-    daemon_text_5.replace(daemon_delete_text_5, daemon_insert_text_5)
-
 # Make changes in src/daemon/daemon.cpp
 paths['daemon'] = args.source + "/src/daemon/daemon.cpp"
 
