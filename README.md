@@ -24,9 +24,9 @@ A python / bash Cryptonote source creator. Generate and compile new or maintain 
 * Single command code and binaries update
 * Simple update for existing code
 * Compile for
-  * Windows
-  * Ubuntu
-  * Mac OS X
+  * Windows (tested on 8.1)
+  * Ubuntu (tested on 14.04)
+  * Mac OS X (tested on Yosemite)
 
 Usage
 ===

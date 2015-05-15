@@ -77,18 +77,12 @@ function installMac {
 }
 
 function doneMessage {
-  echo ""
   echo "Cryptonote generator configuration finished."
   echo "type 'bash generator.sh [-h] [-f FILE] [-c <string>]' to generate Cryptonote coin."
-  echo ""
-  echo ""
-  echo ""
-  echo ""
 }
 
 function unsupportedOS {
 	echo "Unsupported OS. Only MacOSX and Ubuntu are supported."
-	echo  ""
 }
 
 function installUbuntu {
@@ -102,9 +96,9 @@ function installUbuntu {
 }
 
 if [[ $OSTYPE == darwin* ]] ; then
-	installMac
+	  installMac
 elif [[ $OSTYPE == linux-gnu || $OSTYPE == linux-gnueabihf ]]; then
     installUbuntu
 else
-	unsupportedOS
+	  unsupportedOS
 fi

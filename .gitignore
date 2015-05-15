@@ -1,7 +1,7 @@
 .DS_Store
 /generated_files
 config.json
-/examples/config_coinn.json
+/examples/config_forknote.json
 /examples/config_oneevilcoin.json
 /plugins/multiply.py
 
