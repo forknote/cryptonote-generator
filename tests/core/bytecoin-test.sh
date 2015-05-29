@@ -12,7 +12,7 @@ set -o errexit
 FILE_CMakeLists=$(<${TEMP_PATH}"/src/CMakeLists.txt")
 
 # Test daemon name change
-if [[ ${FILE_CMakeLists} == *set_property\(TARGET\ daemon\ PROPERTY\ OUTPUT_NAME*"${__CONFIG_core_DAEMON_NAME}"* ]]
+if [[ ${FILE_CMakeLists} == *set_property\(TARGET\ Daemon\ PROPERTY\ OUTPUT_NAME*"${__CONFIG_core_DAEMON_NAME}"* ]]
 then
 	echo "TEST PASSED - DAEMON_NAME change"
 else
@@ -131,16 +131,6 @@ if [[ ${FILE_cryptonote_config} == *const\ uint64_t\ *DIFFICULTY_TARGET\ *=\ *"$
 	echo "TEST PASSED - DIFFICULTY_TARGET change"
 else
 	echo "TEST FAILED - DIFFICULTY_TARGET change"
-	exit 2
-fi
-fi
-
-# COIN
-if [ -n "$__CONFIG_core_COIN" ]; then
-if [[ ${FILE_cryptonote_config} == *const\ uint64_t\ *COIN\ *=\ *UINT64_C\(\ "${__CONFIG_core_COIN}"\)* ]]; then
-	echo "TEST PASSED - COIN change"
-else
-	echo "TEST FAILED - COIN change"
 	exit 2
 fi
 fi

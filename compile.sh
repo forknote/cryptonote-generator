@@ -55,6 +55,7 @@ if [[ $archive == "1" ]]; then
 		mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_DAEMON_NAME}.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/Release/walletd.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cd ${BUILD_PATH}
 		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
 		rm -rf "${NEW_COIN_PATH}/build"
@@ -64,6 +65,7 @@ if [[ $archive == "1" ]]; then
 		mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cd ${BUILD_PATH}
 		zip -r ${MAC_BUILD_NAME}.zip ${MAC_BUILD_NAME}/
 		rm -rf "${NEW_COIN_PATH}/build"
@@ -73,6 +75,7 @@ if [[ $archive == "1" ]]; then
 		mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
 		rm -rf "${NEW_COIN_PATH}/build"

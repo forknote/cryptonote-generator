@@ -24,8 +24,7 @@ paths = {}
 
 # Make changes in src/CMakeLists.txt
 paths['CMakeLists'] = args.source + "/src/CMakeLists.txt"
-
-DAEMON_NAME_re = re.compile(r"(set_property\(TARGET daemon PROPERTY OUTPUT_NAME) \"\S+\"\)", re.IGNORECASE)
+DAEMON_NAME_re = re.compile(r"(set_property\(TARGET Daemon PROPERTY OUTPUT_NAME) \"\S+\"\)", re.IGNORECASE)
 for line in fileinput.input([paths['CMakeLists']], inplace=True):
     line = DAEMON_NAME_re.sub("\\1 \"%s\")" % config['core']['DAEMON_NAME'], line)
     # sys.stdout is redirected to the file
@@ -47,8 +46,6 @@ if 'EMISSION_SPEED_FACTOR' in config['core']:
     EMISSION_SPEED_FACTOR_re =re.compile(r"(const unsigned EMISSION_SPEED_FACTOR\s+=)\s+\d+", re.IGNORECASE)
 if 'DIFFICULTY_TARGET' in config['core']:
     DIFFICULTY_TARGET_re = re.compile(r"(const uint64_t DIFFICULTY_TARGET\s+=)\s+\d+", re.IGNORECASE)
-if 'COIN' in config['core']:
-    COIN_re = re.compile(r"(const uint64_t COIN\s+=\s+UINT64_C\()\d+\)", re.IGNORECASE)
 if 'CRYPTONOTE_DISPLAY_DECIMAL_POINT' in config['core']:
     CRYPTONOTE_DISPLAY_DECIMAL_POINT_re = re.compile(r"(const size_t\s+CRYPTONOTE_DISPLAY_DECIMAL_POINT\s+=)\s+\d+", re.IGNORECASE)
 if 'MINIMUM_FEE' in config['core']:
@@ -82,8 +79,6 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
         line = EMISSION_SPEED_FACTOR_re.sub("\\1 %s" % int(config['core']['EMISSION_SPEED_FACTOR']), line)
     if 'DIFFICULTY_TARGET' in config['core']:
         line = DIFFICULTY_TARGET_re.sub("\\1 %s" % int(config['core']['DIFFICULTY_TARGET']), line)
-    if 'COIN' in config['core']:
-        line = COIN_re.sub("\\1 %s)" % int(config['core']['COIN']), line)
     if 'CRYPTONOTE_DISPLAY_DECIMAL_POINT' in config['core']:
         line = CRYPTONOTE_DISPLAY_DECIMAL_POINT_re.sub("\\1 %s" % int(config['core']['CRYPTONOTE_DISPLAY_DECIMAL_POINT']), line)
     if 'MINIMUM_FEE' in config['core']:
