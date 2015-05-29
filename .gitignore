@@ -4,5 +4,6 @@ config.json
 /examples/config_forknote.json
 /examples/config_oneevilcoin.json
 /plugins/multiply.py
+/plugins/multiply/*
 /plugins/core/cryptonotecoin.py
 /test/core/cryptonotecoin-test.sh
