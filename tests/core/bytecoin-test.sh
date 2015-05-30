@@ -8,6 +8,20 @@ set -o errexit
 
 [ "$OSTYPE" != "win"* ] || die "Install Cygwin to use on Windows"
 
+while getopts "d:" opt; do
+    case "$opt" in
+    d)  TEMP_PATH=${OPTARG}
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+if [ ! -d ${TEMP_PATH} ]; then
+	echo "ERROR: Target directory does not exits"	
+	exit
+fi
+
 # src/CMakeLists.txt
 FILE_CMakeLists=$(<${TEMP_PATH}"/src/CMakeLists.txt")
 

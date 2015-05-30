@@ -6,7 +6,7 @@
 # Exit immediately if an error occurs, or if an undeclared variable is used
 set -o errexit
 
-[ "$OSTYPE" != "win"* ] || die "Install Cygwin to use on Windows"
+[ "$OSTYPE" != "win"* ] || die "Install MinGW to use on Windows"
 
 # Set directory vars
 . "vars.cfg"
@@ -31,9 +31,10 @@ function generate_genesis {
 	     EXTENSION=".original"
 	fi
 
-	genesis_coin_git="https://github.com/cryptonotefoundation/cryptonote.git"
-	genesis_coin_plugin="core/cryptonotecoin.py"
-	genesis_coin_test="core/cryptonotecoin-test.sh"
+	genesis_coin_git="https://github.com/amjuarez/bytecoin.git"
+	genesis_coin_core="core/bytecoin.py"
+	genesis_coin_genesis_plugin="print-genesis-tx.py"
+	genesis_coin_test="core/bytecoin-test.sh"
 
 	rm -rf "${TEMP_GENESIS_PATH}"
 	echo "Clone genesis coin..."
@@ -49,15 +50,16 @@ function generate_genesis {
 	export NEW_COIN_PATH="${TEMP_GENESIS_PATH}"
 
 	echo "Modify genesis coin"
-	python "${PLUGINS_PATH}/${genesis_coin_plugin}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
+	python "${PLUGINS_PATH}/${genesis_coin_core}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
+	python "${PLUGINS_PATH}/${genesis_coin_genesis_plugin}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
 
 	echo "Test genesis coin"
 	bash "${TESTS_PATH}/${genesis_coin_test}" -d "${TEMP_GENESIS_PATH}"
 
 	bash "${SCRIPTS_PATH}/compile.sh" -c "${COMPILE_ARGS}"
 
-	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $3 }' )"
-	GENESIS_COINBASE_TX_HEX=${GENESIS_COINBASE_TX_HEX:1:${#GENESIS_COINBASE_TX_HEX}-2}
+	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $5 }' )"
+	GENESIS_COINBASE_TX_HEX="${GENESIS_COINBASE_TX_HEX%?}"
 	echo Genesis block : ${GENESIS_COINBASE_TX_HEX}
 	export __CONFIG_core_GENESIS_COINBASE_TX_HEX="${GENESIS_COINBASE_TX_HEX}"
 	sed -i ${EXTENSION} "s/\(\"GENESIS_COINBASE_TX_HEX\"\:\).*/\1\"${GENESIS_COINBASE_TX_HEX}\",/" $CONFIG_FILE

@@ -37,7 +37,7 @@ command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);
     """)
 daemon_text_3 = textwrap.dedent("""\
     if (command_line::get_arg(vm, arg_print_genesis_tx)) {
-      print_genesis_tx_hex();
+      print_genesis_tx_hex(logManager);
       return false;
     }
     """)
@@ -45,15 +45,15 @@ daemon_text_4 = textwrap.dedent("""\
   try {
     currencyBuilder.currency();
   } catch (std::exception&) {
-    std::cout << "GENESIS_COINBASE_TX_HEX constant has an incorrect value. Please launch: " << cryptonote::CRYPTONOTE_NAME << "d --" << arg_print_genesis_tx.name;
+    std::cout << "GENESIS_COINBASE_TX_HEX constant has an incorrect value. Please launch: " << CryptoNote::CRYPTONOTE_NAME << "d --" << arg_print_genesis_tx.name;
     return 1;
   }
     """)
 daemon_text_5 = textwrap.dedent("""\
-void print_genesis_tx_hex() {
-  cryptonote::Transaction tx = cryptonote::CurrencyBuilder().generateGenesisTransaction();
-  cryptonote::blobdata txb = tx_to_blob(tx);
-  std::string tx_hex = string_tools::buff_to_hex_nodelimer(txb);
+void print_genesis_tx_hex(LoggerManager& logManager) {
+  CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();
+  CryptoNote::blobdata txb = tx_to_blob(tx);
+  std::string tx_hex = blobToHex(txb);
 
   std::cout << "Insert this line into your coin configuration file as is: " << std::endl;
   std::cout << "const char GENESIS_COINBASE_TX_HEX[] = " << tx_hex << ";" << std::endl;
@@ -73,7 +73,7 @@ for line in fileinput.input([paths['daemon']], inplace=True):
         sys.stdout.write(daemon_text_2)
     if "currencyBuilder.testnet(testnet_mode);" in line:
         sys.stdout.write(daemon_text_4)
-    if "bool command_line_preprocessor(const boost::program_options::variables_map& vm);" in line:
+    if "bool command_line_preprocessor(const boost::program_options::variables_map& vm, LoggerRef& logger);" in line:
         sys.stdout.write(daemon_text_5)
     if "po::notify(vm);" in line:
         sys.stdout.write(daemon_text_3)
@@ -85,8 +85,8 @@ currency_h_text_1 = textwrap.dedent("""\
     """)
 currency_c_text_1 = textwrap.dedent("""\
    Transaction CurrencyBuilder::generateGenesisTransaction() {
-    cryptonote::Transaction tx;
-    cryptonote::AccountPublicAddress ac = boost::value_initialized<cryptonote::AccountPublicAddress>();
+    CryptoNote::Transaction tx;
+    CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();
     m_currency.constructMinerTx(0, 0, 0, 0, 0, ac, tx); // zero fee in genesis
 
     return tx;
