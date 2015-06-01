@@ -159,7 +159,7 @@ By default, the cryptonote generator is not using multithread. I strongly recomm
 
 ```
 	git clone https://github.com/pmitchev/cryptonote-generator.git generator && cd generator
-	bash configure.sh && bash generator.sh -f examples/config_dashcoin.json
+	bash configure.sh && bash generator.sh -f configs/dashcoin.json
 ```
 
 2. Start the daemon:
