@@ -228,21 +228,8 @@ fi
 
 FILE_cryptonote_config=""
 
-
-# TODO: refactor this
 # Test genesisCoinbaseTxHex
-if [[ " ${__CONFIG_plugins_text} " == *"multiply.py"* ]]; then
-	# src/cryptonote_config.h
-	FILE_cryptonote_config=$(<${TEMP_PATH}"/src/cryptonote_config.h")
-	if [[ ${FILE_cryptonote_config} == *const\ char\ *GENESIS_COINBASE_TX_HEX\[\]\ *=\ *\""${__CONFIG_core_GENESIS_COINBASE_TX_HEX}"\"* ]]
-	then
-		echo "TEST PASSED - GENESIS_COINBASE_TX_HEX change (multiply)"
-	else
-		echo "TEST FAILED - GENESIS_COINBASE_TX_HEX change (multiply)"
-		exit 2
-	fi
-	FILE_cryptonote_config=""
-else
+if [[ " ${__CONFIG_plugins_text} " != *"multiply.py"* ]]; then
 	# src/cryptonote_core/Currency.cpp
 	FILE_Currency=$(<${TEMP_PATH}"/src/cryptonote_core/Currency.cpp")
 	if [[ ${FILE_Currency} == *std::string\ genesisCoinbaseTxHex\ *\=\ *\""${__CONFIG_core_GENESIS_COINBASE_TX_HEX}"\"* ]]

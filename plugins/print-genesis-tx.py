@@ -79,11 +79,11 @@ for line in fileinput.input([paths['daemon']], inplace=True):
         sys.stdout.write(daemon_text_3)
 
 # Text added to src/cryptonote_core/Currency.h
-# Text added to src/cryptonote_core/Currency.c
+# Text added to src/cryptonote_core/Currency.cpp
 currency_h_text_1 = textwrap.dedent("""\
     Transaction generateGenesisTransaction();
     """)
-currency_c_text_1 = textwrap.dedent("""\
+currency_cpp_text_1 = textwrap.dedent("""\
    Transaction CurrencyBuilder::generateGenesisTransaction() {
     CryptoNote::Transaction tx;
     CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();
@@ -103,5 +103,5 @@ for line in fileinput.input([paths['currency_h']], inplace=True):
 paths['currency_cpp'] = args.source + "/src/cryptonote_core/Currency.cpp"
 for line in fileinput.input([paths['currency_cpp']], inplace=True):
     if "CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {" in line:
-        sys.stdout.write(currency_c_text_1)
+        sys.stdout.write(currency_cpp_text_1)
     sys.stdout.write(line)
