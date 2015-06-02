@@ -105,7 +105,7 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
 
 
 SEED_NODES_re = re.compile(r"(const char\* const\s+SEED_NODES\[\] = {)[^;]+(};)", re.DOTALL)
-CHECKPOINTS_re = re.compile(r"(const CheckpointData\s+CHECKPOINTS\[\] = {)[^;]+(};)", re.DOTALL)
+CHECKPOINTS_re = re.compile(r"(const CheckpointData\s+CHECKPOINTS\[\] = {)([^;]+)(};)", re.DOTALL)
 cryptonote_config_file = open(paths['cryptonote_config'],'r')
 cryptonote_config_content = cryptonote_config_file.read()
 cryptonote_config_file.close()
@@ -117,13 +117,12 @@ seeds = seeds[:-2]
 cryptonote_config_content = SEED_NODES_re.sub("\\1 %s \\2" % seeds, cryptonote_config_content)
 
 if 'CHECKPOINTS' in config['core']:
-    cryptonote_config_content = CHECKPOINTS_re.sub("\\1 %s \\2" % config['core']['CHECKPOINTS'], cryptonote_config_content)
+    cryptonote_config_content = CHECKPOINTS_re.sub("const std::initializer_list<CheckpointData> CHECKPOINTS = { %s };" % config['core']['CHECKPOINTS'], cryptonote_config_content)
 else:
-    cryptonote_config_content = CHECKPOINTS_re.sub("\\1 %s \\2" % "", cryptonote_config_content)
+    cryptonote_config_content = CHECKPOINTS_re.sub("const std::initializer_list<CheckpointData> CHECKPOINTS = { \\2 };", cryptonote_config_content)
 cryptonote_config_file = open(paths['cryptonote_config'], "w")
 cryptonote_config_file.write(cryptonote_config_content)
 cryptonote_config_file.close()
-
 
 
 # Make changes in src/cryptonote_core/Currency.cpp

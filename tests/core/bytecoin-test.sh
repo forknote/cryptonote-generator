@@ -96,7 +96,15 @@ else
 	exit 2
 fi
 
-# Test CHECKPOINTS
+# Test CHECKPOINTS text change
+if [[ ${FILE_cryptonote_config} == *"const std::initializer_list<CheckpointData> CHECKPOINTS ="* ]]
+then
+	echo "TEST PASSED - CHECKPOINTS text change"
+else
+	echo "TEST FAILED - CHECKPOINTS text change"
+	exit 2
+fi
+
 if [ -n "$__CONFIG_core_CHECKPOINTS" ]; then
 if [[ ${FILE_cryptonote_config} == *"${__CONFIG_core_CHECKPOINTS}"* ]]
 then

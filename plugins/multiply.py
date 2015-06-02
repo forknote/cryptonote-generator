@@ -137,11 +137,8 @@ if (command_line::has_arg(vm, arg_CHECKPOINT) && checkpoint_args.size() != 0)
 }
 else
 {
-  if (!command_line::has_arg(vm, arg_UPGRADE_HEIGHT) || command_line::get_arg(vm, arg_UPGRADE_HEIGHT) == 0) {
-    for(int i = 0; i < sizeof(CryptoNote::CHECKPOINTS)/sizeof(*(CryptoNote::CHECKPOINTS)); i++)
-    {
-      checkpoint_input.push_back(CryptoNote::CHECKPOINTS[i]);
-    }
+  if (!command_line::has_arg(vm, arg_UPGRADE_HEIGHT) || command_line::get_arg(vm, arg_UPGRADE_HEIGHT) == 0 || command_line::get_arg(vm, arg_UPGRADE_HEIGHT) == 1) {
+      checkpoint_input = CryptoNote::CHECKPOINTS;
   }
 }
     """)
@@ -358,7 +355,7 @@ for line in fileinput.input([paths['NetNodeConfig_h']], inplace=True):
 
 # Text added to src/p2p/NetNodeConfig.cpp
 NetNodeConfig_cpp_command_line_descriptors = textwrap.dedent("""\
-    const command_line::arg_descriptor<std::string> arg_network_id = {"BYTECOIN_NETWORK", "Network id", boost::lexical_cast<std::string>(&BYTECOIN_NETWORK)};
+    const command_line::arg_descriptor<std::string> arg_network_id = {"BYTECOIN_NETWORK", "Network id", boost::lexical_cast<std::string>(BYTECOIN_NETWORK)};
     const command_line::arg_descriptor<std::string> arg_P2P_STAT_TRUSTED_PUB_KEY = {"P2P_STAT_TRUSTED_PUB_KEY", "P2P stat trusted pub key", ""};
     """)
 NetNodeConfig_cpp_command_line_args = textwrap.dedent("""\
