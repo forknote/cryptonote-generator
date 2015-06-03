@@ -53,6 +53,9 @@ bash configure.sh
 
 *Warning for existing Cryptonote coins other than Dashcoin:* this software may or may not work with any given cryptonote coin.
 
+Create your configuration here and export as JSON:
+http://forknote.net/create.html
+
 Copy the `config_example.json` file to `config.json` then overview each options and change any to match your preferred setup.
 
 
