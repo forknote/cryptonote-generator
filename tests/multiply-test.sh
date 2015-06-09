@@ -85,6 +85,15 @@ else
 	exit 2
 fi
 
+# Test daemon_undeclared_options_config
+if [[ ${FILE_daemon_cpp} == *po\:\:store\(po\:\:parse_config_file\<char\>\(config_path\.string\<std\:\:string\>\(\)\.c_str\(\)\,\ desc_cmd_sett\,\ true\)\,\ vm\)\;* ]]
+then
+	echo "TEST PASSED - daemon.cpp - daemon_undeclared_options_config change (multiply)"
+else
+	echo "TEST FAILED - daemon.cpp - daemon_undeclared_options_config change (multiply)"
+	exit 2
+fi
+
 # Test daemon_print_genesis_tx
 if [[ ${FILE_daemon_cpp} == *CryptoNote\:\:Transaction\ tx\ \=\ currencyBuilder\.generateGenesisTransaction\(\)\;* ]]
 then
@@ -452,6 +461,170 @@ fi
 FILE_net_node_cpp=""
 
 
+# src/cryptonote_core/cryptonote_core.cpp
+FILE_cryptonote_core_cpp=$(<${TEMP_PATH}"/src/cryptonote_core/cryptonote_core.cpp")
 
-####
-# TODO: Add README part
+# Test amount_in_less_than_amount_out
+if [[ ${FILE_cryptonote_core_cpp} == *if\ \(amount_in\ \<\ amount_out\)\ \{* ]]
+then
+	echo "TEST PASSED - cryptonote_core.cpp - amount_in_less_than_amount_out change (multiply)"
+else
+	echo "TEST FAILED - cryptonote_core.cpp - amount_in_less_than_amount_out change (multiply)"
+	exit 2
+fi
+
+FILE_cryptonote_core_cpp=''
+
+
+# src/payment_service/CoinBaseConfiguration.cpp
+FILE_CoinBaseConfiguration_cpp=$(<${TEMP_PATH}"/src/payment_service/CoinBaseConfiguration.cpp")
+
+# Check is it populated
+if [[ ${FILE_CoinBaseConfiguration_cpp} == *Forknote* ]]
+then
+	echo "TEST PASSED - CoinBaseConfiguration.cpp - populated (multiply)"
+else
+	echo "TEST FAILED - CoinBaseConfiguration.cpp - populated (multiply)"
+	exit 2
+fi
+
+FILE_CoinBaseConfiguration_cpp=''
+
+
+# src/payment_service/CoinBaseConfiguration.h
+FILE_CoinBaseConfiguration_h=$(<${TEMP_PATH}"/src/payment_service/CoinBaseConfiguration.h")
+
+# Check is it populated
+if [[ ${FILE_CoinBaseConfiguration_h} == *Forknote* ]]
+then
+	echo "TEST PASSED - CoinBaseConfiguration.h - populated (multiply)"
+else
+	echo "TEST FAILED - CoinBaseConfiguration.h - populated (multiply)"
+	exit 2
+fi
+
+FILE_CoinBaseConfiguration_h=''
+
+
+# src/payment_service/ConfigurationManager.h
+FILE_payment_service_ConfigurationManager_h=$(<${TEMP_PATH}"/src/payment_service/ConfigurationManager.h")
+
+# Test ConfigurationManager_h_includes
+if [[ ${FILE_payment_service_ConfigurationManager_h} == *\#include\ \"CoinBaseConfiguration\.h\"* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.h - ConfigurationManager_h_includes change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.h - ConfigurationManager_h_includes change (multiply)"
+	exit 2
+fi
+
+# Test ConfigurationManager_h_vars
+if [[ ${FILE_payment_service_ConfigurationManager_h} == *RpcNodeConfiguration\ remoteNodeConfig\;* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.h - ConfigurationManager_h_vars change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.h - ConfigurationManager_h_vars change (multiply)"
+	exit 2
+fi
+
+FILE_payment_service_ConfigurationManager_h=''
+
+
+# src/payment_service/ConfigurationManager.cpp
+FILE_payment_service_ConfigurationManager_cpp=$(<${TEMP_PATH}"/src/payment_service/ConfigurationManager.cpp")
+
+# Test ConfigurationManager_cpp_initOptions
+if [[ ${FILE_payment_service_ConfigurationManager_cpp} == *CoinBaseConfiguration\:\:initOptions\(coinBaseOptions\)\;* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.cpp - ConfigurationManager_cpp_initOptions change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.cpp - ConfigurationManager_cpp_initOptions change (multiply)"
+	exit 2
+fi
+
+# Test confOptionsDesc
+if [[ ${FILE_payment_service_ConfigurationManager_cpp} == *coinBaseConfig\.init\(confOptions\)\;* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.cpp - confOptionsDesc change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.cpp - confOptionsDesc change (multiply)"
+	exit 2
+fi
+
+# Test cmdOptionsDesc
+#if [[ ${FILE_payment_service_ConfigurationManager_cpp} == *coinBaseConfig\.init\(cmdOptions\)\;* ]]
+#then
+#	echo "TEST PASSED - payment_service/ConfigurationManager.cpp - cmdOptionsDesc change (multiply)"
+#else
+#	echo "TEST FAILED - payment_service/ConfigurationManager.cpp - cmdOptionsDesc change (multiply)"
+#	exit 2
+#fi
+
+
+# Test cmdOptionsDesc.add
+if [[ ${FILE_payment_service_ConfigurationManager_cpp} == *cmdOptionsDesc\.add\(cmdGeneralOptions\)\.add\(remoteNodeOptions\)\.add\(netNodeOptions\)\.add\(coinBaseOptions\)\;* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.cpp - cmdOptionsDesc.add change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.cpp - cmdOptionsDesc.add change (multiply)"
+	exit 2
+fi
+
+# Test confOptionsDesc.add
+if [[ ${FILE_payment_service_ConfigurationManager_cpp} == *confOptionsDesc\.add\(confGeneralOptions\)\.add\(remoteNodeOptions\)\.add\(netNodeOptions\)\.add\(coinBaseOptions\)\;* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.cpp - confOptionsDesc.add change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.cpp - confOptionsDesc.add change (multiply)"
+	exit 2
+fi
+
+# Test undeclaredOptionsInConfig
+if [[ ${FILE_payment_service_ConfigurationManager_cpp} == *po\:\:store\(po\:\:parse_config_file\(confStream\,\ confOptionsDesc\,\ true\)\,\ confOptions\)\;* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.cpp - undeclaredOptionsInConfig change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.cpp - undeclaredOptionsInConfig change (multiply)"
+	exit 2
+fi
+
+# Test configDefaultValue
+if [[ ${FILE_payment_service_ConfigurationManager_cpp} == *\(\"config\,c\"\,\ po\:\:value\<std\:\:string\>\(\)\-\>default_value\(\"\.\/configs\/\-\.conf\"\)\,\ \"configuration\ file\"\)\;* ]]
+then
+	echo "TEST PASSED - payment_service/ConfigurationManager.cpp - configDefaultValue change (multiply)"
+else
+	echo "TEST FAILED - payment_service/ConfigurationManager.cpp - configDefaultValue change (multiply)"
+	exit 2
+fi
+
+FILE_payment_service_ConfigurationManager_cpp=''
+
+
+# src/payment_service/main.cpp
+FILE_payment_service_main_cpp=$(<${TEMP_PATH}"/src/payment_service/main.cpp")
+
+# Test payment_service_main_currency_params
+if [[ ${FILE_payment_service_main_cpp} == *currencyBuilder\-\>genesisCoinbaseTxHex\(config\.coinBaseConfig\.GENESIS_COINBASE_TX_HEX\)\;* ]]
+then
+	echo "TEST PASSED - payment_service/main.cpp - payment_service_main_currency_params change (multiply)"
+else
+	echo "TEST FAILED - payment_service/main.cpp - payment_service_main_currency_params change (multiply)"
+	exit 2
+fi
+
+FILE_payment_service_main_cpp=''
+
+
+# README.md
+FILE_README_md=$(<${TEMP_PATH}"/README.md")
+
+# Check is it populated
+if [[ ${FILE_README_md} == *Forknote* ]]
+then
+	echo "TEST PASSED - README.md - populated (multiply)"
+else
+	echo "TEST FAILED - README.md - populated (multiply)"
+	exit 2
+fi
+
+FILE_README_md=''

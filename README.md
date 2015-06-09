@@ -182,9 +182,10 @@ The process under Windows is exacly the same, you need just to remove ~~bash con
 * [CryptoNote Forum](https://forum.cryptonote.org/)
 
 
-#### Coins Using This Software
+#### Projects Using This Software
 
-* [Dashcoin](https://bitcointalk.org/index.php?topic=678232.0)
+* [Dashcoin](https://bitcointalk.org/index.php?topic=1020627.0)
+* [Forknote](https://bitcointalk.org/index.php?topic=1079306.0)
 
 
 #### Contributing

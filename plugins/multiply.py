@@ -187,6 +187,9 @@ for line in fileinput.input([paths['daemon']], inplace=True):
         sys.stdout.write(daemon_command_line_descriptors)
     if "#include <boost/program_options.hpp>" in line:
         sys.stdout.write(daemon_cryptonote_name_includes)
+    # Allow undeclared options in config
+    if "po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett), vm);" in line:
+        line = "po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett, true), vm);"
     # If print-genesis-tx module is present
     if "print-genesis-tx.py" in config['plugins']:
         if "CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();" in line:
@@ -419,6 +422,128 @@ for line in fileinput.input([paths['net_node_cpp']], inplace=True):
     sys.stdout.write(line)
     if "m_allow_local_ip = config.allowLocalIp;" in line:
         sys.stdout.write(net_node_cpp_vars)
+
+
+### 1 CHECK LESS
+# Make changes in src/cryptonote_core/cryptonote_core.cpp
+paths['cryptonote_core_cpp'] = args.source + "/src/cryptonote_core/cryptonote_core.cpp"
+for line in fileinput.input([paths['cryptonote_core_cpp']], inplace=True):
+    if "if (amount_in <= amount_out) {" in line:
+        line = "  if (amount_in < amount_out) {\n"
+    # sys.stdout is redirected to the file
+    sys.stdout.write(line)
+
+
+# Add CoinBaseConfiguration.h src/payment_service/CoinBaseConfiguration.h
+paths['CoinBaseConfiguration.h'] = args.source + "/src/payment_service/CoinBaseConfiguration.h"
+source_paths['CoinBaseConfiguration.h'] = os.path.dirname(os.path.realpath(__file__)) + '/multiply/CoinBaseConfiguration.h'
+if (os.path.isfile(source_paths['CoinBaseConfiguration.h'])):
+    shutil.copyfile(source_paths['CoinBaseConfiguration.h'],paths['CoinBaseConfiguration.h'])
+
+
+# Add CoinBaseConfiguration.cpp src/payment_service/CoinBaseConfiguration.cpp
+paths['CoinBaseConfiguration.cpp'] = args.source + "/src/payment_service/CoinBaseConfiguration.cpp"
+source_paths['CoinBaseConfiguration.cpp'] = os.path.dirname(os.path.realpath(__file__)) + '/multiply/CoinBaseConfiguration.cpp'
+if (os.path.isfile(source_paths['CoinBaseConfiguration.cpp'])):
+    shutil.copyfile(source_paths['CoinBaseConfiguration.cpp'],paths['CoinBaseConfiguration.cpp'])
+
+
+####
+# Text added to src/payment_service/ConfigurationManager.h
+ConfigurationManager_h_includes = textwrap.dedent("""\
+#include "CoinBaseConfiguration.h"
+    """)
+
+ConfigurationManager_h_vars = textwrap.dedent("""\
+  CoinBaseConfiguration coinBaseConfig;
+    """)
+
+# Make changes in src/payment_service/ConfigurationManager.h
+paths['ConfigurationManager.h'] = args.source + "/src/payment_service/ConfigurationManager.h"
+for line in fileinput.input([paths['ConfigurationManager.h']], inplace=True):
+    # sys.stdout is redirected to the file
+    sys.stdout.write(line)
+    if "#include \"RpcNodeConfiguration.h\"" in line:
+        sys.stdout.write(ConfigurationManager_h_includes);
+    if "RpcNodeConfiguration remoteNodeConfig;" in line:
+        sys.stdout.write(ConfigurationManager_h_vars);
+
+
+####
+# Text added to src/payment_service/ConfigurationManager.cpp
+ConfigurationManager_cpp_initOptions = textwrap.dedent("""\
+  po::options_description coinBaseOptions("Coin Base Options");
+  CoinBaseConfiguration::initOptions(coinBaseOptions);
+    """)
+ConfigurationManager_cpp_coinBaseConfig_init_confOptions = textwrap.dedent("""\
+  coinBaseConfig.init(confOptions);
+    """)
+ConfigurationManager_cpp_coinBaseConfig_init_cmdOptions = textwrap.dedent("""\
+  coinBaseConfig.init(cmdOptions);
+    """)
+
+# Make changes in src/payment_service/ConfigurationManager.cpp
+paths['ConfigurationManager.cpp'] = args.source + "/src/payment_service/ConfigurationManager.cpp"
+for line in fileinput.input([paths['ConfigurationManager.cpp']], inplace=True):
+    if "cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);" in line:
+        line = "cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
+    if "confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);" in line:
+        line = "confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
+    # Allow undeclared options in config
+    if "po::store(po::parse_config_file(confStream, confOptionsDesc), confOptions);" in line:
+        line = "po::store(po::parse_config_file(confStream, confOptionsDesc, true), confOptions);"
+    # Change the default loaded config file
+    if "(\"config,c\", po::value<std::string>(), \"configuration file\");" in line:
+        line = '("config,c", po::value<std::string>()->default_value("./configs/-.conf"), "configuration file");'
+    # sys.stdout is redirected to the file
+    sys.stdout.write(line)
+    if "RpcNodeConfiguration::initOptions(remoteNodeOptions);" in line:
+        sys.stdout.write(ConfigurationManager_cpp_initOptions);
+    if "remoteNodeConfig.init(confOptions);" in line:
+        sys.stdout.write(ConfigurationManager_cpp_coinBaseConfig_init_confOptions);
+# Change this when Bytecoin debugs
+#    if "remoteNodeConfig.init(cmdOptions);" in line:
+#        sys.stdout.write(ConfigurationManager_cpp_coinBaseConfig_init_cmdOptions);
+
+
+# Text added to src/payment_service/main.cpp
+payment_service_main_currency_params = textwrap.dedent("""\
+  currencyBuilder->genesisCoinbaseTxHex(config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);
+  currencyBuilder->publicAddressBase58Prefix(config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
+  currencyBuilder->moneySupply(config.coinBaseConfig.MONEY_SUPPLY);
+  currencyBuilder->emissionSpeedFactor(config.coinBaseConfig.EMISSION_SPEED_FACTOR);
+  currencyBuilder->blockGrantedFullRewardZone(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);
+  currencyBuilder->numberOfDecimalPlaces(config.coinBaseConfig.CRYPTONOTE_DISPLAY_DECIMAL_POINT);
+  currencyBuilder->mininumFee(config.coinBaseConfig.MINIMUM_FEE);
+  currencyBuilder->defaultDustThreshold(config.coinBaseConfig.DEFAULT_DUST_THRESHOLD);
+  currencyBuilder->difficultyTarget(config.coinBaseConfig.DIFFICULTY_TARGET);
+  currencyBuilder->minedMoneyUnlockWindow(config.coinBaseConfig.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);
+  currencyBuilder->maxBlockSizeInitial(config.coinBaseConfig.MAX_BLOCK_SIZE_INITIAL);
+
+  if (config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY && config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY != 0)
+  {
+    currencyBuilder->difficultyWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);
+    currencyBuilder->upgradeVotingWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);
+    currencyBuilder->upgradeWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);
+  } else {
+    currencyBuilder->difficultyWindow(24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);
+  }
+  currencyBuilder->maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);
+  currencyBuilder->lockedTxAllowedDeltaSeconds(config.coinBaseConfig.DIFFICULTY_TARGET * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);
+
+  if (config.coinBaseConfig.UPGRADE_HEIGHT && config.coinBaseConfig.UPGRADE_HEIGHT != 0)
+  {
+    currencyBuilder->upgradeHeight(config.coinBaseConfig.UPGRADE_HEIGHT);
+  }
+""")
+
+# Make changes in src/payment_service/main.cpp
+paths['payment_service.main.cpp'] = args.source + "/src/payment_service/main.cpp"
+for line in fileinput.input([paths['payment_service.main.cpp']], inplace=True):
+    if "CryptoNote::Currency currency = currencyBuilder->currency();" in line:
+        sys.stdout.write(payment_service_main_currency_params);
+    # sys.stdout is redirected to the file
+    sys.stdout.write(line)
 
 
 # Replace README

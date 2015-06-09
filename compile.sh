@@ -71,9 +71,9 @@ if [[ $archive == "1" ]]; then
 		mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
-		if [[ " ${__CONFIG_plugins_text} " != *"multiply.py"* ]]; then
+		#if [[ " ${__CONFIG_plugins_text} " != *"multiply.py"* ]]; then
 			cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
-		fi
+		#fi
 		if [[ " ${__CONFIG_plugins_text} " == *"multiply.py"* ]]; then
 			mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
 			cp -r ${PLUGINS_PATH}/multiply/configs/* ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
