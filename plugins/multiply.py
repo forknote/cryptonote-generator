@@ -47,6 +47,8 @@ common_command_line_descriptors = textwrap.dedent("""\
   const command_line::arg_descriptor<uint64_t>    arg_MAX_BLOCK_SIZE_INITIAL  = {"MAX_BLOCK_SIZE_INITIAL", "uint64_t", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};
   const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY", "uint64_t"};
   const command_line::arg_descriptor<uint64_t>    arg_UPGRADE_HEIGHT  = {"UPGRADE_HEIGHT", "uint64_t", 0};
+  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {"DIFFICULTY_CUT", "uint64_t", CryptoNote::parameters::DIFFICULTY_CUT};
+  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {"DIFFICULTY_LAG", "uint64_t", CryptoNote::parameters::DIFFICULTY_LAG};
 """)
 common_command_line_args = textwrap.dedent("""\
   command_line::add_arg(desc_cmd_sett, arg_GENESIS_COINBASE_TX_HEX);
@@ -62,6 +64,8 @@ common_command_line_args = textwrap.dedent("""\
   command_line::add_arg(desc_cmd_sett, arg_MAX_BLOCK_SIZE_INITIAL);
   command_line::add_arg(desc_cmd_sett, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);
   command_line::add_arg(desc_cmd_sett, arg_UPGRADE_HEIGHT);
+  command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT);
+  command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG);
 """)
 currencyBuilder_params = textwrap.dedent("""\
   currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));
@@ -91,6 +95,9 @@ currencyBuilder_params = textwrap.dedent("""\
   {
     currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));
   }
+
+  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_CUT));
+  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_LAG));
 """)
 
 ####
@@ -424,29 +431,6 @@ for line in fileinput.input([paths['net_node_cpp']], inplace=True):
         sys.stdout.write(net_node_cpp_vars)
 
 
-### START Allow 0 fee transactions
-# Make changes in src/cryptonote_core/cryptonote_core.cpp
-paths['cryptonote_core_cpp'] = args.source + "/src/cryptonote_core/cryptonote_core.cpp"
-for line in fileinput.input([paths['cryptonote_core_cpp']], inplace=True):
-    if "if (amount_in <= amount_out) {" in line:
-        line = "  if (amount_in < amount_out) {\n"
-    # sys.stdout is redirected to the file
-    sys.stdout.write(line)
-
-
-### 1 CHECK LESS
-# Make changes in src/cryptonote_core/tx_pool.cpp
-paths['tx_pool_cpp'] = args.source + "/src/cryptonote_core/tx_pool.cpp"
-for line in fileinput.input([paths['tx_pool_cpp']], inplace=True):
-    if "if (outputs_amount >= inputs_amount) {" in line:
-        line = "    if (outputs_amount > inputs_amount) {\n"
-    if "if (inputsValid && fee > 0)" in line:
-        line = "    if (inputsValid)\n"
-    # sys.stdout is redirected to the file
-    sys.stdout.write(line)
-### END Allow 0 fee transactions
-
-
 # Add CoinBaseConfiguration.h src/payment_service/CoinBaseConfiguration.h
 paths['CoinBaseConfiguration.h'] = args.source + "/src/payment_service/CoinBaseConfiguration.h"
 source_paths['CoinBaseConfiguration.h'] = os.path.dirname(os.path.realpath(__file__)) + '/multiply/CoinBaseConfiguration.h'
@@ -548,6 +532,8 @@ payment_service_main_currency_params = textwrap.dedent("""\
   {
     currencyBuilder->upgradeHeight(config.coinBaseConfig.UPGRADE_HEIGHT);
   }
+  currencyBuilder->difficultyLag(config.coinBaseConfig.DIFFICULTY_CUT);
+  currencyBuilder->difficultyCut(config.coinBaseConfig.DIFFICULTY_LAG);
 """)
 
 # Make changes in src/payment_service/main.cpp

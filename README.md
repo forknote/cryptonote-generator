@@ -36,7 +36,7 @@ Usage
 Clone the repository:
 
 ```bash
-	git clone https://github.com/dashcoin/cryptonote-generator.git generator
+	git clone https://github.com/forknote/cryptonote-generator.git generator
 	cd generator
 ```
 
@@ -66,10 +66,10 @@ Explanation for each field:
 {
 
 /* Plugins to load */ 
-"plugins": [ "core/bytecoin.py" ],
+"plugins": [ "core/bytecoin.py", "print-genesis-tx.py" ],
 
 /* Tests to run. Executed after the plugins load */
-"tests": [ "core/bytecoin-test.sh" ],
+"tests": [ "core/bytecoin-test.sh", "print-genesis-tx-test.sh" ],
 
 /* Source coin. Bytecoin example */ 
 "base_coin":{
@@ -117,6 +117,9 @@ Explanation for each field:
 
 	"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW":10,    // in blocks
 	"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE":20000,    // in bytes
+
+	"DIFFICULTY_CUT":60,  // timestamps to cut after sorting
+	"DIFFICULTY_LAG":15,
 
 	/* USED ONLY IN OLD COINS. IF YOU UPDATE CHANGE THIS TO YOUR OLD CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE */
 	"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1":10000,

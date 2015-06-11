@@ -220,6 +220,30 @@ else
 fi
 fi
 
+# For slow blockchains
+# Test DIFFICULTY_CUT
+if [ -n "$__CONFIG_core_DIFFICULTY_CUT" ]; then
+if [[ ${FILE_cryptonote_config} == *const\ size_t\ *DIFFICULTY_CUT\ *\=\ *"${__CONFIG_core_DIFFICULTY_CUT}"* ]]
+then
+	echo "TEST PASSED - DIFFICULTY_CUT change"
+else
+	echo "TEST FAILED - DIFFICULTY_CUT change"
+	exit 2
+fi
+fi
+
+# Test DIFFICULTY_CUT
+if [ -n "$__CONFIG_core_DIFFICULTY_LAG" ]; then
+if [[ ${FILE_cryptonote_config} == *const\ size_t\ *DIFFICULTY_LAG\ *\=\ *"${__CONFIG_core_DIFFICULTY_LAG}"* ]]
+then
+	echo "TEST PASSED - DIFFICULTY_LAG change"
+else
+	echo "TEST FAILED - DIFFICULTY_LAG change"
+	exit 2
+fi
+fi
+
+
 # The following test does not work with the json parser.
 # * is not parsed correctly
 

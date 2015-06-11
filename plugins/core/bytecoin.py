@@ -62,6 +62,12 @@ if 'MAX_BLOCK_SIZE_INITIAL' in config['core']:
     MAX_BLOCK_SIZE_INITIAL_re = re.compile(r"(const size_t\s+MAX_BLOCK_SIZE_INITIAL\s+=)\s+\d+ \* \d+", re.IGNORECASE)
 if 'EXPECTED_NUMBER_OF_BLOCKS_PER_DAY' in config['core']:
     EXPECTED_NUMBER_OF_BLOCKS_PER_DAY_re = re.compile(r"(const uint64_t\s+EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\s+=)\s+[^;]+", re.IGNORECASE)
+# For slow blockchains
+if 'DIFFICULTY_CUT' in config['core']:
+    DIFFICULTY_CUT_re = re.compile(r"(const size_t\s+DIFFICULTY_CUT\s+=)\s+\d+", re.IGNORECASE)
+if 'DIFFICULTY_LAG' in config['core']:
+    DIFFICULTY_LAG_re = re.compile(r"(const size_t\s+DIFFICULTY_LAG\s+=)\s+\d+", re.IGNORECASE)
+
 
 for line in fileinput.input([paths['cryptonote_config']], inplace=True):
     line = CRYPTONOTE_NAME_re.sub("\\1 \"%s\"" % config['core']['CRYPTONOTE_NAME'], line)
@@ -99,6 +105,11 @@ for line in fileinput.input([paths['cryptonote_config']], inplace=True):
         line = UPGRADE_HEIGHT_re.sub("\\1 %s" % int(config['core']['UPGRADE_HEIGHT']), line)
     else:
         line = UPGRADE_HEIGHT_re.sub("\\1 %s" % "1", line)
+    # For slow blockchains
+    if 'DIFFICULTY_CUT' in config['core']:
+        line = DIFFICULTY_CUT_re.sub("\\1 %s" % config['core']['DIFFICULTY_CUT'], line)
+    if 'DIFFICULTY_LAG' in config['core']:
+        line = DIFFICULTY_LAG_re.sub("\\1 %s" % config['core']['DIFFICULTY_LAG'], line)
 
     # sys.stdout is redirected to the file
     sys.stdout.write(line)
