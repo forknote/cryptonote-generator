@@ -64,7 +64,7 @@ fi
 
 if [[ " ${__CONFIG_plugins_text} " != *"multiply.py"* ]]; then
 	# Test daemon_text_5
-	if [[ ${FILE_daemon_cpp} == *void\ print_genesis_tx_hex\(LoggerManager\&\ logManager\)\ \{* ]]
+	if [[ ${FILE_daemon_cpp} == *void\ print_genesis_tx_hex\(const\ po\:\:variables_map\&\ vm\,\ LoggerManager\&\ logManager\)\ \{* ]]
 	then
 		echo "TEST PASSED - daemon.cpp - daemon_text_5 change (print-genesis-tx)"
 	else

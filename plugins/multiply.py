@@ -201,10 +201,6 @@ for line in fileinput.input([paths['daemon']], inplace=True):
     if "print-genesis-tx.py" in config['plugins']:
         if "CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();" in line:
             line = daemon_print_genesis_tx;
-        if "void print_genesis_tx_hex(LoggerManager& logManager) {" in line:
-            line = "void print_genesis_tx_hex(LoggerManager& logManager, const boost::program_options::variables_map& vm) {"
-        if "print_genesis_tx_hex(logManager);" in line:
-            line = "print_genesis_tx_hex(logManager, vm);"
         if "std::cout << \"const char GENESIS_COINBASE_TX_HEX[] = \" << tx_hex << \";\" << std::endl;" in line:
             line = daemon_print_genesis_tx_config_text
     # sys.stdout is redirected to the file

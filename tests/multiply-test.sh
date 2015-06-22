@@ -103,24 +103,6 @@ else
 	exit 2
 fi
 
-# Test void_print_genesis_tx_hex
-if [[ ${FILE_daemon_cpp} == *void\ print_genesis_tx_hex\(LoggerManager\&\ logManager\,\ const\ * ]]
-then
-	echo "TEST PASSED - daemon.cpp - void_print_genesis_tx_hex change (multiply)"
-else
-	echo "TEST FAILED - daemon.cpp - void_print_genesis_tx_hex change (multiply)"
-	exit 2
-fi
-
-# Test print_genesis_tx_hex
-if [[ ${FILE_daemon_cpp} == *print_genesis_tx_hex\(logManager\,\ vm\)\;* ]]
-then
-	echo "TEST PASSED - daemon.cpp - print_genesis_tx_hex change (multiply)"
-else
-	echo "TEST FAILED - daemon.cpp - print_genesis_tx_hex change (multiply)"
-	exit 2
-fi
-
 # Test print_genesis_tx_config_text
 if [[ ${FILE_daemon_cpp} == *std\:\:cout\ \<\<\ \"GENESIS_COINBASE_TX_HEX\=\"\ \<\<\ tx_hex\ \<\<\ std\:\:endl\;* ]]
 then
