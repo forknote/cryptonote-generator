@@ -37,7 +37,7 @@ command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);
     """)
 daemon_text_3 = textwrap.dedent("""\
     if (command_line::get_arg(vm, arg_print_genesis_tx)) {
-      print_genesis_tx_hex(logManager);
+      print_genesis_tx_hex(vm, logManager);
       return false;
     }
     """)
@@ -50,7 +50,7 @@ daemon_text_4 = textwrap.dedent("""\
   }
     """)
 daemon_text_5 = textwrap.dedent("""\
-void print_genesis_tx_hex(LoggerManager& logManager) {
+void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {
   CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();
   CryptoNote::blobdata txb = tx_to_blob(tx);
   std::string tx_hex = blobToHex(txb);
