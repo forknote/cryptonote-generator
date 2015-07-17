@@ -89,6 +89,7 @@ function generate_coin {
 
 	# Plugins
 	echo "Personalize base coin source..."
+	export __CONFIG_plugins_text="${__CONFIG_plugins[@]}"
 	for plugin in "${__CONFIG_plugins[@]}"
 	do
 		echo "Execute ${PLUGINS_PATH}/${plugin}"
