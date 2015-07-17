@@ -56,7 +56,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_DAEMON_NAME}.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/walletd.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		if [[ " ${__CONFIG_plugins_text} " == *"multiply.py"* ]]; then
+		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
 			mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
 			cp -r ${PLUGINS_PATH}/multiply/configs/* ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
 		fi
@@ -70,7 +70,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
-		if [[ " ${__CONFIG_plugins_text} " == *"multiply.py"* ]]; then
+		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
 			mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
 			cp -r ${PLUGINS_PATH}/multiply/configs/* ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
 		fi
@@ -84,7 +84,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${LINUX_BUILD_NAME}
-		if [[ " ${__CONFIG_plugins_text} " == *"multiply.py"* ]]; then
+		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
 			mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
 			cp -r ${PLUGINS_PATH}/multiply/configs/* ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
 		fi
