@@ -237,7 +237,7 @@
             ]
         },
         {
-            "path":"/include/iWallet.h",
+            "path":"/include/IWallet.h",
             "changes": [
                 {
                     "action":"add_bellow",
