@@ -66,10 +66,7 @@ Explanation for each field:
 {
 
 /* Plugins to load */ 
-"plugins": [ "core/bytecoin.py", "print-genesis-tx.py" ],
-
-/* Tests to run. Executed after the plugins load */
-"tests": [ "core/bytecoin-test.sh", "print-genesis-tx-test.sh" ],
+"plugins": [ "core/bytecoin.json", "print-genesis-tx.json" ],
 
 /* Source coin. Bytecoin example */ 
 "base_coin":{
@@ -108,6 +105,7 @@ Explanation for each field:
 	   You can define number explicitly (for example UINT64_C(858986905600000000)). */
 	"MONEY_SUPPLY":"static_cast<uint64_t>(-1)",
 	"EMISSION_SPEED_FACTOR":18,
+	"PREMINED_PERCENT":0,
 	"DIFFICULTY_TARGET":120,   // In seconds
 
 	"MINIMUM_FEE":1000000,   // 10^6. Equals to 0.01 in Dashcoin

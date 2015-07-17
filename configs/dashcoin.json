@@ -1,6 +1,5 @@
 {
-	"plugins": [ "core/bytecoin.py" ],
-	"tests": [ "core/bytecoin-test.sh" ],
+	"plugins": [ "core/bytecoin.json" ],
 	"base_coin":{
 		"name":"bytecoin",
 		"git":"https://github.com/amjuarez/bytecoin.git"

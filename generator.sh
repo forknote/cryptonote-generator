@@ -32,9 +32,8 @@ function generate_genesis {
 	fi
 
 	genesis_coin_git="https://github.com/amjuarez/bytecoin.git"
-	genesis_coin_core="core/bytecoin.py"
-	genesis_coin_genesis_plugin="print-genesis-tx.py"
-	genesis_coin_test="core/bytecoin-test.sh"
+	genesis_coin_core="core/bytecoin.json"
+	genesis_coin_genesis_plugin="print-genesis-tx.json"
 
 	rm -rf "${TEMP_GENESIS_PATH}"
 	echo "Clone genesis coin..."
@@ -50,11 +49,8 @@ function generate_genesis {
 	export NEW_COIN_PATH="${TEMP_GENESIS_PATH}"
 
 	echo "Modify genesis coin"
-	python "${PLUGINS_PATH}/${genesis_coin_core}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
-	python "${PLUGINS_PATH}/${genesis_coin_genesis_plugin}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
-
-	echo "Test genesis coin"
-	bash "${TESTS_PATH}/${genesis_coin_test}" -d "${TEMP_GENESIS_PATH}"
+	python "lib/file-modification.py" --plugin "${PLUGINS_PATH}/${genesis_coin_core}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
+	python "lib/file-modification.py" --plugin "${PLUGINS_PATH}/${genesis_coin_genesis_plugin}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
 
 	bash "${SCRIPTS_PATH}/compile.sh" -c "${COMPILE_ARGS}"
 
@@ -71,8 +67,10 @@ function generate_coin {
 	export BASE_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_base_coin_name}"
 	export NEW_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_core_CRYPTONOTE_NAME}"
 	if [ -d "${BASE_COIN_PATH}" ]; then
+		cd "${BASE_COIN_PATH}"
 		echo "Updating ${__CONFIG_base_coin_name}..."
 		git pull
+		cd "${PROJECT_DIR}"
 	else
 		echo "Cloning ${__CONFIG_base_coin_name}..."
 		git clone "${__CONFIG_base_coin_git}" "${BASE_COIN_PATH}"
@@ -93,27 +91,9 @@ function generate_coin {
 	echo "Personalize base coin source..."
 	for plugin in "${__CONFIG_plugins[@]}"
 	do
-		extension=${plugin##*.}
-		if [[ ${extension} == "py" ]]; then
-			python "${PLUGINS_PATH}/${plugin}" --config=$CONFIG_FILE --source=${TEMP_PATH}
-		elif [[ ${extension} == "sh" ]]; then
-			bash "${PLUGINS_PATH}/${plugin}" -f $CONFIG_FILE -s ${TEMP_PATH}
-		fi
+		echo "Execute ${PLUGINS_PATH}/${plugin}"
+		python "lib/file-modification.py" --plugin "${PLUGINS_PATH}/${plugin}" --config=$CONFIG_FILE --source=${TEMP_PATH}
 	done
-
-	# Execute tests
-	echo "Execute tests..."
-	export __CONFIG_plugins_text="${__CONFIG_plugins[@]}"
-	for test in "${__CONFIG_tests[@]}"
-	do
-		extension=${test##*.}
-		if [[ ${extension} == "py" ]]; then
-			python "${TESTS_PATH}/${test}" --config="$CONFIG_FILE" --source="${TEMP_PATH}"
-		elif [[ ${extension} == "sh" ]]; then
-			bash "${TESTS_PATH}/${test}" -d "${TEMP_PATH}"
-		fi
-	done
-	echo "Tests passed successfully"
 
 	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
 

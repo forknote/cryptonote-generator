@@ -1,0 +1,304 @@
+{
+    "file":"core/bytecoin.json",
+    "description":"Makes essensial parameters editable.",
+    "required":[],
+    "files": [ 
+        {
+            "path":"/src/CMakeLists.txt",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"TARGET Daemon PROPERTY OUTPUT_NAME",
+                    "parameters": {
+                        "replace_text":[
+                            "set_property(TARGET Daemon PROPERTY OUTPUT_NAME \"%s\")"
+                        ],
+                        "var":"DAEMON_NAME"
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/cryptonote_config.h",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"CRYPTONOTE_NAME[]",
+                    "parameters": {
+                        "replace_text":[
+                            "const char     CRYPTONOTE_NAME[]                             = \"%s\";"
+                        ],
+                        "var":"CRYPTONOTE_NAME"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const int      P2P_DEFAULT_PORT",
+                    "parameters": {
+                        "replace_text":[
+                            "const int      P2P_DEFAULT_PORT                              =  %s;"
+                        ],
+                        "var":"P2P_DEFAULT_PORT"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const int      RPC_DEFAULT_PORT",
+                    "parameters": {
+                        "replace_text":[
+                            "const int      RPC_DEFAULT_PORT                              =  %s;"
+                        ],
+                        "var":"RPC_DEFAULT_PORT"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX",
+                    "parameters": {
+                        "replace_text":[
+                            "const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = %s;"
+                        ],
+                        "var":"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"P2P_STAT_TRUSTED_PUB_KEY[]",
+                    "parameters": {
+                        "replace_text":[
+                            "const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = \"%s\";"
+                        ],
+                        "replace_text_alt":[
+                            "const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = \"\";"
+                        ],
+                        "var":"P2P_STAT_TRUSTED_PUB_KEY"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const uint64_t MONEY_SUPPLY",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const uint64_t MONEY_SUPPLY                                  = %s;"
+                        ],
+                        "var":"MONEY_SUPPLY"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const unsigned EMISSION_SPEED_FACTOR",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const unsigned EMISSION_SPEED_FACTOR                         = %s;"
+                        ],
+                        "var":"EMISSION_SPEED_FACTOR"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const uint64_t DIFFICULTY_TARGET",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const uint64_t DIFFICULTY_TARGET                             = %s; // seconds"
+                        ],
+                        "var":"DIFFICULTY_TARGET"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT              = %s;"
+                        ],
+                        "var":"CRYPTONOTE_DISPLAY_DECIMAL_POINT"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const uint64_t MINIMUM_FEE",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const uint64_t MINIMUM_FEE                                   = UINT64_C(%s);"
+                        ],
+                        "var":"MINIMUM_FEE"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const uint64_t DEFAULT_DUST_THRESHOLD",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(%s);"
+                        ],
+                        "var":"DEFAULT_DUST_THRESHOLD"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = %s;"
+                        ],
+                        "var":"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     =",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = %s; //size of block (bytes) after which reward for block calculated using block size"
+                        ],
+                        "var":"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  =",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = %s;"
+                        ],
+                        "var":"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const size_t   MAX_BLOCK_SIZE_INITIAL",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const size_t   MAX_BLOCK_SIZE_INITIAL                        = %s;"
+                        ],
+                        "var":"MAX_BLOCK_SIZE_INITIAL"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = %s;"
+                        ],
+                        "var":"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const size_t   DIFFICULTY_CUT",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const size_t   DIFFICULTY_CUT                                = %s;  // timestamps to cut after sorting"
+                        ],
+                        "var":"DIFFICULTY_CUT"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const size_t   DIFFICULTY_LAG",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const size_t   DIFFICULTY_LAG                                = %s;  // !!!"
+                        ],
+                        "var":"DIFFICULTY_LAG"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const uint64_t UPGRADE_HEIGHT",
+                    "parameters": {
+                        "replace_text":[
+                            "const uint64_t UPGRADE_HEIGHT                                = %s;"
+                        ],
+                        "replace_text_alt":[
+                            "const uint64_t UPGRADE_HEIGHT                                = 1;"
+                        ],
+                        "var":"UPGRADE_HEIGHT"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"const CheckpointData CHECKPOINTS[] = {",
+                    "parameters": {
+                        "replace_text":[
+                            "const std::initializer_list<CheckpointData> CHECKPOINTS = {"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/cryptonote_config.h",
+            "multiline":true,
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"(const std::initializer_list<CheckpointData> CHECKPOINTS = {)([^;]+)(};)",
+                    "parameters": {
+                        "mandatory":false,
+                        "replace_text":[
+                            "const std::initializer_list<CheckpointData> CHECKPOINTS = { %s };"
+                        ],
+                        "var":"CHECKPOINTS"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"(const char\\* const\\s+SEED_NODES\\[\\] = {)[^;]+(};)",
+                    "parameters": {
+                        "replace_text":[
+                            "\\1 %s \\2"
+                        ],
+                        "var":"SEED_NODES",
+                        "separator":", ",
+                        "quote_it":true
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/cryptonote_core/Currency.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"std::string genesisCoinbaseTxHex",
+                    "parameters": {
+                        "replace_text":[
+                            "  std::string genesisCoinbaseTxHex = \"%s\";"
+                        ],
+                        "var":"GENESIS_COINBASE_TX_HEX"
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/p2p/p2p_networks.h",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"const static boost::uuids::uuid BYTECOIN_NETWORK",
+                    "parameters": {
+                        "replace_text":[
+                            "  const static boost::uuids::uuid BYTECOIN_NETWORK = { { %s} };"
+                        ],
+                        "var":"BYTECOIN_NETWORK"
+                    }
+                }
+            ]
+        }
+    ]
+}

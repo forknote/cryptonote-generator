@@ -1,0 +1,44 @@
+{
+    "file":"allow-0-fee-tx.json",
+    "description":"Allow coins with 0 transaction fees",
+    "required":[ "core/bytecoin.json" ],
+    "files": [ 
+        {
+            "path":"/src/cryptonote_core/cryptonote_core.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"if (amount_in <= amount_out) {",
+                    "parameters": {
+                        "replace_text":[
+                            "  if (amount_in < amount_out) {"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/cryptonote_core/tx_pool.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"if (outputs_amount >= inputs_amount) {",
+                    "parameters": {
+                        "replace_text":[
+                            "    if (outputs_amount > inputs_amount) {"
+                        ]
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"if (inputsValid && fee > 0)",
+                    "parameters": {
+                        "replace_text":[
+                            "    if (inputsValid)"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
