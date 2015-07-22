@@ -131,8 +131,8 @@
                             "  {",
                             "    currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));",
                             "  }",
-                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
                             "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction();"
                         ]
                     }
@@ -168,8 +168,8 @@
                             "  {",
                             "    currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));",
                             "  }",
-                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
                             "  currencyBuilder.genesisBlockReward((command_line::get_arg(vm, arg_MONEY_SUPPLY) / 100) * command_line::get_arg(vm, arg_PREMINED_PERCENT));",
                             "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction(targets);"
                         ]
@@ -180,7 +180,21 @@
                     "marker":"po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett), vm);",
                     "parameters": {
                         "replace_text":[
+                            "        std::cout << \"config path exist\" << std::endl;",
                             "        po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett, true), vm);"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_above",
+                    "marker":"po::notify(vm);",
+                    "parameters": {
+                        "replace_text":[
+                            "      else",
+                            "      {",
+                            "        std::cout << \"config path does not exist\" << std::endl;",
+                            "        return false;",
+                            "      }"
                         ]
                     }
                 },
@@ -223,8 +237,8 @@
                             "    {",
                             "      currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));",
                             "    }",
-                            "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+                            "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+                            "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
                             "    currencyBuilder.genesisBlockReward((command_line::get_arg(vm, arg_MONEY_SUPPLY) / 100) * command_line::get_arg(vm, arg_PREMINED_PERCENT));"
                         ]
                     }
@@ -391,8 +405,8 @@
                             "    currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));",
                             "  }",
 
-                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_LAG));"
+                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
                         ]
                     }
                 },
@@ -439,20 +453,12 @@
                         "replace_text":[
                             "    std::string data_dir = command_line::get_arg(vm, command_line::arg_data_dir);",
                             "    std::string config = command_line::get_arg(vm, arg_config_file);",
-
-                            "      std::cout << config << std::endl;",
-
                             "    boost::filesystem::path data_dir_path(data_dir);",
                             "    boost::filesystem::path config_path(config);",
-
-                            "      std::cout << \"boost filesystem passed\" << std::endl;",
                             "    if (!config_path.has_parent_path())",
                             "    {",
-                            "      std::cout << \"file not found\" << std::endl;",
                             "      config_path = data_dir_path / config_path;",
                             "    }",
-
-                            "      std::cout << \"boost filesystem passed\" << std::endl;",
                             "    boost::system::error_code ec;",
                             "    if (boost::filesystem::exists(config_path, ec))",
                             "    {",
@@ -462,6 +468,7 @@
                             "    else",
                             "    {",
                             "      std::cout << \"config path does not exist\" << std::endl;",
+                            "      return false;",
                             "    }"
                         ]
                     }
