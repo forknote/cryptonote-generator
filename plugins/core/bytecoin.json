@@ -80,7 +80,7 @@
                     "parameters": {
                         "mandatory":false,
                         "replace_text":[
-                            "const uint64_t MONEY_SUPPLY                                  = %s;"
+                            "const uint64_t MONEY_SUPPLY                                  = UINT64_C(%s);"
                         ],
                         "var":"MONEY_SUPPLY"
                     }
