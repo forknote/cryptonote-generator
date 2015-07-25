@@ -22,45 +22,6 @@ function finish {
 }
 trap finish EXIT
 
-
-# Generate genesis
-function generate_genesis {
-	# Set backup var for Mac OS X
-	EXTENSION=""
-	if [[ "$OSTYPE" == "darwin"* ]]; then
-	     EXTENSION=".original"
-	fi
-
-	genesis_coin_git="https://github.com/amjuarez/bytecoin.git"
-	genesis_coin_core="core/bytecoin.json"
-	genesis_coin_genesis_plugin="print-genesis-tx.json"
-
-	rm -rf "${TEMP_GENESIS_PATH}"
-	echo "Clone genesis coin..."
-	git clone ${genesis_coin_git} "${TEMP_GENESIS_PATH}"
-
-	# Exit if genesis coin is not created
-	if [ ! -d "${TEMP_GENESIS_PATH}" ]; then
-		echo "Genesis coin was not cloned"
-		echo "Abort clone generation"
-		exit 4
-	fi
-
-	export NEW_COIN_PATH="${TEMP_GENESIS_PATH}"
-
-	echo "Modify genesis coin"
-	python "lib/file-modification.py" --plugin "${PLUGINS_PATH}/${genesis_coin_core}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
-	python "lib/file-modification.py" --plugin "${PLUGINS_PATH}/${genesis_coin_genesis_plugin}" --config="$CONFIG_FILE" --source="${TEMP_GENESIS_PATH}"
-
-	bash "${SCRIPTS_PATH}/compile.sh" -c "${COMPILE_ARGS}"
-
-	GENESIS_COINBASE_TX_HEX="$( ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} --print-genesis-tx | grep "GENESIS_COINBASE_TX_HEX" | awk '{ print $5 }' )"
-	GENESIS_COINBASE_TX_HEX="${GENESIS_COINBASE_TX_HEX%?}"
-	echo Genesis block : ${GENESIS_COINBASE_TX_HEX}
-	export __CONFIG_core_GENESIS_COINBASE_TX_HEX="${GENESIS_COINBASE_TX_HEX}"
-	sed -i ${EXTENSION} "s/\(\"GENESIS_COINBASE_TX_HEX\"\:\).*/\1\"${GENESIS_COINBASE_TX_HEX}\",/" $CONFIG_FILE
-}
-
 # Generate source code and compile 
 function generate_coin {
 	# Define coin paths
@@ -171,8 +132,4 @@ if [ ! -f ${BASH_CONFIG} ]; then
 fi
 source ${BASH_CONFIG}
 
-# A baby is born
-if [ -z ${__CONFIG_core_GENESIS_COINBASE_TX_HEX} ]; then
-	generate_genesis
-fi
 generate_coin

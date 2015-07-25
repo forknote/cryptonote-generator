@@ -10,6 +10,7 @@ A python / bash Cryptonote source creator. Generate and compile new or maintain 
   * [Downloading & Installing](#1-downloading--installing)
   * [Configuration](#2-configuration)
   * [Generate coin](#3-generate-coin)
+  * [Print genesis tx hex](#4-print-genesis-tx-hex)
 * [Examples (real life)](#examples_real_life)
   * [Dashcoin](#1-dashcoin)
 * [Coins Using This Software](#coins-using-this-software)
@@ -154,6 +155,16 @@ By default, the cryptonote generator is not using multithread. I strongly recomm
 ```bash
 	bash generator.sh -f config_example.json -c '-j3'
 ```
+
+#### 4) Print genesis tx hex
+
+If you are creating a new coin, you need to create the genesis tx hex:
+
+```
+	cd generated_files/binaries/yourcoin   # yourcoin-linux for Linux, yourcoin-mac for Mac
+	./yourcoind --print-genesis-tx
+```
+Change the _GENESIS_COINBASE_TX_HEX_ in your configuration file, then [3) Generate coin](#3-generate-coin) again.
 
 
 ### Examples (real life)
