@@ -1,5 +1,5 @@
 {
-	"plugins": [ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json", "multiply.json", "allow-0-fee-tx.json" ],
+	"plugins": [ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json", "multiply.json", "multiply/genesis-block-reward.json", "allow-0-fee-tx.json" ],
 	"base_coin":{
 		"name":"bytecoin",
 		"git":"https://github.com/amjuarez/bytecoin.git"

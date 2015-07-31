@@ -19,7 +19,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_config.h",
+            "path":"/src/CryptoNoteConfig.h",
             "changes": [
                 {
                     "action":"replace",
@@ -242,7 +242,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_config.h",
+            "path":"/src/CryptoNoteConfig.h",
             "multiline":true,
             "changes": [
                 {
@@ -271,7 +271,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.cpp",
+            "path":"/src/CryptoNoteCore/Currency.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -286,7 +286,7 @@
             ]
         },
         {
-            "path":"/src/p2p/p2p_networks.h",
+            "path":"/src/P2p/P2pNetworks.h",
             "changes": [
                 {
                     "action":"replace",

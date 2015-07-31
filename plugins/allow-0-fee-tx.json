@@ -4,7 +4,7 @@
     "required":[ "core/bytecoin.json" ],
     "files": [ 
         {
-            "path":"/src/cryptonote_core/cryptonote_core.cpp",
+            "path":"/src/CryptoNoteCore/Core.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -18,7 +18,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/tx_pool.cpp",
+            "path":"/src/CryptoNoteCore/TransactionPool.cpp",
             "changes": [
                 {
                     "action":"replace",

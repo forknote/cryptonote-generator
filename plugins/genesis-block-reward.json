@@ -4,7 +4,7 @@
     "required":[ "core/bytecoin.json", "print-genesis-tx.json" ],
     "files": [ 
         {
-            "path":"/src/cryptonote_config.h",
+            "path":"/src/CryptoNoteConfig.h",
             "changes": [
                 {
                     "action":"add_bellow",
@@ -22,7 +22,7 @@
             ]
         },
         {
-            "path":"/src/daemon/daemon.cpp",
+            "path":"/src/Daemon/Daemon.cpp",
             "changes": [
                 {
                     "action":"add_above",
@@ -76,7 +76,7 @@
                             "  } else {",
                             "      CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
                             "      CryptoNote::blobdata txb = tx_to_blob(tx);",
-                            "      std::string tx_hex = blobToHex(txb);",
+                            "      std::string tx_hex = toHex(txb);",
 
                             "      std::cout << \"Modify this line into your coin configuration file as is: \" << std::endl;",
                             "      std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
@@ -87,7 +87,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.h",
+            "path":"/src/CryptoNoteCore/Currency.h",
             "changes": [
                 {
                     "action":"add_bellow",
@@ -128,7 +128,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.cpp",
+            "path":"/src/CryptoNoteCore/Currency.cpp",
             "changes": [
                 {
                     "action":"add_above",
@@ -139,43 +139,43 @@
                             "    assert(!targets.empty());",
                             " ",
                             "    CryptoNote::Transaction tx;",
-                            "    tx.vin.clear();",
-                            "    tx.vout.clear();",
+                            "    tx.inputs.clear();",
+                            "    tx.outputs.clear();",
                             "    tx.extra.clear();",
 
                             "    tx.version = CURRENT_TRANSACTION_VERSION;",
                             "    tx.unlockTime = m_currency.m_minedMoneyUnlockWindow;",
 
-                            "    KeyPair txkey = KeyPair::generate();",
-                            "    add_tx_pub_key_to_extra(tx, txkey.pub);",
+                            "    KeyPair txkey = KeyPair::generateKeyPair();",
+                            "    addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);",
 
                             "    TransactionInputGenerate in;",
                             "    in.height = 0;",
-                            "    tx.vin.push_back(in);",
+                            "    tx.inputs.push_back(in);",
 
                             "    uint64_t block_reward = m_currency.m_genesisBlockReward;",
                             "    uint64_t target_amount = block_reward / targets.size();",
                             "    uint64_t first_target_amount = target_amount + block_reward % targets.size();",
 
                             "    for (size_t i = 0; i < targets.size(); ++i) {",
-                            "      crypto::key_derivation derivation = boost::value_initialized<crypto::key_derivation>();",
-                            "      crypto::public_key out_eph_public_key = boost::value_initialized<crypto::public_key>();",
-                            "      bool r = crypto::generate_key_derivation(targets[i].m_viewPublicKey, txkey.sec, derivation);",
+                            "      Crypto::KeyDerivation derivation = boost::value_initialized<Crypto::KeyDerivation>();",
+                            "      Crypto::PublicKey outEphemeralPubKey = boost::value_initialized<Crypto::PublicKey>();",
+                            "      bool r = Crypto::generate_key_derivation(targets[i].viewPublicKey, txkey.secretKey, derivation);",
                             "      assert(r == true);",
-                            "//      CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to generate_key_derivation(\" << targets[i].m_viewPublicKey << \", \" << txkey.sec << \")\");",
+                            "//      CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to generate_key_derivation(\" << targets[i].viewPublicKey << \", \" << txkey.sec << \")\");",
 
-                            "      r = crypto::derive_public_key(derivation, i, targets[i].m_spendPublicKey, out_eph_public_key);",
+                            "      r = Crypto::derive_public_key(derivation, i, targets[i].spendPublicKey, outEphemeralPubKey);",
                             "      assert(r == true);",
-                            " //     CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to derive_public_key(\" << derivation << \", \" << i << \", \" << targets[i].m_spendPublicKey << \")\");",
+                            " //     CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to derive_public_key(\" << derivation << \", \" << i << \", \" << targets[i].spendPublicKey << \")\");",
 
-                            "      TransactionOutputToKey tk;",
-                            "      tk.key = out_eph_public_key;",
+                            "      KeyOutput tk;",
+                            "      tk.key = outEphemeralPubKey;",
 
                             "      TransactionOutput out;",
                             "      out.amount = (i == 0) ? first_target_amount : target_amount;",
                             "      std::cout << \"outs: \" << std::to_string(out.amount) << std::endl;",
                             "      out.target = tk;",
-                            "      tx.vout.push_back(out);",
+                            "      tx.outputs.push_back(out);",
                             "    }",
 
                             "    return tx;",
@@ -207,7 +207,7 @@
             ]
         },
         {
-            "path":"/src/transfers/BlockchainSynchronizer.cpp",
+            "path":"/src/Transfers/BlockchainSynchronizer.cpp",
             "changes": [
                 {
                     "action":"add_above",
@@ -222,11 +222,11 @@
             ]
         },
         {
-            "path":"/src/transfers/SynchronizationState.cpp",
+            "path":"/src/Transfers/SynchronizationState.cpp",
             "changes": [
                 {
                     "action":"add_bellow",
-                    "marker":"size_t iterationEnd = std::min(m_blockchain.size(), intervalEnd);",
+                    "marker":"uint32_t iterationEnd = std::min(static_cast<uint32_t>(m_blockchain.size()), intervalEnd);",
                     "parameters": {
                         "replace_text":[
                             "  if (iterationEnd == 1)",
@@ -237,11 +237,11 @@
             ]
         },
         {
-            "path":"/include/IWallet.h",
+            "path":"/include/IWalletLegacy.h",
             "changes": [
                 {
                     "action":"add_bellow",
-                    "marker":"virtual void getAccountKeys(WalletAccountKeys& keys) = 0;",
+                    "marker":"virtual void getAccountKeys(AccountKeys& keys) = 0;",
                     "parameters": {
                         "replace_text":[
                             "  virtual void syncAll(bool syncWalletFromZero = 0) = 0;"
@@ -251,20 +251,20 @@
             ]
         },
         {
-            "path":"/src/wallet/Wallet.h",
+            "path":"/src/WalletLegacy/WalletLegacy.h",
             "changes": [
                 {
                     "action":"add_bellow",
-                    "marker":"#include \"WalletRequest.h\"",
+                    "marker":"#include \"WalletLegacy/WalletRequest.h\"",
                     "parameters": {
                         "replace_text":[
-                            "#include \"cryptonote_config.h\""
+                            "#include \"CryptoNoteConfig.h\""
                         ]
                     }
                 },
                 {
                     "action":"add_bellow",
-                    "marker":"virtual void getAccountKeys(WalletAccountKeys& keys);",
+                    "marker":"virtual void getAccountKeys(AccountKeys& keys);",
                     "parameters": {
                         "replace_text":[
                             "  void syncAll(bool syncWalletFromZero) { m_syncAll = syncWalletFromZero; }"
@@ -283,7 +283,7 @@
             ]
         },
         {
-            "path":"/src/wallet/Wallet.cpp",
+            "path":"/src/WalletLegacy/WalletLegacy.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -300,7 +300,7 @@
             ]
         },
         {
-            "path":"/src/simplewallet/simplewallet.cpp",
+            "path":"/src/SimpleWallet/SimpleWallet.cpp",
             "changes": [
                 {
                     "action":"add_above",
@@ -313,7 +313,7 @@
                 },
                 {
                     "action":"add_bellow",
-                    "marker":"tools::wallet_rpc_server::init_options(desc_params);",
+                    "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
                     "parameters": {
                         "replace_text":[
                             "  command_line::add_arg(desc_params, arg_SYNC_FROM_ZERO);"
@@ -340,7 +340,7 @@
                 },
                 {
                     "action":"add_bellow",
-                    "marker":"m_wallet.reset(new Wallet(m_currency, *m_node));",
+                    "marker":"m_wallet.reset(new WalletLegacy(m_currency, *m_node));",
                     "parameters": {
                         "replace_text":[
                             "    m_wallet->syncAll(sync_from_zero);"
@@ -351,7 +351,7 @@
             ]
         },
         {
-            "path":"/src/simplewallet/simplewallet.h",
+            "path":"/src/SimpleWallet/SimpleWallet.h",
             "changes": [
                 {
                     "action":"add_bellow",

@@ -4,8 +4,17 @@
     "required":[ "core/bytecoin.json" ],
     "files": [ 
         {
-            "path":"/src/daemon/daemon.cpp",
+            "path":"/src/Daemon/Daemon.cpp",
             "changes": [
+                {
+                    "action":"add_above",
+                    "marker":"#include \"CryptoNoteCore/Core.h\"",
+                    "parameters": {
+                        "replace_text":[
+                            "#include \"CryptoNoteCore/CryptoNoteTools.h\""
+                        ]
+                    }
+                },
                 {
                     "action":"add_above",
                     "marker":"arg_testnet_on  = {",
@@ -45,8 +54,7 @@
                         "replace_text":[
                             "void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {",
                             "  CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
-                            "  CryptoNote::blobdata txb = tx_to_blob(tx);",
-                            "  std::string tx_hex = blobToHex(txb);",
+                            "  std::string tx_hex = Common::toHex(CryptoNote::toBinaryArray(tx));",
 
                             "  std::cout << \"Modify this line into your coin configuration file as is: \" << std::endl;",
                             "  std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
@@ -72,7 +80,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.h",
+            "path":"/src/CryptoNoteCore/Currency.h",
             "changes": [
                 {
                     "action":"add_above",
@@ -86,7 +94,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.cpp",
+            "path":"/src/CryptoNoteCore/Currency.cpp",
             "changes": [
                 {
                     "action":"add_above",

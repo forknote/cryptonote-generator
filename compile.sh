@@ -58,7 +58,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/Release/walletd.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
 			mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
-			cp -r ${PLUGINS_PATH}/multiply/configs/* ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
+			cp -r ${PLUGINS_PATH}/multiply/files/configs/* ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
 		fi
 		cd ${BUILD_PATH}
 		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
@@ -72,7 +72,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
 		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
 			mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
-			cp -r ${PLUGINS_PATH}/multiply/configs/* ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
+			cp -r ${PLUGINS_PATH}/multiply/files/configs/* ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
 		fi
 		cd ${BUILD_PATH}
 		zip -r ${MAC_BUILD_NAME}.zip ${MAC_BUILD_NAME}/
@@ -86,7 +86,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
 			mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
-			cp -r ${PLUGINS_PATH}/multiply/configs/* ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
+			cp -r ${PLUGINS_PATH}/multiply/files/configs/* ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
 		fi
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}

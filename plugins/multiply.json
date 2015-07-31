@@ -4,7 +4,7 @@
     "required":[ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json" ],
     "files": [ 
         {
-            "path":"/src/cryptonote_config.h",
+            "path":"/src/CryptoNoteConfig.h",
             "changes": [
                 {
                     "action":"add_above",
@@ -19,7 +19,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.h",
+            "path":"/src/CryptoNoteCore/Currency.h",
             "changes": [
                 {
                     "action":"add_bellow",
@@ -51,7 +51,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.cpp",
+            "path":"/src/CryptoNoteCore/Currency.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -66,7 +66,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/blockchain_storage.cpp",
+            "path":"/src/CryptoNoteCore/Blockchain.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -80,7 +80,7 @@
             ]
         },
         {
-            "path":"/src/daemon/daemon.cpp",
+            "path":"/src/Daemon/Daemon.cpp",
             "changes": [
                 {
                     "action":"add_above",
@@ -131,8 +131,7 @@
                             "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
                             "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
                             "  const command_line::arg_descriptor<std::string> arg_CRYPTONOTE_NAME  = {\"CRYPTONOTE_NAME\", \"Cryptonote name. Used for storage directory\", \"\"};",
-                            "  const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT  = {\"CHECKPOINT\", \"Checkpoints. Format: HEIGHT:HASH\"};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_PREMINED_PERCENT  = {\"PREMINED_PERCENT\", \"uint64_t\", 0};"
+                            "  const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT  = {\"CHECKPOINT\", \"Checkpoints. Format: HEIGHT:HASH\"};"
                         ]
                     }
                 },
@@ -158,8 +157,7 @@
                             "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT);",
                             "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG);",
                             "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_NAME);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_PREMINED_PERCENT);"
+                            "    command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);"
                         ]
                     }
                 },
@@ -198,45 +196,6 @@
                             "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
                             "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
                             "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction();"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
-                    "parameters": {
-                        "replace_text":[
-                            "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
-                            "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
-                            "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
-                            "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
-                            "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
-                            "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
-                            "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
-                            "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
-                            "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
-                            "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
-                            "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
-                            "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
-                            "  {",
-                            "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "  } else {",
-                            "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  }",
-                            "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT) != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));",
-                            "  }",
-                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "  currencyBuilder.genesisBlockReward((command_line::get_arg(vm, arg_MONEY_SUPPLY) / 100) * command_line::get_arg(vm, arg_PREMINED_PERCENT));",
-                            "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction(targets);"
                         ]
                     }
                 },
@@ -304,14 +263,13 @@
                             "      currencyBuilder.upgradeHeight(command_line::get_arg(vm, arg_UPGRADE_HEIGHT));",
                             "    }",
                             "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-                            "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "    currencyBuilder.genesisBlockReward((command_line::get_arg(vm, arg_MONEY_SUPPLY) / 100) * command_line::get_arg(vm, arg_PREMINED_PERCENT));"
+                            "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
                         ]
                     }
                 },
                 {
                     "action":"add_bellow",
-                    "marker":"CryptoNote::checkpoints checkpoints(logManager);",
+                    "marker":"CryptoNote::Checkpoints checkpoints(logManager);",
                     "parameters": {
                         "replace_text":[
                             "std::vector<CryptoNote::CheckpointData> checkpoint_input;",
@@ -343,7 +301,7 @@
                     "marker":"minerConfig.init(vm);",
                     "parameters": {
                         "replace_text":[
-                            "    std::string default_data_dir = tools::get_default_data_dir();",
+                            "    std::string default_data_dir = Tools::get_default_data_dir();",
                             "    if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
                             "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
                             "    }",
@@ -355,7 +313,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.h",
+            "path":"/src/CryptoNoteCore/Currency.h",
             "changes": [
                 {
                     "action":"add_above",
@@ -378,7 +336,7 @@
             ]
         },
         {
-            "path":"/src/cryptonote_core/Currency.cpp",
+            "path":"/src/CryptoNoteCore/Currency.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -392,7 +350,7 @@
             ]
         },
         {
-            "path":"/src/simplewallet/simplewallet.cpp",
+            "path":"/src/SimpleWallet/SimpleWallet.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -490,10 +448,10 @@
                 },
                 {
                     "action":"add_bellow",
-                    "marker":"tools::wallet_rpc_server::init_options(desc_params);",
+                    "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
                     "parameters": {
                         "replace_text":[
-                            "  command_line::add_arg(desc_params, command_line::arg_data_dir, tools::get_default_data_dir());",
+                            "  command_line::add_arg(desc_params, command_line::arg_data_dir, Tools::get_default_data_dir());",
                             "  command_line::add_arg(desc_params, arg_config_file);",
                             "  command_line::add_arg(desc_params, arg_GENESIS_COINBASE_TX_HEX);",
                             "  command_line::add_arg(desc_params, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
@@ -545,7 +503,7 @@
             ]
         },
         {
-            "path":"/src/wallet/wallet_rpc_server.cpp",
+            "path":"/src/Wallet/WalletRpcServer.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -568,16 +526,36 @@
             ]
         },
         {
-            "path":"/src/p2p/NetNodeConfig.h",
+            "path":"/src/P2p/NetNodeConfig.h",
             "changes": [
                 {
                     "action":"add_above",
-                    "marker":"p2p_protocol_types.h",
+                    "marker":"P2pProtocolTypes.h",
                     "parameters": {
                         "replace_text":[
                             "#include <boost/uuid/uuid.hpp>",
                             "#include <boost/uuid/uuid_io.hpp>",
-                            "#include \"p2p_networks.h\""
+                            "#include \"P2pNetworks.h\""
+                       ]
+                    }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"bool getHideMyPort() const;",
+                    "parameters": {
+                        "replace_text":[
+                            "  boost::uuids::uuid getNetworkId() const;",
+                            "  std::string getP2pStatTrustedPubKey() const;"
+                       ]
+                    }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"void setHideMyPort(bool hide);",
+                    "parameters": {
+                        "replace_text":[
+                            "void setNetworkId(boost::uuids::uuid id);",
+                            "void setP2pStatTrustedPubKey(std::string key);"
                        ]
                     }
                 },
@@ -594,7 +572,7 @@
             ]
         },
         {
-            "path":"/src/p2p/NetNodeConfig.cpp",
+            "path":"/src/P2p/NetNodeConfig.cpp",
             "changes": [
                 {
                     "action":"add_above",
@@ -634,11 +612,27 @@
                             "  p2pStatTrustedPubKey = \"\";"
                         ]
                     }
+                },
+                {
+                    "action":"add_above",
+                    "marker":"void NetNodeConfig::setConfigFolder(const std::string& folder) {",
+                    "parameters": {
+                        "replace_text":[
+                            "void NetNodeConfig::setNetworkId(boost::uuids::uuid id) {",
+                            "  networkId = id;",
+                            "}",
+                            "",
+                            "void NetNodeConfig::setP2pStatTrustedPubKey(std::string key) {",
+                            "  p2pStatTrustedPubKey = key;",
+                            "}",
+                            ""
+                        ]
+                    }
                 }
             ]
         },
         {
-            "path":"/src/p2p/net_node.h",
+            "path":"/src/P2p/NetNode.h",
             "changes": [
                 {
                     "action":"add_bellow",
@@ -652,14 +646,14 @@
             ]
         },
         {
-            "path":"/src/p2p/net_node.cpp",
+            "path":"/src/P2p/NetNode.cpp",
             "changes": [
                 {
                     "action":"replace",
-                    "marker":"if (!testnet) {",
+                    "marker":"if (!config.getTestnet()) {",
                     "parameters": {
                         "replace_text":[
-                            "    if (!testnet && config.seedNodes.size() == 0) {"
+                            "    if (!config.getTestnet() && config.getSeedNodes.size() == 0) {"
                        ]
                     }
                 },
@@ -674,18 +668,18 @@
                 },
                 {
                     "action":"add_bellow",
-                    "marker":"m_allow_local_ip = config.allowLocalIp;",
+                    "marker":"m_allow_local_ip = config.getAllowLocalIp();",
                     "parameters": {
                         "replace_text":[
-                            "    m_network_id = config.networkId;",
-                            "    m_p2pStatTrustedPubKey = config.p2pStatTrustedPubKey;"
+                            "    m_network_id = config.getNetworkId();",
+                            "    m_p2pStatTrustedPubKey = config.getP2pStatTrustedPubKey();"
                        ]
                     }
                 }
             ]
         },
         {
-            "path":"/src/payment_service/ConfigurationManager.h",
+            "path":"/src/PaymentGateService/ConfigurationManager.h",
             "changes": [
                 {
                     "action":"add_bellow",
@@ -708,7 +702,7 @@
             ]
         },
         {
-            "path":"/src/payment_service/ConfigurationManager.cpp",
+            "path":"/src/PaymentGateService/ConfigurationManager.cpp",
             "changes": [
                 {
                     "action":"replace",
@@ -777,11 +771,11 @@
             ]
         },
         {
-            "path":"/src/payment_service/main.cpp",
+            "path":"/src/PaymentGateService/main.cpp",
             "changes": [
                 {
                     "action":"add_above",
-                    "marker":"if (pg.config.gateConfiguration.generateNewWallet) {",
+                    "marker":"if (config.gateConfiguration.generateNewWallet) {",
                     "parameters": {
                         "replace_text":[
                             "  pg.currencyBuilder.genesisCoinbaseTxHex(pg.config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
@@ -820,19 +814,19 @@
             ]
         },
         {
-            "path":"/src/payment_service/CoinBaseConfiguration.h",
+            "path":"/src/PaymentGateService/CoinBaseConfiguration.h",
             "action":"add",
-            "source":"/multiply/CoinBaseConfiguration.h"
+            "source":"/multiply/files/CoinBaseConfiguration.h"
         },
         {
-            "path":"/src/payment_service/CoinBaseConfiguration.cpp",
+            "path":"/src/PaymentGateService/CoinBaseConfiguration.cpp",
             "action":"add",
-            "source":"/multiply/CoinBaseConfiguration.cpp"
+            "source":"/multiply/files/CoinBaseConfiguration.cpp"
         },
         {
             "path":"/README.md",
             "action":"add",
-            "source":"/multiply/README.md"
+            "source":"/multiply/files/README.md"
         }
     ]
 }
