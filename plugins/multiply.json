@@ -653,7 +653,7 @@
                     "marker":"if (!config.getTestnet()) {",
                     "parameters": {
                         "replace_text":[
-                            "    if (!config.getTestnet() && config.getSeedNodes.size() == 0) {"
+                            "    if (!config.getTestnet() && config.getSeedNodes().size() == 0) {"
                        ]
                     }
                 },

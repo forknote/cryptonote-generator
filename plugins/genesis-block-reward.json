@@ -75,8 +75,7 @@
                             "    }",
                             "  } else {",
                             "      CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
-                            "      CryptoNote::blobdata txb = tx_to_blob(tx);",
-                            "      std::string tx_hex = toHex(txb);",
+                            "      std::string tx_hex = Common::toHex(CryptoNote::toBinaryArray(tx));",
 
                             "      std::cout << \"Modify this line into your coin configuration file as is: \" << std::endl;",
                             "      std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
@@ -146,11 +145,11 @@
                             "    tx.version = CURRENT_TRANSACTION_VERSION;",
                             "    tx.unlockTime = m_currency.m_minedMoneyUnlockWindow;",
 
-                            "    KeyPair txkey = KeyPair::generateKeyPair();",
+                            "    KeyPair txkey = generateKeyPair();",
                             "    addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);",
 
-                            "    TransactionInputGenerate in;",
-                            "    in.height = 0;",
+                            "    BaseInput in;",
+                            "    in.blockIndex = 0;",
                             "    tx.inputs.push_back(in);",
 
                             "    uint64_t block_reward = m_currency.m_genesisBlockReward;",
