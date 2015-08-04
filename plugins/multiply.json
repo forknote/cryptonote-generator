@@ -281,7 +281,7 @@
                             "    std::string::size_type p = str.find(':');",
                             "    if(p != std::string::npos)",
                             "    {",
-                            "      uint64_t checkpoint_height = std::stoull(str.substr(0, p));",
+                            "      uint32_t checkpoint_height = std::stoull(str.substr(0, p));",
                             "      checkpoint_blockIds.push_back(str.substr(p+1, str.size()));",
                             "      checkpoint_input.push_back({ checkpoint_height, checkpoint_blockIds.back().c_str() });",
                             "    }",
@@ -301,12 +301,12 @@
                     "marker":"minerConfig.init(vm);",
                     "parameters": {
                         "replace_text":[
-                            "    std::string default_data_dir = Tools::get_default_data_dir();",
+                            "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
                             "    if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
                             "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
                             "    }",
                             "    coreConfig.configFolder = default_data_dir;",
-                            "    netNodeConfig.configFolder = default_data_dir;"
+                            "    netNodeConfig.setConfigFolder(default_data_dir);"
                         ]
                     }
                 }
@@ -451,7 +451,7 @@
                     "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
                     "parameters": {
                         "replace_text":[
-                            "  command_line::add_arg(desc_params, command_line::arg_data_dir, Tools::get_default_data_dir());",
+                            "  command_line::add_arg(desc_params, command_line::arg_data_dir, Tools::getDefaultDataDirectory());",
                             "  command_line::add_arg(desc_params, arg_config_file);",
                             "  command_line::add_arg(desc_params, arg_GENESIS_COINBASE_TX_HEX);",
                             "  command_line::add_arg(desc_params, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
@@ -554,8 +554,8 @@
                     "marker":"void setHideMyPort(bool hide);",
                     "parameters": {
                         "replace_text":[
-                            "void setNetworkId(boost::uuids::uuid id);",
-                            "void setP2pStatTrustedPubKey(std::string key);"
+                            "  void setNetworkId(const boost::uuids::uuid id);",
+                            "  void setP2pStatTrustedPubKey(const std::string key);"
                        ]
                     }
                 },
@@ -610,6 +610,22 @@
                     "parameters": {
                         "replace_text":[
                             "  p2pStatTrustedPubKey = \"\";"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_above",
+                    "marker":"std::string NetNodeConfig::getConfigFolder() const {",
+                    "parameters": {
+                        "replace_text":[
+                            "  boost::uuids::uuid NetNodeConfig::getNetworkId() const {",
+                            "  return networkId;",
+                            "}",
+                            "",
+                            "  std::string NetNodeConfig::getP2pStatTrustedPubKey() const {",
+                            "  return p2pStatTrustedPubKey;",
+                            "}",
+                            ""
                         ]
                     }
                 },
@@ -771,43 +787,43 @@
             ]
         },
         {
-            "path":"/src/PaymentGateService/main.cpp",
+            "path":"/src/PaymentGateService/PaymentGateService.cpp",
             "changes": [
                 {
                     "action":"add_above",
-                    "marker":"if (config.gateConfiguration.generateNewWallet) {",
+                    "marker":"if (config.gateConfiguration.testnet) {",
                     "parameters": {
                         "replace_text":[
-                            "  pg.currencyBuilder.genesisCoinbaseTxHex(pg.config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
-                            "  pg.currencyBuilder.publicAddressBase58Prefix(pg.config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
-                            "  pg.currencyBuilder.moneySupply(pg.config.coinBaseConfig.MONEY_SUPPLY);",
-                            "  pg.currencyBuilder.emissionSpeedFactor(pg.config.coinBaseConfig.EMISSION_SPEED_FACTOR);",
-                            "  pg.currencyBuilder.blockGrantedFullRewardZone(pg.config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
-                            "  pg.currencyBuilder.blockGrantedFullRewardZoneV1(pg.config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
-                            "  pg.currencyBuilder.numberOfDecimalPlaces(pg.config.coinBaseConfig.CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
-                            "  pg.currencyBuilder.mininumFee(pg.config.coinBaseConfig.MINIMUM_FEE);",
-                            "  pg.currencyBuilder.defaultDustThreshold(pg.config.coinBaseConfig.DEFAULT_DUST_THRESHOLD);",
-                            "  pg.currencyBuilder.difficultyTarget(pg.config.coinBaseConfig.DIFFICULTY_TARGET);",
-                            "  pg.currencyBuilder.minedMoneyUnlockWindow(pg.config.coinBaseConfig.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
-                            "  pg.currencyBuilder.maxBlockSizeInitial(pg.config.coinBaseConfig.MAX_BLOCK_SIZE_INITIAL);",
+                            "  currencyBuilder.genesisCoinbaseTxHex(config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
+                            "  currencyBuilder.publicAddressBase58Prefix(config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
+                            "  currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+                            "  currencyBuilder.emissionSpeedFactor(config.coinBaseConfig.EMISSION_SPEED_FACTOR);",
+                            "  currencyBuilder.blockGrantedFullRewardZone(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+                            "  currencyBuilder.blockGrantedFullRewardZoneV1(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
+                            "  currencyBuilder.numberOfDecimalPlaces(config.coinBaseConfig.CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
+                            "  currencyBuilder.mininumFee(config.coinBaseConfig.MINIMUM_FEE);",
+                            "  currencyBuilder.defaultDustThreshold(config.coinBaseConfig.DEFAULT_DUST_THRESHOLD);",
+                            "  currencyBuilder.difficultyTarget(config.coinBaseConfig.DIFFICULTY_TARGET);",
+                            "  currencyBuilder.minedMoneyUnlockWindow(config.coinBaseConfig.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
+                            "  currencyBuilder.maxBlockSizeInitial(config.coinBaseConfig.MAX_BLOCK_SIZE_INITIAL);",
 
-                            "  if (pg.config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY && pg.config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY != 0)",
+                            "  if (config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY && config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY != 0)",
                             "  {",
-                            "    pg.currencyBuilder.difficultyWindow(pg.config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
-                            "    pg.currencyBuilder.upgradeVotingWindow(pg.config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
-                            "    pg.currencyBuilder.upgradeWindow(pg.config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+                            "    currencyBuilder.difficultyWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+                            "    currencyBuilder.upgradeVotingWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+                            "    currencyBuilder.upgradeWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
                             "  } else {",
-                            "    pg.currencyBuilder.difficultyWindow(24 * 60 * 60 / pg.config.coinBaseConfig.DIFFICULTY_TARGET);",
+                            "    currencyBuilder.difficultyWindow(24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
                             "  }",
-                            "  pg.currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / pg.config.coinBaseConfig.DIFFICULTY_TARGET);",
-                            "  pg.currencyBuilder.lockedTxAllowedDeltaSeconds(pg.config.coinBaseConfig.DIFFICULTY_TARGET * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);",
+                            "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
+                            "  currencyBuilder.lockedTxAllowedDeltaSeconds(config.coinBaseConfig.DIFFICULTY_TARGET * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);",
 
-                            "  if (pg.config.coinBaseConfig.UPGRADE_HEIGHT && pg.config.coinBaseConfig.UPGRADE_HEIGHT != 0)",
+                            "  if (config.coinBaseConfig.UPGRADE_HEIGHT && config.coinBaseConfig.UPGRADE_HEIGHT != 0)",
                             "  {",
-                            "    pg.currencyBuilder.upgradeHeight(pg.config.coinBaseConfig.UPGRADE_HEIGHT);",
+                            "    currencyBuilder.upgradeHeight(config.coinBaseConfig.UPGRADE_HEIGHT);",
                             "  }",
-                            "  pg.currencyBuilder.difficultyLag(pg.config.coinBaseConfig.DIFFICULTY_CUT);",
-                            "  pg.currencyBuilder.difficultyCut(pg.config.coinBaseConfig.DIFFICULTY_LAG);"
+                            "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_CUT);",
+                            "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_LAG);"
                        ]
                     }
                 }

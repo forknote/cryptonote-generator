@@ -38,7 +38,7 @@
 #include <boost/program_options.hpp>
 #include <stddef.h>
 #include <initializer_list>
-#include "cryptonote_config.h"
+#include "CryptoNoteConfig.h"
 
 namespace PaymentService {
 
