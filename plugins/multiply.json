@@ -830,6 +830,22 @@
             ]
         },
         {
+            "path":"/src/PaymentGateService/RpcNodeConfiguration.cpp",
+            "changes": [
+                {
+                    "action":"add_above",
+                    "marker":"if (options.count(\"daemon-port\")) {",
+                    "parameters": {
+                        "replace_text":[
+                            "  if (options.count(\"rpc-bind-port\")) {",
+                            "    daemonPort = options[\"rpc-bind-port\"].as<uint16_t>();",
+                            "  }"
+                       ]
+                    }
+                }
+            ]
+        },
+        {
             "path":"/src/PaymentGateService/CoinBaseConfiguration.h",
             "action":"add",
             "source":"/multiply/files/CoinBaseConfiguration.h"

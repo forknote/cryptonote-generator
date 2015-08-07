@@ -299,6 +299,46 @@
                     }
                 }
             ]
+        },
+        {
+            "path":"/src/PaymentGateService/RpcNodeConfiguration.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"daemonPort = 8081;",
+                    "parameters": {
+                        "replace_text":[
+                            "  daemonPort = %s;"
+                        ],
+                        "var":"RPC_DEFAULT_PORT"
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"(\"daemon-port\", po::value<uint16_t>()->default_value(8081), \"bytecoind port\");",
+                    "parameters": {
+                        "replace_text":[
+                            "    (\"daemon-port\", po::value<uint16_t>()->default_value(%s), \"daemon port\");"
+                        ],
+                        "var":"RPC_DEFAULT_PORT"
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/SimpleWallet/SimpleWallet.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"const command_line::arg_descriptor<uint16_t> arg_daemon_port = { \"daemon-port\", \"Use daemon instance at port <arg> instead of 8081\", 0 };",
+                    "parameters": {
+                        "replace_text":[
+                            "const command_line::arg_descriptor<uint16_t> arg_daemon_port = { \"daemon-port\", \"Use daemon instance at port <arg> instead of %s\", 0 };"
+                        ],
+                        "var":"RPC_DEFAULT_PORT"
+                    }
+                }
+            ]
         }
     ]
 }
