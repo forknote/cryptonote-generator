@@ -1,34 +1,12 @@
 {
     "file":"allow-0-fee-tx.json",
-    "description":"Allow coins with 0 transaction fees",
+    "description":"Allow cryptocurrencies with 0 transaction fees",
     "required":[ "core/bytecoin.json" ],
     "files": [ 
         {
-            "path":"/src/CryptoNoteCore/Core.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"if (amount_in <= amount_out) {",
-                    "parameters": {
-                        "replace_text":[
-                            "  if (amount_in < amount_out) {"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
             "path":"/src/CryptoNoteCore/TransactionPool.cpp",
             "changes": [
-                {
-                    "action":"replace",
-                    "marker":"if (outputs_amount >= inputs_amount) {",
-                    "parameters": {
-                        "replace_text":[
-                            "    if (outputs_amount > inputs_amount) {"
-                        ]
-                    }
-                },
+
                 {
                     "action":"replace",
                     "marker":"if (inputsValid && fee > 0)",

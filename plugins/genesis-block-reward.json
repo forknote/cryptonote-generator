@@ -254,15 +254,6 @@
             "changes": [
                 {
                     "action":"add_bellow",
-                    "marker":"#include \"WalletLegacy/WalletRequest.h\"",
-                    "parameters": {
-                        "replace_text":[
-                            "#include \"CryptoNoteConfig.h\""
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
                     "marker":"virtual void getAccountKeys(AccountKeys& keys);",
                     "parameters": {
                         "replace_text":[

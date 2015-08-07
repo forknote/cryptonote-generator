@@ -1,0 +1,101 @@
+{
+    "file":"simplewallet-default-fee.json",
+    "description":"Adds --default-fee option to simplewallet + precompiled",
+    "required":[ "core/bytecoin.json" ],
+    "files": [ 
+        {
+            "path":"/src/CryptoNoteConfig.h",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"const uint64_t DEFAULT_DUST_THRESHOLD",
+                    "parameters": {
+                        "replace_text":[
+                            "const uint64_t DEFAULT_FEE                          = %s;"
+                        ],
+                        "replace_text_alt":[
+                            "const uint64_t DEFAULT_FEE                          = MINIMUM_FEE;"
+                        ],
+                        "var":"DEFAULT_FEE"
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/SimpleWallet/SimpleWallet.h",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"uint16_t m_daemon_port;",
+                    "parameters": {
+                        "replace_text":[
+                            "uint64_t m_default_fee;"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/SimpleWallet/SimpleWallet.cpp",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"m_daemon_port = command_line::get_arg(vm, arg_daemon_port);",
+                    "parameters": {
+                        "replace_text":[
+                            "m_default_fee = command_line::get_arg(vm, arg_DEFAULT_FEE);",
+                            "if (m_currency.minimumFee() > m_default_fee) {",
+                            "  m_default_fee = m_currency.minimumFee();",
+                            "}"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_above",
+                    "marker":"arg_testnet = { \"testnet\"",
+                    "parameters": {
+                        "replace_text":[
+                            "  const command_line::arg_descriptor<uint64_t> arg_DEFAULT_FEE  = {\"DEFAULT_FEE\", \"Default fee\", CryptoNote::parameters::DEFAULT_FEE};  "
+                        ]
+                    }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
+                    "parameters": {
+                        "replace_text":[
+                            "  command_line::add_arg(desc_params, arg_DEFAULT_FEE);"
+                        ]
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"TransferCommand(const CryptoNote::Currency& currency) :",
+                    "parameters": {
+                        "replace_text":[
+                            "  TransferCommand(const CryptoNote::Currency& currency, uint64_t default_fee) :"
+                        ]
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"m_currency(currency), fake_outs_count(0), fee(currency.minimumFee()) {",
+                    "parameters": {
+                        "replace_text":[
+                            "    m_currency(currency), fake_outs_count(0), fee(default_fee) {"
+                        ]
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"TransferCommand cmd(m_currency);",
+                    "parameters": {
+                        "replace_text":[
+                            "    TransferCommand cmd(m_currency, m_default_fee);"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
