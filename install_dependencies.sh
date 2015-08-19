@@ -1,21 +1,18 @@
 #!/bin/bash
 
-# Initial source: OpenBazaar 
+# Template: OpenBazaar 
 #
-# configure.sh - Setup your Dashcoin development environment in one step.
-#
-# If you are a Ubuntu or MacOSX user, you can try executing this script
-# and you already checked out the Dashcoin sourcecode from the git repository
-# you can try configuring/installing Dashcoin by simply executing this script
-# instead of following the build instructions in the Dashcoin Wiki
-# https://github.com/dashcoin/cryptonote-generator.git/wiki/Build-Instructions
+# install_dependencies.sh - Setup your Cryptonote development environment in one step.
 #
 # This script will only get better as its tested on more development environments
 # if you can't modify it to make it better, please open an issue with a full
-# error report at https://github.com/dashcoin/cryptonote-generator.git/issues/new
+# error report at https://github.com/forknote/cryptonote-generator.git/issues/new
 #
-# Credits: Dashcoin
+# Credits: Forknote
 #
+# Code borrowed from:
+# https://github.com/OpenBazaar/OpenBazaar/blob/develop/configure.sh
+# https://github.com/Quanttek/install_monero/blob/master/install_monero.sh
 
 #exit on error
 set -e

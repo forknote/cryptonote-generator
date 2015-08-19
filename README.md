@@ -41,12 +41,12 @@ Clone the repository:
 	cd generator
 ```
 
-Install requirements:
+Install dependencies:
 
 * Windows - [follow this instructions](https://github.com/dashcoin/cryptonote-generator/blob/master/docs/windows-requirements-install.md)
 * Linux / Mac OS X
 ```
-bash configure.sh
+bash install_dependencies.sh
 ```
 
 #### 2) Configuration
@@ -174,7 +174,7 @@ Change the _GENESIS_COINBASE_TX_HEX_ in your configuration file, then [3) Genera
 
 ```
 	git clone https://github.com/pmitchev/cryptonote-generator.git generator && cd generator
-	bash configure.sh && bash generator.sh -f configs/dashcoin.json
+	bash install_dependencies.sh && bash generator.sh -f configs/dashcoin.json
 ```
 
 2. Start the daemon:
@@ -184,7 +184,7 @@ Change the _GENESIS_COINBASE_TX_HEX_ in your configuration file, then [3) Genera
 	./dashcoind
 ```
 
-The process under Windows is exacly the same, you need just to remove ~~bash configure.sh~~ and install windows dependencies instead.
+The process under Windows is exacly the same, you need just to remove ~~bash install_dependencies.sh~~ and install windows dependencies instead.
 
 
 ### Community / Support

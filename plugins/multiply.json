@@ -834,10 +834,10 @@
             "changes": [
                 {
                     "action":"add_above",
-                    "marker":"if (options.count(\"daemon-port\")) {",
+                    "marker":"if (options.count(\"daemon-port\") != 0 && (!options[\"daemon-port\"].defaulted() || daemonPort == 0)) {",
                     "parameters": {
                         "replace_text":[
-                            "  if (options.count(\"rpc-bind-port\")) {",
+                            "  if (options.count(\"rpc-bind-port\") != 0) {",
                             "    daemonPort = options[\"rpc-bind-port\"].as<uint16_t>();",
                             "  }"
                        ]

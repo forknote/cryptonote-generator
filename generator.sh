@@ -17,7 +17,7 @@ function finish {
 	echo "Remove temporary files..."
 	rm -f "${UPDATES_PATH}"
 	rm -f "${BASH_CONFIG}"
-	rm -rf "${TEMP_PATH}"
+#	rm -rf "${TEMP_PATH}"
 }
 trap finish EXIT
 
