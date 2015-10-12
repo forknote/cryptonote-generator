@@ -10,7 +10,7 @@
                     "action":"add_bellow",
                     "marker":"const uint64_t DEFAULT_DUST_THRESHOLD",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "const uint64_t MAX_TRANSACTION_SIZE_LIMIT                          = %s;"
                         ],
                         "replace_text_alt":[
@@ -29,7 +29,7 @@
                     "action":"replace",
                     "marker":"m_upperTransactionSizeLimit = m_currency.blockGrantedFullRewardZone() * 125 / 100 - m_currency.minerTxBlobReservedSize();",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  m_upperTransactionSizeLimit = m_currency.maxTransactionSizeLimit();"
                         ]
                     }
@@ -43,7 +43,7 @@
                     "action":"replace",
                     "marker":"m_upperTransactionSizeLimit(m_currency.blockGrantedFullRewardZone() * 125 / 100 - m_currency.minerTxBlobReservedSize()) {}",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  m_upperTransactionSizeLimit(m_currency.maxTransactionSizeLimit()) {}"
                         ]
                     }
@@ -57,7 +57,7 @@
                     "action":"add_bellow",
                     "marker":"size_t m_minerTxBlobReservedSize;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  uint64_t m_maxTransactionSizeLimit;"
                         ]
                     }
@@ -66,7 +66,7 @@
                     "action":"add_bellow",
                     "marker":"CurrencyBuilder& minerTxBlobReservedSize(size_t val) { m_currency.m_minerTxBlobReservedSize = val; return *this; }",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  CurrencyBuilder& maxTransactionSizeLimit(uint64_t val) { m_currency.m_maxTransactionSizeLimit = val; return *this; }"
                         ]
                     }
@@ -75,7 +75,7 @@
                     "action":"add_bellow",
                     "marker":"size_t minerTxBlobReservedSize() const { return m_minerTxBlobReservedSize; }",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  uint64_t maxTransactionSizeLimit() const { return m_maxTransactionSizeLimit; }"
                         ]
                     }
@@ -89,7 +89,7 @@
                     "action":"add_bellow",
                     "marker":"minerTxBlobReservedSize(parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "maxTransactionSizeLimit(parameters::MAX_TRANSACTION_SIZE_LIMIT);"
                         ]
                     }

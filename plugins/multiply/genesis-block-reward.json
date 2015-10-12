@@ -10,7 +10,7 @@
                     "action":"add_bellow",
                     "marker":"const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  const command_line::arg_descriptor<uint64_t>    arg_PREMINED_PERCENT  = {\"PREMINED_PERCENT\", \"uint64_t\", 0};"
                         ]
                     }
@@ -19,7 +19,7 @@
                     "action":"add_bellow",
                     "marker":"command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    command_line::add_arg(desc_cmd_sett, arg_PREMINED_PERCENT);"
                         ]
                     }
@@ -28,7 +28,7 @@
                     "action":"replace",
                     "marker":"CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
                             "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
                             "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
@@ -67,7 +67,7 @@
                     "action":"add_above",
                     "marker":"currencyBuilder.testnet(testnet_mode);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    currencyBuilder.genesisBlockReward((command_line::get_arg(vm, arg_MONEY_SUPPLY) / 100) * command_line::get_arg(vm, arg_PREMINED_PERCENT));"
                         ]
                     }

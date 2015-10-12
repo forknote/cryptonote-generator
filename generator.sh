@@ -8,6 +8,10 @@ set -o errexit
 
 [ "$OSTYPE" != "win"* ] || die "Install MinGW to use on Windows"
 
+# For bold text
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 # Set directory vars
 . "vars.cfg"
 
@@ -52,7 +56,7 @@ function generate_coin {
 	export __CONFIG_plugins_text="${__CONFIG_plugins[@]}"
 	for plugin in "${__CONFIG_plugins[@]}"
 	do
-		echo "Execute ${PLUGINS_PATH}/${plugin}"
+		echo "${bold}Execute ${PLUGINS_PATH}/${plugin}${normal}"
 		python "lib/file-modification.py" --plugin "${PLUGINS_PATH}/${plugin}" --config=$CONFIG_FILE --source=${TEMP_PATH}
 	done
 

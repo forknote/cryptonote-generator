@@ -10,7 +10,7 @@
                     "action":"add_bellow",
                     "marker":"uint16_t m_daemon_port;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "uint64_t m_maxTransactionSizeLimit;"
                         ]
                     }
@@ -24,7 +24,7 @@
                     "action":"add_above",
                     "marker":"arg_testnet = { \"testnet\"",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  const command_line::arg_descriptor<uint64_t> arg_MAX_TRANSACTION_SIZE_LIMIT  = {\"MAX_TRANSACTION_SIZE_LIMIT\", \"Max transaction limit size\", CryptoNote::parameters::MAX_TRANSACTION_SIZE_LIMIT};  "
                         ]
                     }
@@ -33,7 +33,7 @@
                     "action":"add_bellow",
                     "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  command_line::add_arg(desc_params, arg_MAX_TRANSACTION_SIZE_LIMIT);"
                         ]
                     }
@@ -42,7 +42,7 @@
                     "action":"add_above",
                     "marker":"currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "currencyBuilder.maxTransactionSizeLimit(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT));"
                         ]
                     }
@@ -56,7 +56,7 @@
                     "action":"add_above",
                     "marker":"size_t DIFFICULTY_CUT;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "uint64_t MAX_TRANSACTION_SIZE_LIMIT;"
                        ]
                     }
@@ -70,7 +70,7 @@
                     "action":"add_above",
                     "marker":"DIFFICULTY_CUT=CryptoNote::parameters::DIFFICULTY_CUT;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "MAX_TRANSACTION_SIZE_LIMIT=CryptoNote::parameters::MAX_TRANSACTION_SIZE_LIMIT;"
                        ]
                     }
@@ -79,7 +79,7 @@
                     "action":"add_above",
                     "marker":"(\"DIFFICULTY_CUT\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT), \"size_t\")",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "(\"MAX_TRANSACTION_SIZE_LIMIT\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MAX_TRANSACTION_SIZE_LIMIT), \"uint64_t\")"
                        ]
                     }
@@ -88,7 +88,7 @@
                     "action":"add_above",
                     "marker":"if (options.count(\"DIFFICULTY_CUT\")) {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  if (options.count(\"MAX_TRANSACTION_SIZE_LIMIT\")) {",
                             "    MAX_TRANSACTION_SIZE_LIMIT = options[\"MAX_TRANSACTION_SIZE_LIMIT\"].as<uint64_t>();",
                             "  }"
@@ -104,7 +104,7 @@
                     "action":"add_above",
                     "marker":"currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_CUT);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  currencyBuilder.maxTransactionSizeLimit(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT);"
                        ]
                     }

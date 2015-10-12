@@ -10,7 +10,7 @@
                     "action":"add_above",
                     "marker":"#include \"CryptoNoteCore/Core.h\"",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "#include \"CryptoNoteCore/CryptoNoteTools.h\""
                         ]
                     }
@@ -19,7 +19,7 @@
                     "action":"add_above",
                     "marker":"arg_testnet_on  = {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  const command_line::arg_descriptor<bool>        arg_print_genesis_tx = { \"print-genesis-tx\", \"Prints genesis' block tx hex to insert it to config and exits\" };"
                         ]
                     }
@@ -28,7 +28,7 @@
                     "action":"add_bellow",
                     "marker":"command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);"
                         ]
                     }
@@ -37,7 +37,7 @@
                     "action":"add_bellow",
                     "marker":"currencyBuilder.testnet(testnet_mode);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    try {",
                             "      currencyBuilder.currency();",
                             "    } catch (std::exception&) {",
@@ -51,12 +51,12 @@
                     "action":"add_bellow",
                     "marker":"bool command_line_preprocessor(const boost::program_options::variables_map& vm, LoggerRef& logger);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {",
                             "  CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
                             "  std::string tx_hex = Common::toHex(CryptoNote::toBinaryArray(tx));",
 
-                            "  std::cout << \"Modify this line into your coin configuration file as is: \" << std::endl;",
+                            "  std::cout << \"Add this line into your coin configuration file as is: \" << std::endl;",
                             "  std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
 
                             "  return;",
@@ -68,7 +68,7 @@
                     "action":"add_bellow",
                     "marker":"po::notify(vm);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "      if (command_line::get_arg(vm, arg_print_genesis_tx)) {",
                             "        print_genesis_tx_hex(vm, logManager);",
                             "        return false;",
@@ -86,7 +86,7 @@
                     "action":"add_above",
                     "marker":"CurrencyBuilder& maxBlockNumber(uint64_t val) { m_currency.m_maxBlockHeight = val; return *this; }",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  Transaction generateGenesisTransaction();"
                         ]
                     }
@@ -100,7 +100,7 @@
                     "action":"add_above",
                     "marker":"CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "Transaction CurrencyBuilder::generateGenesisTransaction() {",
                             "  CryptoNote::Transaction tx;",
                             "  CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();",

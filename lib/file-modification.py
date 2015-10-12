@@ -1,19 +1,30 @@
 import argparse
 import fileinput
-import inspect
 import itertools
 import json
 import os
 import re
 import shutil
 import sys
-import itertools
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 def reverse_enumerate(iterable):
     """
     Enumerate over an iterable in reverse order while retaining proper indexes
     """
     return itertools.izip(reversed(xrange(len(iterable))), reversed(iterable))
+
 
 def text_creator(change):
     replace_text = ''
@@ -30,17 +41,17 @@ def text_creator(change):
                 aggregated_var = aggregated_var[:-len(change['parameters']['separator'])]
             else:
                 aggregated_var = config['core'][change['parameters']['var']]
-            replace_text = "\n".join(change['parameters']['replace_text']).replace("%s", str(aggregated_var)) + "\n"
+            replace_text = "\n".join(change['parameters']['text']).replace("%s", str(aggregated_var)) + "\n"
         elif 'replace_text_alt' in change['parameters'].keys():
             replace_text = '\n'.join(change['parameters']['replace_text_alt']) + "\n"
         elif 'mandatory' in change['parameters'].keys() and change['parameters']['mandatory'] == False:
             sys.__stdout__.write("NONE\n")
             return None
         else:
-            sys.__stdout__.write("ERROR: variable is not in the config file - " + change['parameters']['var'] + "\n")
+            sys.__stdout__.write(bcolors.FAIL + "ERROR: variable is not in the config file - " + change['parameters']['var']+ bcolors.ENDC + "\n")
             sys.exit(2)
     else:
-        replace_text = '\n'.join(change['parameters']['replace_text']) + "\n" 
+        replace_text = '\n'.join(change['parameters']['text']) + "\n" 
 
     #delete
     sys.__stdout__.write("Replace text: " + replace_text + "\n")
@@ -91,7 +102,7 @@ else:
 required_plugins = [i for i in plugin['required']]
 loaded_plugins = config['plugins'][:(config['plugins'].index(plugin['file']))]
 if set(required_plugins) > set(loaded_plugins):
-    print "ERROR: Required plugin not loaded:  required" + str(required_plugins) + "   loaded" + str(loaded_plugins) + "\n"
+    print bcolors.FAIL + "ERROR: Required plugin not loaded:  required" + str(required_plugins) + "   loaded" + str(loaded_plugins) + bcolors.ENDC + "\n"
     exit(3)
 
 
@@ -103,7 +114,7 @@ for file in plugin['files']:
             sys.__stdout__.write("- Adding file " + source_path + "\n")
             shutil.copyfile(source_path,args.source + file['path'])
         else:
-            sys.__stdout__.write("ERROR: file does not exists - " + source_path)
+            sys.__stdout__.write(bcolors.FAIL + "ERROR: file does not exists - " + source_path + bcolors.ENDC + "\n")
             exit(4)
         continue
 
@@ -124,7 +135,7 @@ for file in plugin['files']:
                 del changes[index]
 
         for change in changes:
-            sys.__stdout__.write("ERROR: marker not found - " + change['marker'] + "\n")
+            sys.__stdout__.write(bcolors.FAIL + "ERROR: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
             sys.exit(2)
         # End pre-tests
 
@@ -153,7 +164,7 @@ for file in plugin['files']:
             sys.stdout.write(line)
 
         for change in changes:
-            sys.__stdout__.write("ERROR: marker not found - " + change['marker'] + "\n")
+            sys.__stdout__.write(bcolors.FAIL + "ERROR: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
             sys.exit(2)
         # End pre-tests
 

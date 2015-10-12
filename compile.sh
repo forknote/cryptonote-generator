@@ -48,6 +48,7 @@ if [[ $archive == "1" ]]; then
 	MAC_BUILD_NAME="${__CONFIG_core_CRYPTONOTE_NAME}-mac"
 	LINUX_BUILD_NAME="${__CONFIG_core_CRYPTONOTE_NAME}-linux"
 	WINDOWS_BUILD_NAME="${__CONFIG_core_CRYPTONOTE_NAME}-windows"
+	ALL_BUILD_FILES="${__CONFIG_core_CRYPTONOTE_NAME}-all-files"
 
 	case "$OSTYPE" in
 	  msys*) 	rm -f ${BUILD_PATH}/${WINDOWS_BUILD_NAME}.zip
@@ -62,7 +63,6 @@ if [[ $archive == "1" ]]; then
 		fi
 		cd ${BUILD_PATH}
 		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
-		rm -rf "${NEW_COIN_PATH}/build"
 		;;
 	  darwin*)  	rm -f ${BUILD_PATH}/${MAC_BUILD_NAME}.zip
 		rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}
@@ -71,12 +71,12 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
 		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
-			mkdir -p ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
-			cp -r ${PLUGINS_PATH}/multiply/files/configs/* ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
+			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
+			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.git
+			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.gitignore
 		fi
 		cd ${BUILD_PATH}
 		zip -r ${MAC_BUILD_NAME}.zip ${MAC_BUILD_NAME}/
-		rm -rf "${NEW_COIN_PATH}/build"
 		;;
 	  *)	rm -f ${BUILD_PATH}/${LINUX_BUILD_NAME}.tar.gz
 		rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}
@@ -90,7 +90,17 @@ if [[ $archive == "1" ]]; then
 		fi
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
-		rm -rf "${NEW_COIN_PATH}/build"
 		;;
 	esac
+
+	rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}
+	mkdir -p ${BUILD_PATH}/${ALL_BUILD_FILES}
+	cp -R ${NEW_COIN_PATH}/build/release/src/ ${BUILD_PATH}/${ALL_BUILD_FILES}/
+	if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
+		git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${ALL_BUILD_FILES}/configs
+		rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}/configs/.git
+		rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}/configs/.gitignore
+	fi
+
+	rm -rf "${NEW_COIN_PATH}/build"
 fi

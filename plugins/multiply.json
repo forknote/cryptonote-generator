@@ -10,7 +10,7 @@
                     "action":"add_above",
                     "marker":"} // parameters",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "const char     GENESIS_COINBASE_TX_HEX[]                     = \"%s\";"
                         ],
                         "var":"GENESIS_COINBASE_TX_HEX"
@@ -25,7 +25,7 @@
                     "action":"add_bellow",
                     "marker":"size_t m_blockGrantedFullRewardZone;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  size_t m_blockGrantedFullRewardZoneV1;"
                         ]
                     }
@@ -34,7 +34,7 @@
                     "action":"add_bellow",
                     "marker":"CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  CurrencyBuilder& blockGrantedFullRewardZoneV1(size_t val) { m_currency.m_blockGrantedFullRewardZoneV1 = val; return *this; }"
                         ]
                     }
@@ -43,7 +43,7 @@
                     "action":"add_bellow",
                     "marker":"size_t blockGrantedFullRewardZone()",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  size_t blockGrantedFullRewardZoneV1() const { return m_blockGrantedFullRewardZoneV1; }"
                         ]
                     }
@@ -57,7 +57,7 @@
                     "action":"replace",
                     "marker":"CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "                               m_blockGrantedFullRewardZoneV1;"
                         ]
                     }
@@ -72,7 +72,7 @@
                     "action":"replace",
                     "marker":"parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 :",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    m_currency.blockGrantedFullRewardZoneV1() :"
                         ]
                     }
@@ -86,7 +86,7 @@
                     "action":"add_above",
                     "marker":"#include <boost/program_options.hpp>",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "#include <boost/algorithm/string.hpp>"
                         ]
                     }
@@ -95,7 +95,7 @@
                     "action":"replace",
                     "marker":"const command_line::arg_descriptor<std::string> arg_config_file",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  const command_line::arg_descriptor<std::string> arg_config_file = {\"config-file\", \"Specify configuration file\", \"./configs/-.conf\"};"
                         ]
                     }
@@ -104,7 +104,7 @@
                     "action":"replace",
                     "marker":"for (const auto& cp : CryptoNote::CHECKPOINTS) {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "for (const auto& cp : checkpoint_input) {"
                         ]
                     }
@@ -113,7 +113,7 @@
                     "action":"add_above",
                     "marker":"arg_testnet_on  = {\"testnet\"",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  const command_line::arg_descriptor<std::string> arg_GENESIS_COINBASE_TX_HEX  = {\"GENESIS_COINBASE_TX_HEX\", \"Genesis transaction hex\", CryptoNote::parameters::GENESIS_COINBASE_TX_HEX};  ",
                             "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
                             "  const command_line::arg_descriptor<uint64_t>    arg_MONEY_SUPPLY  = {\"MONEY_SUPPLY\", \"uint64_t\", CryptoNote::parameters::MONEY_SUPPLY};",
@@ -139,7 +139,7 @@
                     "action":"add_bellow",
                     "marker":"command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    command_line::add_arg(desc_cmd_sett, arg_GENESIS_COINBASE_TX_HEX);",
                             "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
                             "    command_line::add_arg(desc_cmd_sett, arg_MONEY_SUPPLY);",
@@ -165,7 +165,7 @@
                     "action":"replace",
                     "marker":"CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
                             "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
                             "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
@@ -203,7 +203,7 @@
                     "action":"replace",
                     "marker":"po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett), vm);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "        std::cout << \"config path exist\" << std::endl;",
                             "        po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett, true), vm);"
                         ]
@@ -213,7 +213,7 @@
                     "action":"add_above",
                     "marker":"po::notify(vm);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "      else",
                             "      {",
                             "        std::cout << \"config path does not exist\" << std::endl;",
@@ -226,7 +226,7 @@
                     "action":"replace",
                     "marker":"std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  std::cout << \"GENESIS_COINBASE_TX_HEX=\" << tx_hex << std::endl;"
                         ]
                     }
@@ -235,7 +235,7 @@
                     "action":"add_bellow",
                     "marker":"CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
                             "    currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
                             "    currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
@@ -271,7 +271,7 @@
                     "action":"add_bellow",
                     "marker":"CryptoNote::Checkpoints checkpoints(logManager);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "std::vector<CryptoNote::CheckpointData> checkpoint_input;",
                             "std::vector<std::string> checkpoint_args = command_line::get_arg(vm, arg_CHECKPOINT);",
                             "std::vector<std::string> checkpoint_blockIds;",
@@ -300,7 +300,7 @@
                     "action":"add_bellow",
                     "marker":"minerConfig.init(vm);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
                             "    if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
                             "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
@@ -319,7 +319,7 @@
                     "action":"add_above",
                     "marker":"CurrencyBuilder& testnet(bool val) { m_currency.m_testnet = val; return *this; }",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  CurrencyBuilder& genesisCoinbaseTxHex(const std::string& val) { m_currency.m_genesisCoinbaseTxHex = val; return *this; }"
                         ]
                     }
@@ -328,7 +328,7 @@
                     "action":"add_bellow",
                     "marker":"bool m_testnet;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  std::string m_genesisCoinbaseTxHex;"
                         ]
                     }
@@ -342,7 +342,7 @@
                     "action":"replace",
                     "marker":"std::string genesisCoinbaseTxHex = ",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  std::string genesisCoinbaseTxHex = m_genesisCoinbaseTxHex;"
                         ]
                     }
@@ -356,7 +356,7 @@
                     "action":"replace",
                     "marker":"m_daemon_port = RPC_DEFAULT_PORT;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    m_daemon_port = std::stoi(command_line::get_arg(vm, arg_rpc_bind_port));"
                         ]
                     }
@@ -365,7 +365,7 @@
                     "action":"replace",
                     "marker":"daemon_port = RPC_DEFAULT_PORT;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "      daemon_port = std::stoi(command_line::get_arg(vm, arg_rpc_bind_port));"
                         ]
                     }
@@ -374,7 +374,7 @@
                     "action":"add_above",
                     "marker":"arg_testnet = { \"testnet\"",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  const command_line::arg_descriptor<std::string> arg_config_file = {\"config-file\", \"Specify configuration file\", \"./configs/-.conf\"};  ",
                             "  const command_line::arg_descriptor<std::string> arg_GENESIS_COINBASE_TX_HEX  = {\"GENESIS_COINBASE_TX_HEX\", \"Genesis transaction hex\", CryptoNote::parameters::GENESIS_COINBASE_TX_HEX};  ",
                             "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
@@ -400,7 +400,7 @@
                     "action":"replace",
                     "marker":"CryptoNote::Currency currency = CryptoNote::CurrencyBuilder(logManager).",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
                             "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
                             "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
@@ -440,7 +440,7 @@
                     "action":"replace",
                     "marker":"testnet(command_line::get_arg(vm, arg_testnet)).currency();",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));",
                             "CryptoNote::Currency currency = currencyBuilder.currency();"
                         ]
@@ -450,7 +450,7 @@
                     "action":"add_bellow",
                     "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  command_line::add_arg(desc_params, command_line::arg_data_dir, Tools::getDefaultDataDirectory());",
                             "  command_line::add_arg(desc_params, arg_config_file);",
                             "  command_line::add_arg(desc_params, arg_GENESIS_COINBASE_TX_HEX);",
@@ -477,7 +477,7 @@
                     "action":"add_bellow",
                     "marker":"po::store(parser.run(), vm);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    std::string data_dir = command_line::get_arg(vm, command_line::arg_data_dir);",
                             "    std::string config = command_line::get_arg(vm, arg_config_file);",
                             "    boost::filesystem::path data_dir_path(data_dir);",
@@ -509,7 +509,7 @@
                     "action":"replace",
                     "marker":"const command_line::arg_descriptor<uint16_t> wallet_rpc_server::arg_rpc_bind_port = {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "const command_line::arg_descriptor<uint16_t> wallet_rpc_server::arg_rpc_bind_port = { \"wallet-rpc-bind-port\", \"Starts wallet as rpc server for wallet operations, sets bind port for server\", 0, true };"
                         ]
                     }
@@ -518,7 +518,7 @@
                     "action":"replace",
                     "marker":"const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_bind_ip = {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_bind_ip = { \"wallet-rpc-bind-ip\", \"Specify ip to bind rpc server\", \"127.0.0.1\" };"
                         ]
                     }
@@ -532,7 +532,7 @@
                     "action":"add_above",
                     "marker":"P2pProtocolTypes.h",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "#include <boost/uuid/uuid.hpp>",
                             "#include <boost/uuid/uuid_io.hpp>",
                             "#include \"P2pNetworks.h\""
@@ -543,7 +543,7 @@
                     "action":"add_bellow",
                     "marker":"bool getHideMyPort() const;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  boost::uuids::uuid getNetworkId() const;",
                             "  std::string getP2pStatTrustedPubKey() const;"
                        ]
@@ -553,7 +553,7 @@
                     "action":"add_bellow",
                     "marker":"void setHideMyPort(bool hide);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  void setNetworkId(const boost::uuids::uuid id);",
                             "  void setP2pStatTrustedPubKey(const std::string key);"
                        ]
@@ -563,7 +563,7 @@
                     "action":"add_bellow",
                     "marker":"bool hideMyPort;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  boost::uuids::uuid networkId;",
                             "  std::string p2pStatTrustedPubKey;"
                        ]
@@ -578,7 +578,7 @@
                     "action":"add_above",
                     "marker":"const command_line::arg_descriptor<bool> arg_p2p_hide_my_port",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "const command_line::arg_descriptor<std::string> arg_network_id = {\"BYTECOIN_NETWORK\", \"Network id\", boost::lexical_cast<std::string>(BYTECOIN_NETWORK)};",
                             "const command_line::arg_descriptor<std::string> arg_P2P_STAT_TRUSTED_PUB_KEY = {\"P2P_STAT_TRUSTED_PUB_KEY\", \"P2P stat trusted pub key\", \"\"};"
                         ]
@@ -588,7 +588,7 @@
                     "action":"add_bellow",
                     "marker":"command_line::add_arg(desc, arg_p2p_hide_my_port);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  command_line::add_arg(desc, arg_P2P_STAT_TRUSTED_PUB_KEY);",
                             "  command_line::add_arg(desc, arg_network_id);"
                         ]
@@ -598,7 +598,7 @@
                     "action":"add_bellow",
                     "marker":"allowLocalIp = command_line::get_arg(vm, arg_p2p_allow_local_ip);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  p2pStatTrustedPubKey = command_line::get_arg(vm, arg_P2P_STAT_TRUSTED_PUB_KEY);",
                             "  networkId = boost::lexical_cast<boost::uuids::uuid>(command_line::get_arg(vm, arg_network_id));"
                         ]
@@ -608,7 +608,7 @@
                     "action":"add_bellow",
                     "marker":"hideMyPort = false;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  p2pStatTrustedPubKey = \"\";"
                         ]
                     }
@@ -617,7 +617,7 @@
                     "action":"add_above",
                     "marker":"std::string NetNodeConfig::getConfigFolder() const {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  boost::uuids::uuid NetNodeConfig::getNetworkId() const {",
                             "  return networkId;",
                             "}",
@@ -633,7 +633,7 @@
                     "action":"add_above",
                     "marker":"void NetNodeConfig::setConfigFolder(const std::string& folder) {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "void NetNodeConfig::setNetworkId(boost::uuids::uuid id) {",
                             "  networkId = id;",
                             "}",
@@ -654,7 +654,7 @@
                     "action":"add_bellow",
                     "marker":"boost::uuids::uuid m_network_id;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    std::string m_p2pStatTrustedPubKey;"
                        ]
                     }
@@ -668,7 +668,7 @@
                     "action":"replace",
                     "marker":"if (!config.getTestnet()) {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    if (!config.getTestnet() && config.getSeedNodes().size() == 0) {"
                        ]
                     }
@@ -677,7 +677,7 @@
                     "action":"replace",
                     "marker":"Common::podFromHex(CryptoNote::P2P_STAT_TRUSTED_PUB_KEY, pk);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    Common::podFromHex(m_p2pStatTrustedPubKey, pk);"
                        ]
                     }
@@ -686,7 +686,7 @@
                     "action":"add_bellow",
                     "marker":"m_allow_local_ip = config.getAllowLocalIp();",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    m_network_id = config.getNetworkId();",
                             "    m_p2pStatTrustedPubKey = config.getP2pStatTrustedPubKey();"
                        ]
@@ -701,7 +701,7 @@
                     "action":"add_bellow",
                     "marker":"#include \"RpcNodeConfiguration.h\"",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "#include \"CoinBaseConfiguration.h\""
                        ]
                     }
@@ -710,7 +710,7 @@
                     "action":"add_bellow",
                     "marker":"RpcNodeConfiguration remoteNodeConfig;",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  CoinBaseConfiguration coinBaseConfig;"
                        ]
                     }
@@ -724,7 +724,7 @@
                     "action":"replace",
                     "marker":"cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
                        ]
                     }
@@ -733,7 +733,7 @@
                     "action":"replace",
                     "marker":"confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
                        ]
                     }
@@ -742,7 +742,7 @@
                     "action":"replace",
                     "marker":"po::store(po::parse_config_file(confStream, confOptionsDesc), confOptions);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    po::store(po::parse_config_file(confStream, confOptionsDesc, true), confOptions);"
                        ]
                     }
@@ -751,7 +751,7 @@
                     "action":"replace",
                     "marker":"(\"config,c\", po::value<std::string>(), \"configuration file\");",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  (\"config,c\", po::value<std::string>()->default_value(\"./configs/-.conf\"), \"configuration file\");"
                        ]
                     }
@@ -760,7 +760,7 @@
                     "action":"add_bellow",
                     "marker":"RpcNodeConfiguration::initOptions(remoteNodeOptions);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  po::options_description coinBaseOptions(\"Coin Base Options\");",
                             "  CoinBaseConfiguration::initOptions(coinBaseOptions);"
                        ]
@@ -770,7 +770,7 @@
                     "action":"add_bellow",
                     "marker":"remoteNodeConfig.init(confOptions);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    coinBaseConfig.init(confOptions);"
                        ]
                     }
@@ -779,7 +779,7 @@
                     "action":"_add_bellow",
                     "marker":"remoteNodeConfig.init(cmdOptions);",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "    coinBaseConfig.init(cmdOptions);"
                        ]
                     }
@@ -793,7 +793,7 @@
                     "action":"add_above",
                     "marker":"if (config.gateConfiguration.testnet) {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  currencyBuilder.genesisCoinbaseTxHex(config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
                             "  currencyBuilder.publicAddressBase58Prefix(config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
                             "  currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
@@ -836,7 +836,7 @@
                     "action":"add_above",
                     "marker":"if (options.count(\"daemon-port\") != 0 && (!options[\"daemon-port\"].defaulted() || daemonPort == 0)) {",
                     "parameters": {
-                        "replace_text":[
+                        "text":[
                             "  if (options.count(\"rpc-bind-port\") != 0) {",
                             "    daemonPort = options[\"rpc-bind-port\"].as<uint16_t>();",
                             "  }"
