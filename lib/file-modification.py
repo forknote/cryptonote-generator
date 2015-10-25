@@ -58,8 +58,8 @@ def text_creator(change):
     return replace_text
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--plugin', action='store', dest='plugin_file',
-                    help='Plugin filename. Format: json'
+parser.add_argument('--extension', action='store', dest='extension_file',
+                    help='Extension filename. Format: json'
                     )
 parser.add_argument('--config', action='store', dest='config_file',
                     default='config.json',
@@ -72,18 +72,18 @@ parser.add_argument('--source', action='store', dest='source',
 args = parser.parse_args()
 
 try:
-    plugin_json_data=open(args.plugin_file)
+    extension_json_data=open(args.extension_file)
 except IOError as e:
-    print "I/O error({0}): {1} - {2}".format(e.errno, e.strerror, args.plugin_file)
+    print "I/O error({0}): {1} - {2}".format(e.errno, e.strerror, args.extension_file)
     sys.exit(2)
 else:
     try:
-        plugin = json.load(plugin_json_data)
+        extension = json.load(extension_json_data)
     except ValueError as e:
-        print "Not a valid JSON file: " + args.plugin_file
+        print "Not a valid JSON file: " + args.extension_file
         sys.exit(3)
     else:
-        plugin_json_data.close()
+        extension_json_data.close()
 
 try:
     config_json_data=open(args.config_file)
@@ -99,17 +99,17 @@ else:
     else:
         config_json_data.close()
 
-required_plugins = [i for i in plugin['required']]
-loaded_plugins = config['plugins'][:(config['plugins'].index(plugin['file']))]
-if set(required_plugins) > set(loaded_plugins):
-    print bcolors.FAIL + "ERROR: Required plugin not loaded:  required" + str(required_plugins) + "   loaded" + str(loaded_plugins) + bcolors.ENDC + "\n"
+required_extensions = [i for i in extension['required']]
+loaded_extensions = config['extensions'][:(config['extensions'].index(extension['file']))]
+if set(required_extensions) > set(loaded_extensions):
+    print bcolors.FAIL + "ERROR: Required extension not loaded:  required" + str(required_extensions) + "   loaded" + str(loaded_extensions) + bcolors.ENDC + "\n"
     exit(3)
 
 
-for file in plugin['files']:
+for file in extension['files']:
     # Add new file to output source
     if 'action' in file.keys() and 'source' in file.keys() and file['action'] == 'add':
-        source_path = os.path.dirname(os.path.realpath(args.plugin_file)) + file['source']
+        source_path = os.path.dirname(os.path.realpath(args.extension_file)) + file['source']
         if (os.path.isfile(source_path)):
             sys.__stdout__.write("- Adding file " + source_path + "\n")
             shutil.copyfile(source_path,args.source + file['path'])

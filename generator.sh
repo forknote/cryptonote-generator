@@ -51,13 +51,13 @@ function generate_coin {
 	[ -d "${TEMP_PATH}" ] || mkdir -p "${TEMP_PATH}"
 	cp -af "${BASE_COIN_PATH}/." "${TEMP_PATH}"
 
-	# Plugins
+	# Extensions
 	echo "Personalize base coin source..."
-	export __CONFIG_plugins_text="${__CONFIG_plugins[@]}"
-	for plugin in "${__CONFIG_plugins[@]}"
+	export __CONFIG_extensions_text="${__CONFIG_extensions[@]}"
+	for extension in "${__CONFIG_extensions[@]}"
 	do
-		echo "${bold}Execute ${PLUGINS_PATH}/${plugin}${normal}"
-		python "lib/file-modification.py" --plugin "${PLUGINS_PATH}/${plugin}" --config=$CONFIG_FILE --source=${TEMP_PATH}
+		echo "${bold}Execute ${EXTENSIONS_PATH}/${extension}${normal}"
+		python "lib/file-modification.py" --extension "${EXTENSIONS_PATH}/${extension}" --config=$CONFIG_FILE --source=${TEMP_PATH}
 	done
 
 	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"

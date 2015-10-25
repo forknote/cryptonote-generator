@@ -66,8 +66,8 @@ Explanation for each field:
 ```
 {
 
-/* Plugins to load */ 
-"plugins": [ "core/bytecoin.json", "print-genesis-tx.json" ],
+/* Extensions to load */ 
+"extensions": [ "core/bytecoin.json", "print-genesis-tx.json" ],
 
 /* Source coin. Bytecoin example */ 
 "base_coin":{
@@ -208,7 +208,7 @@ The process under Windows is exacly the same, you need just to remove ~~bash ins
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-Plugins must be located in *plugins* folder.
+Extensions must be located in *extensions* folder.
 
 
 Donations
@@ -222,7 +222,7 @@ Donations
 
 Additional credits
 ------------------
-* [piotaak](https://github.com/piotaak) (tests for cryptonotecoin-core plugin)
+* [piotaak](https://github.com/piotaak) (tests for cryptonotecoin-core extension)
 
 License
 -------

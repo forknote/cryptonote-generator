@@ -57,9 +57,10 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_DAEMON_NAME}.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/walletd.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
-			mkdir -p ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
-			cp -r ${PLUGINS_PATH}/multiply/files/configs/* ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
+		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
+			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
+			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.git
+			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.gitignore
 		fi
 		cd ${BUILD_PATH}
 		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
@@ -70,7 +71,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
-		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
+		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
 			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
 			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.git
 			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.gitignore
@@ -84,9 +85,10 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_DAEMON_NAME} ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${LINUX_BUILD_NAME}
-		if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
-			mkdir -p ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
-			cp -r ${PLUGINS_PATH}/multiply/files/configs/* ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
+		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
+			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
+			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.git
+			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.gitignore
 		fi
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
@@ -96,7 +98,7 @@ if [[ $archive == "1" ]]; then
 	rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}
 	mkdir -p ${BUILD_PATH}/${ALL_BUILD_FILES}
 	cp -R ${NEW_COIN_PATH}/build/release/src/ ${BUILD_PATH}/${ALL_BUILD_FILES}/
-	if [[ " ${__CONFIG_plugins_text} " == *"multiply.json"* ]]; then
+	if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
 		git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${ALL_BUILD_FILES}/configs
 		rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}/configs/.git
 		rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}/configs/.gitignore
