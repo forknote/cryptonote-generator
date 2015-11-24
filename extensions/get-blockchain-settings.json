@@ -1,7 +1,7 @@
 {
     "file":"get-blockchain-settings.json",
     "description":"Prints blockchain settings as json",
-    "required":[ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json" ],
+    "required":[ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json", "multiply.json" ],
     "files": [ 
         {
             "path":"/src/rpc/CoreRpcServerCommandsDefinitions.h",

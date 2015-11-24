@@ -53,8 +53,7 @@ def text_creator(change):
     else:
         replace_text = '\n'.join(change['parameters']['text']) + "\n" 
 
-    #delete
-    sys.__stdout__.write("Replace text: " + replace_text + "\n")
+    # sys.__stdout__.write("Replace text: " + replace_text + "\n")
     return replace_text
 
 parser = argparse.ArgumentParser()
@@ -72,7 +71,7 @@ parser.add_argument('--source', action='store', dest='source',
 args = parser.parse_args()
 
 try:
-    extension_json_data=open(args.extension_file)
+    extension_json_data = open(args.extension_file)
 except IOError as e:
     print "I/O error({0}): {1} - {2}".format(e.errno, e.strerror, args.extension_file)
     sys.exit(2)
@@ -86,7 +85,7 @@ else:
         extension_json_data.close()
 
 try:
-    config_json_data=open(args.config_file)
+    config_json_data = open(args.config_file)
 except IOError as e:
     print "I/O error({0}): {1} - {2}".format(e.errno, e.strerror, args.config_file)
     sys.exit(2)
@@ -121,7 +120,7 @@ for file in extension['files']:
 
     # If multiline, get the whole file
     if 'multiline' in file.keys() and file['multiline'] == True:
-        work_file = open(args.source + file['path'],'r')
+        work_file = open(args.source + file['path'], 'r')
         work_file_content = work_file.read()
         work_file.close()
 
