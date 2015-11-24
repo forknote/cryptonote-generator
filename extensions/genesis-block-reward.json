@@ -11,12 +11,12 @@
                     "marker":"const unsigned EMISSION_SPEED_FACTOR",
                     "parameters": {
                         "text":[
-                            "const uint64_t GENESIS_BLOCK_REWARD                          = ((MONEY_SUPPLY / 100) * %s);"
+                            "const uint64_t GENESIS_BLOCK_REWARD                          = %s;"
                         ],
                         "replace_text_alt":[
                             "const uint64_t GENESIS_BLOCK_REWARD                          = 0;"
                         ],
-                        "var":"PREMINED_PERCENT"
+                        "var":"GENESIS_BLOCK_REWARD"
                     }
                 }
             ]

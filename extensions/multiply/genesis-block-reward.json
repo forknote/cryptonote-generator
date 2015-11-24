@@ -11,7 +11,7 @@
                     "marker":"const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
                     "parameters": {
                         "text":[
-                            "  const command_line::arg_descriptor<uint64_t>    arg_PREMINED_PERCENT  = {\"PREMINED_PERCENT\", \"uint64_t\", 0};"
+                            "  const command_line::arg_descriptor<uint64_t>    arg_GENESIS_BLOCK_REWARD  = {\"GENESIS_BLOCK_REWARD\", \"uint64_t\", 0};"
                         ]
                     }
                 },
@@ -20,7 +20,7 @@
                     "marker":"command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
                     "parameters": {
                         "text":[
-                            "    command_line::add_arg(desc_cmd_sett, arg_PREMINED_PERCENT);"
+                            "    command_line::add_arg(desc_cmd_sett, arg_GENESIS_BLOCK_REWARD);"
                         ]
                     }
                 },
@@ -58,7 +58,7 @@
                             "  }",
                             "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
                             "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "  currencyBuilder.genesisBlockReward((command_line::get_arg(vm, arg_MONEY_SUPPLY) / 100) * command_line::get_arg(vm, arg_PREMINED_PERCENT));",
+                            "  currencyBuilder.genesisBlockReward(command_line::get_arg(vm, arg_GENESIS_BLOCK_REWARD));",
                             "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction(targets);"
                         ]
                     }
@@ -68,7 +68,7 @@
                     "marker":"currencyBuilder.testnet(testnet_mode);",
                     "parameters": {
                         "text":[
-                            "    currencyBuilder.genesisBlockReward((command_line::get_arg(vm, arg_MONEY_SUPPLY) / 100) * command_line::get_arg(vm, arg_PREMINED_PERCENT));"
+                            "    currencyBuilder.genesisBlockReward(command_line::get_arg(vm, arg_GENESIS_BLOCK_REWARD));"
                         ]
                     }
                 }

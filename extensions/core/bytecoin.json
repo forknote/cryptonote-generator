@@ -11,9 +11,9 @@
                     "marker":"TARGET Daemon PROPERTY OUTPUT_NAME",
                     "parameters": {
                         "text":[
-                            "set_property(TARGET Daemon PROPERTY OUTPUT_NAME \"%s\")"
+                            "set_property(TARGET Daemon PROPERTY OUTPUT_NAME \"%sd\")"
                         ],
-                        "var":"DAEMON_NAME"
+                        "var":"CRYPTONOTE_NAME"
                     }
                 }
             ]
@@ -251,9 +251,10 @@
                     "parameters": {
                         "mandatory":false,
                         "text":[
-                            "const std::initializer_list<CheckpointData> CHECKPOINTS = { %s };"
+                            "\\1 %s \\3"
                         ],
-                        "var":"CHECKPOINTS"
+                        "var":"CHECKPOINTS",
+                        "separator":", "
                     }
                 },
                 {
@@ -266,6 +267,23 @@
                         "var":"SEED_NODES",
                         "separator":", ",
                         "quote_it":true
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/CryptoNoteConfig.h",
+            "multiline":true,
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"(\\d+):([0-9a-fA-F]{64})",
+                    "may_not_exist": true,
+                    "parameters": {
+                        "mandatory":false,
+                        "text":[
+                            "{\\1, \"\\2\"}"
+                        ]
                     }
                 }
             ]
@@ -293,9 +311,24 @@
                     "marker":"const static boost::uuids::uuid BYTECOIN_NETWORK",
                     "parameters": {
                         "text":[
-                            "  const static boost::uuids::uuid BYTECOIN_NETWORK = { { %s} };"
+                            "  const static boost::uuids::uuid BYTECOIN_NETWORK = { { %s } };"
                         ],
                         "var":"BYTECOIN_NETWORK"
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/P2p/P2pNetworks.h",
+            "multiline":true,
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"(const static boost::uuids::uuid BYTECOIN_NETWORK = { { )([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})( } };)",
+                    "parameters": {
+                        "text":[
+                            "\\1 0x\\2, 0x\\3, 0x\\4, 0x\\5, 0x\\6, 0x\\7, 0x\\8, 0x\\9, 0x\\10, 0x\\11, 0x\\12, 0x\\13, 0x\\14, 0x\\15, 0x\\16, 0x\\17 \\18"
+                        ]
                     }
                 }
             ]

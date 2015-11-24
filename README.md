@@ -78,7 +78,6 @@ Explanation for each field:
 "core":{
 	/* Check uniqueness with Google and Map of Coins. */
 	"CRYPTONOTE_NAME":"dashcoin",
-	"DAEMON_NAME":"dashcoind",
 
 	/* Address prefix. Generate here: https://cryptonotestarter.org/inner.html */
 	"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":72,
@@ -90,7 +89,7 @@ Explanation for each field:
 	"SEED_NODES":["162.243.247.45:29080", "146.185.191.90:29080", "104.131.132.129:29080", "128.199.146.243:29080"],
 
 	/* Array with checkpoints. */
-	"CHECKPOINTS":"{28000, \"70d2531151529ac00bf875281e15f51324934bc85e5733dcd92e1ccb1a665ff8\"}, {40000, \"c181ec9223a91fef8658c7aa364c093c41c28d250870ca1ed829bf74f0abf038\"}, {55000, \"5289fe9f2dce8f51441019b9fbc85c70ad85ff49a666ef0109f3269890c6af6d\"}, {70000, \"193e335f34b8b8f1fab3857111cb668c2720340e80176a25155071e573481acb\"}, {87500, \"cce8a035f34457ec1098ab41e5949cac3db00ebff3503e26f36bfa057543095a\"}, {91453, \"ad46d069bb2726a9bc5962cda6b2108376c0b95c157da0f09ee32458f486d87f\"}",
+	"CHECKPOINTS":["28000:70d2531151529ac00bf875281e15f51324934bc85e5733dcd92e1ccb1a665ff8", "40000:c181ec9223a91fef8658c7aa364c093c41c28d250870ca1ed829bf74f0abf038", "55000:5289fe9f2dce8f51441019b9fbc85c70ad85ff49a666ef0109f3269890c6af6d", "70000:193e335f34b8b8f1fab3857111cb668c2720340e80176a25155071e573481acb", "87500:cce8a035f34457ec1098ab41e5949cac3db00ebff3503e26f36bfa057543095a", "91453:ad46d069bb2726a9bc5962cda6b2108376c0b95c157da0f09ee32458f486d87f"],
 	
 	/* Created with connectivity_tool. Leave empty if not needed */
 	"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
@@ -106,7 +105,7 @@ Explanation for each field:
 	   You can define number explicitly (for example UINT64_C(858986905600000000)). */
 	"MONEY_SUPPLY":"static_cast<uint64_t>(-1)",
 	"EMISSION_SPEED_FACTOR":18,
-	"PREMINED_PERCENT":0,
+	"GENESIS_BLOCK_REWARD":0,
 	"DIFFICULTY_TARGET":120,   // In seconds
 
 	"MINIMUM_FEE":1000000,   // 10^6. Equals to 0.01 in Dashcoin

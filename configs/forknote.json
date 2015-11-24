@@ -1,18 +1,17 @@
 {
-	"extensions": [ "core/bytecoin.json", "print-genesis-tx.json", "simplewallet-default-fee.json", "max-transaction-size-limit.json", "genesis-block-reward.json", "multiply.json", "multiply/max-transaction-size-limit.json", "multiply/genesis-block-reward.json" ],
+	"extensions": [ "core/bytecoin.json", "print-genesis-tx.json", "simplewallet-default-fee.json", "max-transaction-size-limit.json", "genesis-block-reward.json", "blockchain-explorer.json", "get-blockchain-settings.json", "multiply.json", "multiply/max-transaction-size-limit.json", "multiply/genesis-block-reward.json" ],
 	"base_coin":{
 		"name":"bytecoin",
 		"git":"https://github.com/amjuarez/bytecoin.git"
 	},
 	"core":{
 		"CRYPTONOTE_NAME":"forknote",
-		"DAEMON_NAME":"forknoted",
 		"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":6,
 		"P2P_DEFAULT_PORT":8080,
 		"RPC_DEFAULT_PORT":8081,
 		"SEED_NODES":[ "seed.bytecoin.org:8080", "85.25.201.95:8080", "85.25.196.145:8080", "85.25.196.146:8080", "85.25.196.144:8080", "5.199.168.138:8080", "62.75.236.152:8080", "85.25.194.245:8080", "95.211.224.160:8080", "144.76.200.44:8080"],
 		"GENESIS_COINBASE_TX_HEX":"010a01ff0001ffffffffffff0f029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
-		"BYTECOIN_NETWORK":"0x11 ,0x10, 0x01, 0x11 , 0x11, 0x00 , 0x01, 0x01, 0x10, 0x11, 0x00, 0x12, 0x10, 0x11, 0x01, 0x10",
+		"BYTECOIN_NETWORK":"11100111-1100-0101-1011-001210110110",
 		"UPGRADE_HEIGHT":546602
 	}
 }

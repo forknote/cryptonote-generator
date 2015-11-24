@@ -101,7 +101,8 @@ else:
 
 required_extensions = [i for i in extension['required']]
 loaded_extensions = config['extensions'][:(config['extensions'].index(extension['file']))]
-if set(required_extensions) > set(loaded_extensions):
+
+if not (set(required_extensions) <= set(loaded_extensions)):
     print bcolors.FAIL + "ERROR: Required extension not loaded:  required" + str(required_extensions) + "   loaded" + str(loaded_extensions) + bcolors.ENDC + "\n"
     exit(3)
 
@@ -134,6 +135,11 @@ for file in extension['files']:
                 sys.__stdout__.write("  + Pretest: marker exists - " + change['marker'] + "\n")
                 del changes[index]
 
+        for index, change in reverse_enumerate(changes):
+            if change['may_not_exist']:
+                sys.__stdout__.write(bcolors.WARNING + "WARNING: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
+                del changes[index]
+
         for change in changes:
             sys.__stdout__.write(bcolors.FAIL + "ERROR: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
             sys.exit(2)
@@ -162,6 +168,11 @@ for file in extension['files']:
                     sys.__stdout__.write("  + Pretest: marker exists - " + change['marker'] + "\n")
                     del changes[index]
             sys.stdout.write(line)
+
+        for index, change in reverse_enumerate(changes):
+            if change['may_not_exist']:
+                sys.__stdout__.write(bcolors.WARNING + "WARNING: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
+                del changes[index]
 
         for change in changes:
             sys.__stdout__.write(bcolors.FAIL + "ERROR: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
