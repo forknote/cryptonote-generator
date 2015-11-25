@@ -221,7 +221,7 @@
             ]
         },
         {
-            "path":"/src/Daemon/daemon.cpp",
+            "path":"/src/Daemon/Daemon.cpp",
             "changes": [
                 {
                     "action":"add_bellow",
