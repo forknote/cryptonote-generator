@@ -4,7 +4,7 @@
     "required":[ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json", "multiply.json" ],
     "files": [ 
         {
-            "path":"/src/rpc/CoreRpcServerCommandsDefinitions.h",
+            "path":"/src/Rpc/CoreRpcServerCommandsDefinitions.h",
             "changes": [
                 {
                     "action":"add_above",
