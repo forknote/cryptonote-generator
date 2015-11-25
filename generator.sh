@@ -9,8 +9,10 @@ set -o errexit
 [ "$OSTYPE" != "win"* ] || die "Install MinGW to use on Windows"
 
 # For bold text
-bold=$(tput bold)
-normal=$(tput sgr0)
+if [ "$OSTYPE" != "msys" ]; then
+	bold=$(tput bold)
+	normal=$(tput sgr0)
+fi
 
 # Set directory vars
 . "vars.cfg"
