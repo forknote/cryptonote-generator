@@ -4,7 +4,7 @@
     "required":[ "core/bytecoin.json" ],
     "files": [ 
         {
-            "path":"/src/rpc/CoreRpcServerCommandsDefinitions.h",
+            "path":"/src/Rpc/CoreRpcServerCommandsDefinitions.h",
             "changes": [
                 {
                     "action":"add_above",
@@ -183,7 +183,7 @@
             ]
         },
         {
-            "path":"/src/rpc/RpcServer.h",
+            "path":"/src/Rpc/RpcServer.h",
             "changes": [
                 {
                     "action":"add_above",
@@ -209,7 +209,7 @@
             ]
         },
         {
-            "path":"/src/rpc/RpcServer.cpp",
+            "path":"/src/Rpc/RpcServer.cpp",
             "changes": [
                 {
                     "action":"add_above",
