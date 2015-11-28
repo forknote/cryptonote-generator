@@ -1,0 +1,21 @@
+{
+    "file":"enable-cors.json",
+    "description":"Adds CORS support",
+    "required":[ "core/bytecoin.json" ],
+    "files": [ 
+        {
+            "path":"/src/Rpc/RpcServer.cpp",
+            "changes": [
+                {
+                    "action":"add_above",
+                    "marker":"response.addHeader(\"Content-Type\", \"application/json\");",
+                    "parameters": {
+                        "text":[
+                            "response.addHeader(\"Access-Control-Allow-Origin\", \"*\");"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
