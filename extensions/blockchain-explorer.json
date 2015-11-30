@@ -372,6 +372,7 @@
                             "  transaction_short.hash = Common::podToHex(getObjectHash(blk.baseTransaction));",
                             "  transaction_short.fee = 0;",
                             "  transaction_short.amount_out = get_outs_money_amount(blk.baseTransaction);",
+                            "  transaction_short.size = getObjectBinarySize(blk.baseTransaction);",
                             "  res.block.transactions.push_back(transaction_short);",
                             "",
                             "",
