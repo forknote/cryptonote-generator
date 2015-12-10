@@ -213,12 +213,12 @@
             "changes": [
                 {
                     "action":"add_above",
-                    "marker":"{ \"getblockcount\", makeMemberMethod(&RpcServer::on_getblockcount) },",
+                    "marker":"{ \"getblockcount\", { makeMemberMethod(&RpcServer::on_getblockcount), true } },",
                     "parameters": {
                         "text":[
-                            "      { \"f_blocks_list_json\", makeMemberMethod(&RpcServer::f_on_blocks_list_json) },",
-                            "      { \"f_block_json\", makeMemberMethod(&RpcServer::f_on_block_json) },",
-                            "      { \"f_transaction_json\", makeMemberMethod(&RpcServer::f_on_transaction_json) },"
+                            "      { \"f_blocks_list_json\", { makeMemberMethod(&RpcServer::f_on_blocks_list_json), false } },",
+                            "      { \"f_block_json\", { makeMemberMethod(&RpcServer::f_on_block_json), false } },",
+                            "      { \"f_transaction_json\", { makeMemberMethod(&RpcServer::f_on_transaction_json), false } },"
                         ]
                     }
                 },

@@ -1,5 +1,5 @@
 {
-	"extensions": [ "core/bytecoin.json", "print-genesis-tx.json", "simplewallet-default-fee.json", "max-transaction-size-limit.json", "genesis-block-reward.json", "blockchain-explorer.json", "multiply.json", "multiply/max-transaction-size-limit.json", "multiply/genesis-block-reward.json", "get-blockchain-settings.json" ],
+	"extensions": [ "core/bytecoin.json", "patches.json", "print-genesis-tx.json", "simplewallet-default-fee.json", "max-transaction-size-limit.json", "genesis-block-reward.json", "blockchain-explorer.json", "multiply.json", "multiply/max-transaction-size-limit.json", "multiply/genesis-block-reward.json", "get-blockchain-settings.json" ],
 	"base_coin":{
 		"name":"bytecoin",
 		"git":"https://github.com/amjuarez/bytecoin.git"

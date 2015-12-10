@@ -1,0 +1,30 @@
+{
+    "file":"patches.json",
+    "description":"Fix unfixed bugs in Bytecoin's master repository",
+    "required":[ "core/bytecoin.json" ],
+    "files": [ 
+        {
+            "path":"/tests/UnitTests/TestWalletService.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"virtual WalletTransaction getTransaction(size_t transactionIndex) const { return WalletTransaction(); }",
+                    "parameters": {
+                        "text":[
+                            "virtual WalletTransaction  getTransaction(size_t transactionIndex) const override { return WalletTransaction(); }"
+                        ]
+                    }
+                },
+                {
+                    "action":"replace",
+                    "marker":"virtual WalletTransaction getTransaction(size_t transactionIndex) const {",
+                    "parameters": {
+                        "text":[
+                            "virtual WalletTransaction getTransaction(size_t transactionIndex) const override {"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

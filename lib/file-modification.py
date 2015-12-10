@@ -135,7 +135,7 @@ for file in extension['files']:
                 del changes[index]
 
         for index, change in reverse_enumerate(changes):
-            if change['may_not_exist']:
+            if 'may_not_exist' in change and change['may_not_exist']:
                 sys.__stdout__.write(bcolors.WARNING + "WARNING: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
                 del changes[index]
 
@@ -169,7 +169,7 @@ for file in extension['files']:
             sys.stdout.write(line)
 
         for index, change in reverse_enumerate(changes):
-            if change['may_not_exist']:
+            if 'may_not_exist' in change and change['may_not_exist']:
                 sys.__stdout__.write(bcolors.WARNING + "WARNING: marker not found - " + change['marker'] + bcolors.ENDC + "\n")
                 del changes[index]
 

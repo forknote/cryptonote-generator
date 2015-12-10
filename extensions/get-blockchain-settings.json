@@ -253,10 +253,10 @@
             "changes": [
                 {
                     "action":"add_above",
-                    "marker":"{ \"getblockcount\", makeMemberMethod(&RpcServer::on_getblockcount) },",
+                    "marker":"{ \"getblockcount\", { makeMemberMethod(&RpcServer::on_getblockcount), true } },",
                     "parameters": {
                         "text":[
-                            "      { \"f_get_blockchain_settings\", makeMemberMethod(&RpcServer::f_on_get_blockchain_settings) },"
+                            "      { \"f_get_blockchain_settings\", { makeMemberMethod(&RpcServer::f_on_get_blockchain_settings), true } },"
                         ]
                     }
                 },
