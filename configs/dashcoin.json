@@ -1,5 +1,5 @@
 {
-	"extensions": [ "core/bytecoin.json", "patches.json", "simplewallet-default-fee.json", "max-transaction-size-limit.json" ],
+	"extensions": [ "core/bytecoin.json", "simplewallet-default-fee.json", "max-transaction-size-limit.json" ],
 	"base_coin":{
 		"name":"bytecoin",
 		"git":"https://github.com/amjuarez/bytecoin.git"
