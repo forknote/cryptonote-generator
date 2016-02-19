@@ -73,6 +73,68 @@
                     }
                 }
             ]
+        },
+        {
+            "path":"/src/PaymentGateService/CoinBaseConfiguration.h",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"uint64_t MONEY_SUPPLY;",
+                    "parameters": {
+                        "text":[
+                            "  uint64_t GENESIS_BLOCK_REWARD;"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/PaymentGateService/CoinBaseConfiguration.cpp",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
+                    "parameters": {
+                        "text":[
+                            "    GENESIS_BLOCK_REWARD=CryptoNote::parameters::GENESIS_BLOCK_REWARD;"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
+                    "parameters": {
+                        "text":[
+                            "    (\"GENESIS_BLOCK_REWARD\", po::value<uint64_t>()->default_value(0), \"uint64_t\")"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_above",
+                    "marker":"if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
+                    "parameters": {
+                        "text":[
+                            "  if (options.count(\"GENESIS_BLOCK_REWARD\")) {",
+                            "    GENESIS_BLOCK_REWARD = options[\"GENESIS_BLOCK_REWARD\"].as<uint64_t>();",
+                            "  }"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/PaymentGateService/PaymentGateService.cpp",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+                    "parameters": {
+                        "text":[
+                            "  currencyBuilder.genesisBlockReward(config.coinBaseConfig.GENESIS_BLOCK_REWARD);"
+                       ]
+                    }
+                }
+            ]
         }
     ]
 }

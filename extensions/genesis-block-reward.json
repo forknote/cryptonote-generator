@@ -156,7 +156,7 @@
                             "    uint64_t target_amount = block_reward / targets.size();",
                             "    uint64_t first_target_amount = target_amount + block_reward % targets.size();",
 
-                            "    for (size_t i = 0; i < targets.size(); i++) {",
+                            "    for (size_t i = 0; i < targets.size(); ++i) {",
                             "      Crypto::KeyDerivation derivation = boost::value_initialized<Crypto::KeyDerivation>();",
                             "      Crypto::PublicKey outEphemeralPubKey = boost::value_initialized<Crypto::PublicKey>();",
                             "      bool r = Crypto::generate_key_derivation(targets[i].viewPublicKey, txkey.secretKey, derivation);",
@@ -295,6 +295,117 @@
                 }
             ]
         },
+        {
+            "path":"/src/PaymentGate/WalletService.h",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"std::string walletPassword;",
+                    "parameters": {
+                        "text":[
+                            "  bool syncFromZero;"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/PaymentGate/WalletService.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"auto address = wallet->createAddress();",
+                    "parameters": {
+                        "text":[
+                            "  std::string address;",
+                            "  if (conf.syncFromZero) {",
+                            "    CryptoNote::KeyPair spendKey;",
+                            "    Crypto::generate_keys(spendKey.publicKey, spendKey.secretKey);",
+                            "    address = wallet->createAddress(spendKey.secretKey);",
+                            "  } else",
+                            "    address = wallet->createAddress();"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/PaymentGateService/PaymentGateService.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"config.gateConfiguration.containerPassword",
+                    "parameters": {
+                        "text":[
+                            "    config.gateConfiguration.containerPassword,",
+                            "    config.gateConfiguration.syncFromZero"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/PaymentGateService/PaymentServiceConfiguration.h",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"bool printAddresses;",
+                    "parameters": {
+                        "text":[
+                            "  bool syncFromZero;"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/PaymentGateService/PaymentServiceConfiguration.cpp",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"printAddresses = false;",
+                    "parameters": {
+                        "text":[
+                            "  syncFromZero = false;"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"(\"log-level\", po::value<size_t>(), \"log level\")",
+                    "parameters": {
+                        "text":[
+                            "      (\"SYNC_FROM_ZERO\", \"sync from timestamp 0\")"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_above",
+                    "marker":"if (!registerService && !unregisterService) {",
+                    "parameters": {
+                        "text":[
+                            "  if (options.count(\"SYNC_FROM_ZERO\") != 0) {",
+                            "    syncFromZero = true;",
+                            "  }"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/tests/UnitTests/PaymentGateTests.cpp",
+            "changes": [
+                {
+                    "action":"replace",
+                    "marker":"return WalletConfiguration{ walletFile, \"pass\" };",
+                    "parameters": {
+                        "text":[
+                            "  return WalletConfiguration{ walletFile, \"pass\", false };"
+                        ]
+                    }
+                }
+            ]
+        },  
         {
             "path":"/src/SimpleWallet/SimpleWallet.cpp",
             "changes": [

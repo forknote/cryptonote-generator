@@ -39,6 +39,7 @@ namespace PaymentService {
 namespace po = boost::program_options;
 
 CoinBaseConfiguration::CoinBaseConfiguration() {
+    CRYPTONOTE_NAME=CryptoNote::CRYPTONOTE_NAME;
     GENESIS_COINBASE_TX_HEX=CryptoNote::parameters::GENESIS_COINBASE_TX_HEX;
     CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX=CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
     MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;
@@ -59,6 +60,7 @@ CoinBaseConfiguration::CoinBaseConfiguration() {
 
 void CoinBaseConfiguration::initOptions(boost::program_options::options_description& desc) {
   desc.add_options()
+    ("CRYPTONOTE_NAME", po::value<std::string>()->default_value(CryptoNote::CRYPTONOTE_NAME), "Blockchain name")
     ("GENESIS_COINBASE_TX_HEX", po::value<std::string>()->default_value(CryptoNote::parameters::GENESIS_COINBASE_TX_HEX), "Genesis transaction hex")
     ("CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX", po::value<uint64_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX), "uint64_t")
     ("MONEY_SUPPLY", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), "uint64_t")
@@ -80,10 +82,12 @@ void CoinBaseConfiguration::initOptions(boost::program_options::options_descript
 }
 
 void CoinBaseConfiguration::init(const boost::program_options::variables_map& options) {
+  if (options.count("CRYPTONOTE_NAME")) {
+    CRYPTONOTE_NAME = options["CRYPTONOTE_NAME"].as<std::string>();
+  }
   if (options.count("GENESIS_COINBASE_TX_HEX")) {
     GENESIS_COINBASE_TX_HEX = options["GENESIS_COINBASE_TX_HEX"].as<std::string>();
   }
-
   if (options.count("CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX")) {
     CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = options["CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX"].as<uint64_t>();
   }

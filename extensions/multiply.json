@@ -783,6 +783,29 @@
                             "    coinBaseConfig.init(cmdOptions);"
                        ]
                     }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"#include <boost/program_options.hpp>",
+                    "parameters": {
+                        "text":[
+                            "#include <boost/algorithm/string.hpp>"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"netNodeConfig.init(cmdOptions);",
+                    "parameters": {
+                        "text":[
+                            "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
+                            "    if (!coinBaseConfig.CRYPTONOTE_NAME.empty()) {",
+                            "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, coinBaseConfig.CRYPTONOTE_NAME);",
+                            "    }",
+                            "    coreConfig.configFolder = default_data_dir;",
+                            "    netNodeConfig.setConfigFolder(default_data_dir);"
+                        ]
+                    }
                 }
             ]
         },
@@ -822,8 +845,8 @@
                             "  {",
                             "    currencyBuilder.upgradeHeight(config.coinBaseConfig.UPGRADE_HEIGHT);",
                             "  }",
-                            "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_CUT);",
-                            "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_LAG);"
+                            "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_LAG);",
+                            "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);"
                        ]
                     }
                 }

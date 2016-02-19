@@ -102,7 +102,7 @@
             "changes": [
                 {
                     "action":"add_above",
-                    "marker":"currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_CUT);",
+                    "marker":"currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);",
                     "parameters": {
                         "text":[
                             "  currencyBuilder.maxTransactionSizeLimit(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT);"
