@@ -219,15 +219,15 @@
                 },
                 {
                     "action":"replace",
-                    "marker":"const uint64_t UPGRADE_HEIGHT",
+                    "marker":"const uint64_t UPGRADE_HEIGHT_V2",
                     "parameters": {
                         "text":[
-                            "const uint64_t UPGRADE_HEIGHT                                = %s;"
+                            "const uint64_t UPGRADE_HEIGHT_V2                                = %s;"
                         ],
                         "replace_text_alt":[
-                            "const uint64_t UPGRADE_HEIGHT                                = 1;"
+                            "const uint64_t UPGRADE_HEIGHT_V2                                = 1;"
                         ],
-                        "var":"UPGRADE_HEIGHT"
+                        "var":"UPGRADE_HEIGHT_V2"
                     }
                 },
                 {

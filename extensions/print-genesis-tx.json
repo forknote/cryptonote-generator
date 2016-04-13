@@ -104,7 +104,7 @@
                             "Transaction CurrencyBuilder::generateGenesisTransaction() {",
                             "  CryptoNote::Transaction tx;",
                             "  CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();",
-                            "  m_currency.constructMinerTx(0, 0, 0, 0, 0, ac, tx); // zero fee in genesis",
+                            "  m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, ac, tx); // zero fee in genesis",
 
                             "  return tx;",
                             "}"

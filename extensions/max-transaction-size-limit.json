@@ -27,7 +27,7 @@
             "changes": [
                 {
                     "action":"replace",
-                    "marker":"m_upperTransactionSizeLimit = m_currency.blockGrantedFullRewardZone() * 125 / 100 - m_currency.minerTxBlobReservedSize();",
+                    "marker":"m_upperTransactionSizeLimit = parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 125 / 100 - m_currency.minerTxBlobReservedSize();",
                     "parameters": {
                         "text":[
                             "  m_upperTransactionSizeLimit = m_currency.maxTransactionSizeLimit();"
@@ -41,10 +41,10 @@
             "changes": [
                 {
                     "action":"replace",
-                    "marker":"m_upperTransactionSizeLimit(m_currency.blockGrantedFullRewardZone() * 125 / 100 - m_currency.minerTxBlobReservedSize()) {}",
+                    "marker":"m_upperTransactionSizeLimit(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 125 / 100 - m_currency.minerTxBlobReservedSize()) {",
                     "parameters": {
                         "text":[
-                            "  m_upperTransactionSizeLimit(m_currency.maxTransactionSizeLimit()) {}"
+                            "  m_upperTransactionSizeLimit(m_currency.maxTransactionSizeLimit()) {"
                         ]
                     }
                 }

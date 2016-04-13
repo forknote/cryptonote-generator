@@ -46,6 +46,7 @@ CoinBaseConfiguration::CoinBaseConfiguration() {
     EMISSION_SPEED_FACTOR=CryptoNote::parameters::EMISSION_SPEED_FACTOR;
     CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE=CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
     CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1=CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
+    CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2=CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
     CRYPTONOTE_DISPLAY_DECIMAL_POINT=CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT;
     MINIMUM_FEE=CryptoNote::parameters::MINIMUM_FEE;
     DEFAULT_DUST_THRESHOLD=CryptoNote::parameters::DEFAULT_DUST_THRESHOLD;
@@ -53,7 +54,7 @@ CoinBaseConfiguration::CoinBaseConfiguration() {
     CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW=CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;
     MAX_BLOCK_SIZE_INITIAL=CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL;
     EXPECTED_NUMBER_OF_BLOCKS_PER_DAY=0;
-    UPGRADE_HEIGHT=0;
+    UPGRADE_HEIGHT_V2=0;
     DIFFICULTY_CUT=CryptoNote::parameters::DIFFICULTY_CUT;
     DIFFICULTY_LAG=CryptoNote::parameters::DIFFICULTY_LAG;
 }
@@ -64,9 +65,10 @@ void CoinBaseConfiguration::initOptions(boost::program_options::options_descript
     ("GENESIS_COINBASE_TX_HEX", po::value<std::string>()->default_value(CryptoNote::parameters::GENESIS_COINBASE_TX_HEX), "Genesis transaction hex")
     ("CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX", po::value<uint64_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX), "uint64_t")
     ("MONEY_SUPPLY", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), "uint64_t")
-    ("EMISSION_SPEED_FACTOR", po::value<unsigned int>()->default_value(CryptoNote::parameters::EMISSION_SPEED_FACTOR), "unsigned int")
+    ("EMISSION_SPEED_FACTOR", po::value<unsigned>()->default_value(CryptoNote::parameters::EMISSION_SPEED_FACTOR), "unsigned")
     ("CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE", po::value<uint64_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE), "uint64_t")
     ("CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1", po::value<uint64_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1), "uint64_t")
+    ("CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2", po::value<uint64_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2), "uint64_t")
     ("CRYPTONOTE_DISPLAY_DECIMAL_POINT", po::value<size_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT), "size_t")
     ("MINIMUM_FEE", po::value<uint64_t>()->default_value(CryptoNote::parameters::MINIMUM_FEE), "uint64_t")
     ("DEFAULT_DUST_THRESHOLD", po::value<uint64_t>()->default_value(CryptoNote::parameters::DEFAULT_DUST_THRESHOLD), "uint64_t")
@@ -74,7 +76,7 @@ void CoinBaseConfiguration::initOptions(boost::program_options::options_descript
     ("CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW", po::value<size_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW), "size_t")
     ("MAX_BLOCK_SIZE_INITIAL", po::value<uint64_t>()->default_value(CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL), "uint64_t")
     ("EXPECTED_NUMBER_OF_BLOCKS_PER_DAY", po::value<uint64_t>()->default_value(0), "uint64_t")
-    ("UPGRADE_HEIGHT", po::value<uint64_t>()->default_value(0), "uint64_t")
+    ("UPGRADE_HEIGHT_V2", po::value<uint64_t>()->default_value(0), "uint64_t")
     ("DIFFICULTY_CUT", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT), "size_t")
     ("DIFFICULTY_LAG", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG), "size_t")
     ;
@@ -95,13 +97,16 @@ void CoinBaseConfiguration::init(const boost::program_options::variables_map& op
     MONEY_SUPPLY = options["MONEY_SUPPLY"].as<uint64_t>();
   }
   if (options.count("EMISSION_SPEED_FACTOR")) {
-    EMISSION_SPEED_FACTOR = options["EMISSION_SPEED_FACTOR"].as<unsigned int>();
+    EMISSION_SPEED_FACTOR = options["EMISSION_SPEED_FACTOR"].as<unsigned>();
   }
   if (options.count("CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE")) {
     CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = options["CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE"].as<uint64_t>();
   }
   if (options.count("CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1")) {
     CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 = options["CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1"].as<uint64_t>();
+  }
+  if (options.count("CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2")) {
+    CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 = options["CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2"].as<uint64_t>();
   }
   if (options.count("CRYPTONOTE_DISPLAY_DECIMAL_POINT")) {
     CRYPTONOTE_DISPLAY_DECIMAL_POINT = options["CRYPTONOTE_DISPLAY_DECIMAL_POINT"].as<size_t>();
@@ -124,8 +129,8 @@ void CoinBaseConfiguration::init(const boost::program_options::variables_map& op
   if (options.count("EXPECTED_NUMBER_OF_BLOCKS_PER_DAY")) {
     EXPECTED_NUMBER_OF_BLOCKS_PER_DAY = options["EXPECTED_NUMBER_OF_BLOCKS_PER_DAY"].as<uint64_t>();
   }
-  if (options.count("UPGRADE_HEIGHT")) {
-    UPGRADE_HEIGHT = options["UPGRADE_HEIGHT"].as<uint64_t>();
+  if (options.count("UPGRADE_HEIGHT_V2")) {
+    UPGRADE_HEIGHT_V2 = options["UPGRADE_HEIGHT_V2"].as<uint64_t>();
   }
   if (options.count("DIFFICULTY_CUT")) {
     DIFFICULTY_CUT = options["DIFFICULTY_CUT"].as<size_t>();
