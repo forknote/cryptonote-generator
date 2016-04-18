@@ -13,6 +13,7 @@ A python / bash Cryptonote source creator. Generate and compile new or maintain 
   * [Print genesis tx hex](#4-print-genesis-tx-hex)
 * [Examples (real life)](#examples_real_life)
   * [Dashcoin](#1-dashcoin)
+  * [Forknote](#2-forknote)
 * [Coins Using This Software](#coins-using-this-software)
 * [Community / Support](#community--support)
 * [Contributing](#contributing)
@@ -21,7 +22,6 @@ A python / bash Cryptonote source creator. Generate and compile new or maintain 
 
 * Cryptonote source code creation, based on:
    * Bytecoin code (latest version)
-   * CryptonoteCoin code (latest version)
 * Single command code and binaries update
 * Simple update for existing code
 * Compile for
@@ -168,22 +168,21 @@ Change the _GENESIS_COINBASE_TX_HEX_ in your configuration file, then [3) Genera
 
 ### Examples (real life)
 
-#### 1) Dashcoin
-1. Downloading & Installing & Code Generation:
+#### 1) Dashcoin - http://dashcoin.info
 
+To generate Dashcoin:
 ```
-	git clone https://github.com/pmitchev/cryptonote-generator.git generator && cd generator
+	git clone https://github.com/forknote/cryptonote-generator.git generator && cd generator
 	bash install_dependencies.sh && bash generator.sh -f configs/dashcoin.json
 ```
 
-2. Start the daemon:
+#### 1) Forknote - http://forknote.net
 
+To generate Forknote:
 ```
-	cd generated_files/binaries/dashcoin   # dashcoin-linux for Linux, dashcoin-mac for Mac
-	./dashcoind
+	git clone https://github.com/forknote/cryptonote-generator.git generator && cd generator
+	bash install_dependencies.sh && bash generator.sh -f configs/forknote.json
 ```
-
-The process under Windows is exacly the same, you need just to remove ~~bash install_dependencies.sh~~ and install windows dependencies instead.
 
 
 ### Community / Support
