@@ -55,6 +55,7 @@ CoinBaseConfiguration::CoinBaseConfiguration() {
     MAX_BLOCK_SIZE_INITIAL=CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL;
     EXPECTED_NUMBER_OF_BLOCKS_PER_DAY=0;
     UPGRADE_HEIGHT_V2=0;
+    UPGRADE_HEIGHT_V3=0;
     DIFFICULTY_CUT=CryptoNote::parameters::DIFFICULTY_CUT;
     DIFFICULTY_LAG=CryptoNote::parameters::DIFFICULTY_LAG;
 }
@@ -77,6 +78,7 @@ void CoinBaseConfiguration::initOptions(boost::program_options::options_descript
     ("MAX_BLOCK_SIZE_INITIAL", po::value<uint64_t>()->default_value(CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL), "uint64_t")
     ("EXPECTED_NUMBER_OF_BLOCKS_PER_DAY", po::value<uint64_t>()->default_value(0), "uint64_t")
     ("UPGRADE_HEIGHT_V2", po::value<uint64_t>()->default_value(0), "uint64_t")
+    ("UPGRADE_HEIGHT_V3", po::value<uint64_t>()->default_value(0), "uint64_t")
     ("DIFFICULTY_CUT", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT), "size_t")
     ("DIFFICULTY_LAG", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG), "size_t")
     ;
@@ -131,6 +133,9 @@ void CoinBaseConfiguration::init(const boost::program_options::variables_map& op
   }
   if (options.count("UPGRADE_HEIGHT_V2")) {
     UPGRADE_HEIGHT_V2 = options["UPGRADE_HEIGHT_V2"].as<uint64_t>();
+  }
+  if (options.count("UPGRADE_HEIGHT_V3")) {
+    UPGRADE_HEIGHT_V3 = options["UPGRADE_HEIGHT_V3"].as<uint64_t>();
   }
   if (options.count("DIFFICULTY_CUT")) {
     DIFFICULTY_CUT = options["DIFFICULTY_CUT"].as<size_t>();

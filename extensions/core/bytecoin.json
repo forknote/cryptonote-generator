@@ -232,6 +232,19 @@
                 },
                 {
                     "action":"replace",
+                    "marker":"const uint64_t UPGRADE_HEIGHT_V3",
+                    "parameters": {
+                        "text":[
+                            "const uint64_t UPGRADE_HEIGHT_V3                                = %s;"
+                        ],
+                        "replace_text_alt":[
+                            "const uint64_t UPGRADE_HEIGHT_V3                                = 2;"
+                        ],
+                        "var":"UPGRADE_HEIGHT_V3"
+                    }
+                },
+                {
+                    "action":"replace",
                     "marker":"const CheckpointData CHECKPOINTS[] = {",
                     "parameters": {
                         "text":[
