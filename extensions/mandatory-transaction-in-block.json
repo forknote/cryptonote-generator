@@ -1,0 +1,66 @@
+{
+    "file":"mandatory-transaction-in-block.json",
+    "description":"Blocks must have at least one real transaction",
+    "required":[ "core/bytecoin.json" ],
+    "files": [ 
+        {
+            "path":"/src/CryptoNoteCore/Core.cpp",
+            "changes": [
+                {
+                    "action":"add_above",
+                    "marker":"m_blockchain.addNewBlock(b, bvc);",
+                    "parameters": {
+                        "text":[
+                            "  if (b.transactionHashes.size() < 1 && get_block_height(b) > 30) {",
+                            "    logger(INFO) << \"New block must have at least one transaction\";",
+                            "    bvc.m_verifivation_failed = true;",
+                            "    return false;",
+                            "  }",
+                            ""
+                        ]
+                    }
+                },
+                {
+                    "action":"add_above",
+                    "marker":"size_t cumulative_size = txs_size + getObjectBinarySize(b.baseTransaction);",
+                    "parameters": {
+                        "text":[
+                            "  if (txs_size == 0 && get_block_height(b) > 30) { ",
+                            "    logger(ERROR, BRIGHT_RED) << \"Need at least one transaction beside base transaction\";",
+                            "    return false;",
+                            "  }"
+                        ]
+                    }
+                },
+                {
+                    "action":"add_bellow",
+                    "marker":"m_mempool.get_difference(knownTxsIds, addedTxsIds, deletedTxsIds);",
+                    "parameters": {
+                        "text":[
+                            "    if (knownTxsIds.size() == 0) {",
+                            "      get_miner().stop();",
+                            "    }"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "path":"/src/SimpleWallet/SimpleWallet.cpp",
+            "changes": [
+                {
+                    "action":"add_bellow",
+                    "marker":"success_msg_writer(true) << \"Money successfully sent, transaction \" << Common::podToHex(txInfo.hash);",
+                    "parameters": {
+                        "text":[
+                            "const char* args_mining_chars[] = {};",
+                            "std::vector<std::string> args_mining(args_mining_chars, args_mining_chars);",
+                            "start_mining(args_mining);"
+                        ]
+                    }
+                }
+            ]
+        }
+
+    ]
+}

@@ -197,6 +197,17 @@
                 },
                 {
                     "action":"replace",
+                    "marker":"const size_t   DIFFICULTY_WINDOW",
+                    "parameters": {
+                        "mandatory":false,
+                        "text":[
+                            "const size_t   DIFFICULTY_WINDOW                                = %s;"
+                        ],
+                        "var":"DIFFICULTY_WINDOW"
+                    }
+                },
+                {
+                    "action":"replace",
                     "marker":"const size_t   DIFFICULTY_CUT",
                     "parameters": {
                         "mandatory":false,
