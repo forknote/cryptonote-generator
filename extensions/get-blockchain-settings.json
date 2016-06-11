@@ -1,335 +1,346 @@
 {
-    "file":"get-blockchain-settings.json",
-    "description":"Prints blockchain settings as json",
-    "required":[ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json", "multiply.json" ],
-    "files": [ 
+  "file": "get-blockchain-settings.json",
+  "description": "Prints blockchain settings as json",
+  "required": [
+    "core/bytecoin.json",
+    "print-genesis-tx.json",
+    "genesis-block-reward.json",
+    "multiply.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "changes": [
         {
-            "path":"/src/Rpc/CoreRpcServerCommandsDefinitions.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"struct COMMAND_RPC_GET_LAST_BLOCK_HEADER {",
-                    "parameters": {
-                        "text":[
-                            "struct currency_base_coin {",
-                            "  std::string name;",
-                            "  std::string git;",
-                            "",
-                            "  void serialize(ISerializer &s) {",
-                            "    KV_MEMBER(name)",
-                            "    KV_MEMBER(git)",
-                            "  }",
-                            "};",
-                            "",
-                            "struct currency_core {",
-                            "  std::vector<std::string> SEED_NODES;",
-                            "  unsigned EMISSION_SPEED_FACTOR;",
-                            "  uint64_t DIFFICULTY_TARGET;",
-                            "  uint64_t CRYPTONOTE_DISPLAY_DECIMAL_POINT;",
-                            "  std::string MONEY_SUPPLY;",
-                            "  uint64_t GENESIS_BLOCK_REWARD;",
-                            "  uint64_t DEFAULT_DUST_THRESHOLD;",
-                            "  uint64_t MINIMUM_FEE;",
-                            "  uint64_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;",
-                            "  uint64_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;",
-                            "  uint64_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;",
-                            "  uint64_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;",
-                            "  uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;",
-                            "  uint64_t P2P_DEFAULT_PORT;",
-                            "  uint64_t RPC_DEFAULT_PORT;",
-                            "  uint64_t MAX_BLOCK_SIZE_INITIAL;",
-                            "  uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;",
-                            "  uint64_t UPGRADE_HEIGHT_V2;",
-                            "  uint64_t UPGRADE_HEIGHT_V3;",
-                            "  uint64_t DIFFICULTY_CUT;",
-                            "  uint64_t DIFFICULTY_LAG;",
-                            "  std::string BYTECOIN_NETWORK;",
-                            "  std::string CRYPTONOTE_NAME;",
-                            "  std::string GENESIS_COINBASE_TX_HEX;",
-                            "  std::vector<std::string> CHECKPOINTS;",
-                            "",
-                            "  void serialize(ISerializer &s) {",
-                            "    KV_MEMBER(SEED_NODES)",
-                            "    KV_MEMBER(EMISSION_SPEED_FACTOR)",
-                            "    KV_MEMBER(DIFFICULTY_TARGET)",
-                            "    KV_MEMBER(CRYPTONOTE_DISPLAY_DECIMAL_POINT)",
-                            "    KV_MEMBER(MONEY_SUPPLY)",
-                            "    KV_MEMBER(GENESIS_BLOCK_REWARD)",
-                            "    KV_MEMBER(DEFAULT_DUST_THRESHOLD)",
-                            "    KV_MEMBER(MINIMUM_FEE)",
-                            "    KV_MEMBER(CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW)",
-                            "    KV_MEMBER(CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE)",
-                            "    KV_MEMBER(CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1)",
-                            "    KV_MEMBER(CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2)",
-                            "    KV_MEMBER(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX)",
-                            "    KV_MEMBER(P2P_DEFAULT_PORT)",
-                            "    KV_MEMBER(RPC_DEFAULT_PORT)",
-                            "    KV_MEMBER(MAX_BLOCK_SIZE_INITIAL)",
-                            "    KV_MEMBER(EXPECTED_NUMBER_OF_BLOCKS_PER_DAY)",
-                            "    KV_MEMBER(UPGRADE_HEIGHT_V2)",
-                            "    KV_MEMBER(UPGRADE_HEIGHT_V3)",
-                            "    KV_MEMBER(DIFFICULTY_CUT)",
-                            "    KV_MEMBER(DIFFICULTY_LAG)",
-                            "    KV_MEMBER(BYTECOIN_NETWORK)",
-                            "    KV_MEMBER(CRYPTONOTE_NAME)",
-                            "    KV_MEMBER(GENESIS_COINBASE_TX_HEX)",
-                            "    KV_MEMBER(CHECKPOINTS)",
-                            "  }",
-                            "};"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"struct COMMAND_RPC_QUERY_BLOCKS {",
-                    "parameters": {
-                        "text":[
-                            "struct F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS {",
-                            "  typedef EMPTY_STRUCT request;",
-                            "  struct response {",
-                            "    currency_base_coin base_coin;",
-                            "    currency_core core;",
-                            "    std::vector<std::string> extensions;",
-                            "    std::string status;",
-                            "",
-                            "    void serialize(ISerializer &s) {",
-                            "      KV_MEMBER(base_coin)",
-                            "      KV_MEMBER(core)",
-                            "      KV_MEMBER(extensions)",
-                            "      KV_MEMBER(status)",
-                            "    }",
-                            "  };",
-                            "};"
-                        ]
-                    }
-                }
+          "action": "add_above",
+          "marker": "struct COMMAND_RPC_GET_LAST_BLOCK_HEADER {",
+          "parameters": {
+            "text": [
+              "struct currency_base_coin {",
+              "  std::string name;",
+              "  std::string git;",
+              "",
+              "  void serialize(ISerializer &s) {",
+              "    KV_MEMBER(name)",
+              "    KV_MEMBER(git)",
+              "  }",
+              "};",
+              "",
+              "struct currency_core {",
+              "  std::vector<std::string> SEED_NODES;",
+              "  unsigned EMISSION_SPEED_FACTOR;",
+              "  uint64_t DIFFICULTY_TARGET;",
+              "  uint64_t CRYPTONOTE_DISPLAY_DECIMAL_POINT;",
+              "  std::string MONEY_SUPPLY;",
+              "  std::string GENESIS_BLOCK_REWARD;",
+              "  uint64_t DEFAULT_DUST_THRESHOLD;",
+              "  uint64_t MINIMUM_FEE;",
+              "  uint64_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;",
+              "  uint64_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;",
+              "  uint64_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;",
+              "  uint64_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;",
+              "  uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;",
+              "  uint64_t P2P_DEFAULT_PORT;",
+              "  uint64_t RPC_DEFAULT_PORT;",
+              "  uint64_t MAX_BLOCK_SIZE_INITIAL;",
+              "  uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;",
+              "  uint32_t UPGRADE_HEIGHT_V2;",
+              "  uint32_t UPGRADE_HEIGHT_V3;",
+              "  uint64_t DIFFICULTY_CUT;",
+              "  uint64_t DIFFICULTY_LAG;",
+              "  uint8_t MANDATORY_TRANSACTION;",
+              "  std::string BYTECOIN_NETWORK;",
+              "  std::string CRYPTONOTE_NAME;",
+              "  std::string GENESIS_COINBASE_TX_HEX;",
+              "  std::vector<std::string> CHECKPOINTS;",
+              "",
+              "  void serialize(ISerializer &s) {",
+              "    KV_MEMBER(SEED_NODES)",
+              "    KV_MEMBER(EMISSION_SPEED_FACTOR)",
+              "    KV_MEMBER(DIFFICULTY_TARGET)",
+              "    KV_MEMBER(CRYPTONOTE_DISPLAY_DECIMAL_POINT)",
+              "    KV_MEMBER(MONEY_SUPPLY)",
+              "    KV_MEMBER(GENESIS_BLOCK_REWARD)",
+              "    KV_MEMBER(DEFAULT_DUST_THRESHOLD)",
+              "    KV_MEMBER(MINIMUM_FEE)",
+              "    KV_MEMBER(CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW)",
+              "    KV_MEMBER(CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE)",
+              "    KV_MEMBER(CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1)",
+              "    KV_MEMBER(CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2)",
+              "    KV_MEMBER(CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX)",
+              "    KV_MEMBER(P2P_DEFAULT_PORT)",
+              "    KV_MEMBER(RPC_DEFAULT_PORT)",
+              "    KV_MEMBER(MAX_BLOCK_SIZE_INITIAL)",
+              "    KV_MEMBER(EXPECTED_NUMBER_OF_BLOCKS_PER_DAY)",
+              "    KV_MEMBER(UPGRADE_HEIGHT_V2)",
+              "    KV_MEMBER(UPGRADE_HEIGHT_V3)",
+              "    KV_MEMBER(DIFFICULTY_CUT)",
+              "    KV_MEMBER(DIFFICULTY_LAG)",
+              "    KV_MEMBER(MANDATORY_TRANSACTION)",
+              "    KV_MEMBER(BYTECOIN_NETWORK)",
+              "    KV_MEMBER(CRYPTONOTE_NAME)",
+              "    KV_MEMBER(GENESIS_COINBASE_TX_HEX)",
+              "    KV_MEMBER(CHECKPOINTS)",
+              "  }",
+              "};"
             ]
+          }
         },
         {
-            "path":"/src/CryptoNoteCore/Currency.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"uint64_t maxBlockHeight() const { return m_maxBlockHeight; }",
-                    "parameters": {
-                        "text":[
-                            "  std::string cryptonoteName() const { return m_cryptonoteName; }"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"uint64_t m_maxBlockHeight;",
-                    "parameters": {
-                        "text":[
-                            "  std::string m_cryptonoteName;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"CurrencyBuilder& maxBlockNumber(uint64_t val) { m_currency.m_maxBlockHeight = val; return *this; }",
-                    "parameters": {
-                        "text":[
-                            "  CurrencyBuilder& cryptonoteName(std::string val) { m_currency.m_cryptonoteName = val; return *this; }"
-                        ]
-                    }
-                }
+          "action": "add_above",
+          "marker": "struct COMMAND_RPC_QUERY_BLOCKS {",
+          "parameters": {
+            "text": [
+              "struct F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS {",
+              "  typedef EMPTY_STRUCT request;",
+              "  struct response {",
+              "    currency_base_coin base_coin;",
+              "    currency_core core;",
+              "    std::vector<std::string> extensions;",
+              "    std::string status;",
+              "",
+              "    void serialize(ISerializer &s) {",
+              "      KV_MEMBER(base_coin)",
+              "      KV_MEMBER(core)",
+              "      KV_MEMBER(extensions)",
+              "      KV_MEMBER(status)",
+              "    }",
+              "  };",
+              "};"
             ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.cpp",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {",
-                    "parameters": {
-                        "text":[
-                            "  cryptonoteName(CRYPTONOTE_NAME);"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Core.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"void set_checkpoints(Checkpoints&& chk_pts);",
-                    "parameters": {
-                        "text":[
-                            "     Checkpoints get_checkpoints();"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Core.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"void core::set_checkpoints(Checkpoints&& chk_pts) {",
-                    "parameters": {
-                        "text":[
-                            "Checkpoints core::get_checkpoints() {",
-                            "  return m_blockchain.getCheckpoints();",
-                            "}"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Checkpoints.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"bool add_checkpoint(uint32_t height, const std::string& hash_str);",
-                    "parameters": {
-                        "text":[
-                            "    std::map<uint32_t, Crypto::Hash> get_checkpoints() { return m_points; }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Blockchain.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"void setCheckpoints(Checkpoints&& chk_pts) { m_checkpoints = chk_pts; }",
-                    "parameters": {
-                        "text":[
-                            "    Checkpoints getCheckpoints() { return m_checkpoints; }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/P2p/NetNode.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"CryptoNote::PeerlistManager& getPeerlistManager() { return m_peerlist; }",
-                    "parameters": {
-                        "text":[
-                            "    std::vector<NetworkAddress> get_seed_nodes(){return m_seed_nodes;}",
-                            "    boost::uuids::uuid get_network_id(){return m_network_id;}"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Daemon/Daemon.cpp",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-                    "parameters": {
-                        "text":[
-                            "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Rpc/RpcServer.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"Logging::LoggerRef logger;",
-                    "parameters": {
-                        "text":[
-                            "  bool f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::request& req, F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::response& res);"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Rpc/RpcServer.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"{ \"getblockcount\", { makeMemberMethod(&RpcServer::on_getblockcount), true } },",
-                    "parameters": {
-                        "text":[
-                            "      { \"f_get_blockchain_settings\", { makeMemberMethod(&RpcServer::f_on_get_blockchain_settings), true } },"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"bool RpcServer::on_getblockcount(const COMMAND_RPC_GETBLOCKCOUNT::request& req, COMMAND_RPC_GETBLOCKCOUNT::response& res) {",
-                    "parameters": {
-                        "text":[
-                            "bool RpcServer::f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::request& req, F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::response& res) {",
-                            "  res.base_coin.name = \"bytecoin\";",
-                            "  res.base_coin.git = \"https://github.com/amjuarez/bytecoin.git\";",
-                            "",
-                            "  // Hardcoded plugins, refactor this",
-                            "  res.extensions.push_back(\"core/bytecoin.json\");",
-                            "  res.extensions.push_back(\"print-genesis-tx.json\");",
-                            "  res.extensions.push_back(\"simplewallet-default-fee.json\");",
-                            "  res.extensions.push_back(\"max-transaction-size-limit.json\");",
-                            "  res.extensions.push_back(\"genesis-block-reward.json\");",
-                            "",
-                            "  res.core.CRYPTONOTE_NAME = m_core.currency().cryptonoteName();",
-                            "",
-                            "  res.core.EMISSION_SPEED_FACTOR = m_core.currency().emissionSpeedFactor();",
-                            "  res.core.DIFFICULTY_TARGET = m_core.currency().difficultyTarget();",
-                            "  res.core.CRYPTONOTE_DISPLAY_DECIMAL_POINT = m_core.currency().numberOfDecimalPlaces();",
-                            "  res.core.MONEY_SUPPLY = std::to_string(m_core.currency().moneySupply());",
-                            "  res.core.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY = m_core.currency().difficultyWindow();",
-                            "  res.core.GENESIS_BLOCK_REWARD = m_core.currency().genesisBlockReward();",
-                            "  res.core.DEFAULT_DUST_THRESHOLD = m_core.currency().defaultDustThreshold();",
-                            "  res.core.MINIMUM_FEE = m_core.currency().minimumFee();",
-                            "  res.core.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = m_core.currency().minedMoneyUnlockWindow();",
-                            "  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = m_core.currency().blockGrantedFullRewardZone();",
-                            "  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 = m_core.currency().blockGrantedFullRewardZoneV1();",
-                            "  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 = m_core.currency().blockGrantedFullRewardZoneV2();",
-                            "  res.core.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = m_core.currency().publicAddressBase58Prefix();",
-                            "  res.core.MAX_BLOCK_SIZE_INITIAL = m_core.currency().maxBlockSizeInitial();",
-                            "  res.core.UPGRADE_HEIGHT_V2 = m_core.currency().upgradeHeight(2);",
-                            "  res.core.UPGRADE_HEIGHT_V3 = m_core.currency().upgradeHeight(3);",
-                            "  res.core.DIFFICULTY_CUT = m_core.currency().difficultyCut();",
-                            "  res.core.DIFFICULTY_LAG = m_core.currency().difficultyLag();",
-                            "",
-                            "  res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
-                            "  // Not real. Change",
-                            "  res.core.RPC_DEFAULT_PORT = m_p2p.get_this_peer_port() + 1;",
-                            "",
-                            "  for (const NetworkAddress& na : m_p2p.get_seed_nodes()) {",
-                            "    std::string na_string = Common::ipAddressToString(na.ip) + \":\" + std::to_string(na.port);",
-                            "",
-                            "    res.core.SEED_NODES.push_back(na_string);",
-                            "  }",
-                            "",
-                            "  res.core.BYTECOIN_NETWORK = boost::lexical_cast<std::string>(m_p2p.get_network_id());",
-                            "",
-                            "  std::map<uint32_t, Crypto::Hash> cp;",
-                            "  cp = m_core.get_checkpoints().get_checkpoints();",
-                            "  for (auto i : cp) {",
-                            "    std::string cp_string = std::to_string(i.first) + \":\" +  Common::podToHex(i.second);",
-                            "",
-                            "    res.core.CHECKPOINTS.push_back(cp_string);",
-                            "  }",
-                            "",
-                            "  res.core.GENESIS_COINBASE_TX_HEX = Common::toHex(CryptoNote::toBinaryArray(m_core.currency().genesisBlock().baseTransaction));",
-                            "",
-                            "  res.status = CORE_RPC_STATUS_OK;",
-                            "  return true;",
-                            "}"
-                        ]
-                    }
-                }
-            ]
+          }
         }
-    ]
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "uint64_t maxBlockHeight() const { return m_maxBlockHeight; }",
+          "parameters": {
+            "text": [
+              "  std::string cryptonoteName() const { return m_cryptonoteName; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "uint64_t m_maxBlockHeight;",
+          "parameters": {
+            "text": [
+              "  std::string m_cryptonoteName;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& maxBlockNumber(uint64_t val) { m_currency.m_maxBlockHeight = val; return *this; }",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& cryptonoteName(std::string val) { m_currency.m_cryptonoteName = val; return *this; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {",
+          "parameters": {
+            "text": [
+              "  cryptonoteName(CRYPTONOTE_NAME);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void set_checkpoints(Checkpoints&& chk_pts);",
+          "parameters": {
+            "text": [
+              "     Checkpoints get_checkpoints();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void core::set_checkpoints(Checkpoints&& chk_pts) {",
+          "parameters": {
+            "text": [
+              "Checkpoints core::get_checkpoints() {",
+              "  return m_blockchain.getCheckpoints();",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Checkpoints.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "bool add_checkpoint(uint32_t height, const std::string& hash_str);",
+          "parameters": {
+            "text": [
+              "    std::map<uint32_t, Crypto::Hash> get_checkpoints() { return m_points; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Blockchain.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void setCheckpoints(Checkpoints&& chk_pts) { m_checkpoints = chk_pts; }",
+          "parameters": {
+            "text": [
+              "    Checkpoints getCheckpoints() { return m_checkpoints; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/P2p/NetNode.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "CryptoNote::PeerlistManager& getPeerlistManager() { return m_peerlist; }",
+          "parameters": {
+            "text": [
+              "    std::vector<NetworkAddress> get_seed_nodes(){return m_seed_nodes;}",
+              "    boost::uuids::uuid get_network_id(){return m_network_id;}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
+          "parameters": {
+            "text": [
+              "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "Logging::LoggerRef logger;",
+          "parameters": {
+            "text": [
+              "  bool f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::request& req, F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::response& res);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "{ \"getblockcount\", { makeMemberMethod(&RpcServer::on_getblockcount), true } },",
+          "parameters": {
+            "text": [
+              "      { \"f_get_blockchain_settings\", { makeMemberMethod(&RpcServer::f_on_get_blockchain_settings), true } },"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool RpcServer::on_getblockcount(const COMMAND_RPC_GETBLOCKCOUNT::request& req, COMMAND_RPC_GETBLOCKCOUNT::response& res) {",
+          "parameters": {
+            "text": [
+              "bool RpcServer::f_on_get_blockchain_settings(const F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::request& req, F_COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::response& res) {",
+              "  res.base_coin.name = \"bytecoin\";",
+              "  res.base_coin.git = \"https://github.com/amjuarez/bytecoin.git\";",
+              "",
+              "  // Hardcoded plugins, refactor this",
+              "  res.extensions.push_back(\"core/bytecoin.json\");",
+              "  res.extensions.push_back(\"print-genesis-tx.json\");",
+              "  if (m_core.currency().genesisBlockReward() != 0) {",
+              "    res.extensions.push_back(\"genesis-block-reward.json\");",
+              "  }",
+              "  if (m_core.currency().mandatoryTransaction() == 1) {",
+              "    res.extensions.push_back(\"mandatory-transaction-in-block.json\");",
+              "  }",
+              "",
+              "  res.core.CRYPTONOTE_NAME = m_core.currency().cryptonoteName();",
+              "",
+              "  res.core.EMISSION_SPEED_FACTOR = m_core.currency().emissionSpeedFactor();",
+              "  res.core.DIFFICULTY_TARGET = m_core.currency().difficultyTarget();",
+              "  res.core.CRYPTONOTE_DISPLAY_DECIMAL_POINT = m_core.currency().numberOfDecimalPlaces();",
+              "  res.core.MONEY_SUPPLY = std::to_string(m_core.currency().moneySupply());",
+              "  res.core.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY = m_core.currency().difficultyWindow();",
+              "  res.core.GENESIS_BLOCK_REWARD = std::to_string(m_core.currency().genesisBlockReward());",
+              "  res.core.DEFAULT_DUST_THRESHOLD = m_core.currency().defaultDustThreshold();",
+              "  res.core.MINIMUM_FEE = m_core.currency().minimumFee();",
+              "  res.core.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = m_core.currency().minedMoneyUnlockWindow();",
+              "  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = m_core.currency().blockGrantedFullRewardZone();",
+              "  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 = m_core.currency().blockGrantedFullRewardZoneV1();",
+              "  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 = m_core.currency().blockGrantedFullRewardZoneV2();",
+              "  res.core.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = m_core.currency().publicAddressBase58Prefix();",
+              "  res.core.MAX_BLOCK_SIZE_INITIAL = m_core.currency().maxBlockSizeInitial();",
+              "  res.core.UPGRADE_HEIGHT_V2 = m_core.currency().upgradeHeight(2);",
+              "  res.core.UPGRADE_HEIGHT_V3 = m_core.currency().upgradeHeight(3);",
+              "  res.core.DIFFICULTY_CUT = m_core.currency().difficultyCut();",
+              "  res.core.DIFFICULTY_LAG = m_core.currency().difficultyLag();",
+              "  res.core.MANDATORY_TRANSACTION = m_core.currency().mandatoryTransaction();",
+              "",
+              "  res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+              "  // Not real. Change",
+              "  res.core.RPC_DEFAULT_PORT = m_p2p.get_this_peer_port() + 1;",
+              "",
+              "  for (const NetworkAddress& na : m_p2p.get_seed_nodes()) {",
+              "    std::string na_string = Common::ipAddressToString(na.ip) + \":\" + std::to_string(na.port);",
+              "",
+              "    res.core.SEED_NODES.push_back(na_string);",
+              "  }",
+              "",
+              "  res.core.BYTECOIN_NETWORK = boost::lexical_cast<std::string>(m_p2p.get_network_id());",
+              "",
+              "  std::map<uint32_t, Crypto::Hash> cp;",
+              "  cp = m_core.get_checkpoints().get_checkpoints();",
+              "  for (auto i : cp) {",
+              "    std::string cp_string = std::to_string(i.first) + \":\" +  Common::podToHex(i.second);",
+              "",
+              "    res.core.CHECKPOINTS.push_back(cp_string);",
+              "  }",
+              "",
+              "  res.core.GENESIS_COINBASE_TX_HEX = Common::toHex(CryptoNote::toBinaryArray(m_core.currency().genesisBlock().baseTransaction));",
+              "",
+              "  res.status = CORE_RPC_STATUS_OK;",
+              "  return true;",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

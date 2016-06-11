@@ -1,100 +1,102 @@
 {
-    "file":"max-transaction-size-limit.json",
-    "description":"Adds --max-transaction-size option to simplewallet and walletd + precompiled",
-    "required":[ "core/bytecoin.json" ],
-    "files": [ 
+  "file": "max-transaction-size-limit.json",
+  "description": "Adds --max-transaction-size option to simplewallet and walletd + precompiled",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
         {
-            "path":"/src/CryptoNoteConfig.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"const uint64_t DEFAULT_DUST_THRESHOLD",
-                    "parameters": {
-                        "text":[
-                            "const uint64_t MAX_TRANSACTION_SIZE_LIMIT                          = %s;"
-                        ],
-                        "replace_text_alt":[
-                            "// Use 0 for default max transaction size limit",
-                            "const uint64_t MAX_TRANSACTION_SIZE_LIMIT                          = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 125 / 100 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;"
-                        ],
-                        "var":"MAX_TRANSACTION_SIZE_LIMIT"
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Wallet/WalletGreen.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"m_upperTransactionSizeLimit = parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 125 / 100 - m_currency.minerTxBlobReservedSize();",
-                    "parameters": {
-                        "text":[
-                            "  m_upperTransactionSizeLimit = m_currency.maxTransactionSizeLimit();"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/WalletLegacy/WalletTransactionSender.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"m_upperTransactionSizeLimit(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 125 / 100 - m_currency.minerTxBlobReservedSize()) {",
-                    "parameters": {
-                        "text":[
-                            "  m_upperTransactionSizeLimit(m_currency.maxTransactionSizeLimit()) {"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"size_t m_minerTxBlobReservedSize;",
-                    "parameters": {
-                        "text":[
-                            "  uint64_t m_maxTransactionSizeLimit;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"CurrencyBuilder& minerTxBlobReservedSize(size_t val) { m_currency.m_minerTxBlobReservedSize = val; return *this; }",
-                    "parameters": {
-                        "text":[
-                            "  CurrencyBuilder& maxTransactionSizeLimit(uint64_t val) { m_currency.m_maxTransactionSizeLimit = val; return *this; }"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"size_t minerTxBlobReservedSize() const { return m_minerTxBlobReservedSize; }",
-                    "parameters": {
-                        "text":[
-                            "  uint64_t maxTransactionSizeLimit() const { return m_maxTransactionSizeLimit; }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.cpp",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"minerTxBlobReservedSize(parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE);",
-                    "parameters": {
-                        "text":[
-                            "maxTransactionSizeLimit(parameters::MAX_TRANSACTION_SIZE_LIMIT);"
-                        ]
-                    }
-                }
-            ]
+          "action": "add_bellow",
+          "marker": "const uint64_t DEFAULT_DUST_THRESHOLD",
+          "parameters": {
+            "text": [
+              "const uint64_t MAX_TRANSACTION_SIZE_LIMIT                          = %s;"
+            ],
+            "replace_text_alt": [
+              "// Use 0 for default max transaction size limit",
+              "const uint64_t MAX_TRANSACTION_SIZE_LIMIT                          = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 125 / 100 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;"
+            ],
+            "var": "MAX_TRANSACTION_SIZE_LIMIT"
+          }
         }
-    ]
+      ]
+    },
+    {
+      "path": "/src/Wallet/WalletGreen.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "m_upperTransactionSizeLimit = parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 125 / 100 - m_currency.minerTxBlobReservedSize();",
+          "parameters": {
+            "text": [
+              "  m_upperTransactionSizeLimit = m_currency.maxTransactionSizeLimit();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/WalletLegacy/WalletTransactionSender.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "m_upperTransactionSizeLimit(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 125 / 100 - m_currency.minerTxBlobReservedSize()) {",
+          "parameters": {
+            "text": [
+              "  m_upperTransactionSizeLimit(m_currency.maxTransactionSizeLimit()) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "size_t m_minerTxBlobReservedSize;",
+          "parameters": {
+            "text": [
+              "  uint64_t m_maxTransactionSizeLimit;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "CurrencyBuilder& minerTxBlobReservedSize(size_t val) { m_currency.m_minerTxBlobReservedSize = val; return *this; }",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& maxTransactionSizeLimit(uint64_t val) { m_currency.m_maxTransactionSizeLimit = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "size_t minerTxBlobReservedSize() const { return m_minerTxBlobReservedSize; }",
+          "parameters": {
+            "text": [
+              "  uint64_t maxTransactionSizeLimit() const { return m_maxTransactionSizeLimit; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "minerTxBlobReservedSize(parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE);",
+          "parameters": {
+            "text": [
+              "maxTransactionSizeLimit(parameters::MAX_TRANSACTION_SIZE_LIMIT);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

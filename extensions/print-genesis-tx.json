@@ -1,117 +1,115 @@
 {
-    "file":"print-genesis-tx.json",
-    "description":"Adds --print-genesis-tx option to the daemon",
-    "required":[ "core/bytecoin.json" ],
-    "files": [ 
+  "file": "print-genesis-tx.json",
+  "description": "Adds --print-genesis-tx option to the daemon",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
         {
-            "path":"/src/Daemon/Daemon.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"#include \"CryptoNoteCore/Core.h\"",
-                    "parameters": {
-                        "text":[
-                            "#include \"CryptoNoteCore/CryptoNoteTools.h\""
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"arg_testnet_on  = {",
-                    "parameters": {
-                        "text":[
-                            "  const command_line::arg_descriptor<bool>        arg_print_genesis_tx = { \"print-genesis-tx\", \"Prints genesis' block tx hex to insert it to config and exits\" };"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
-                    "parameters": {
-                        "text":[
-                            "command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"currencyBuilder.testnet(testnet_mode);",
-                    "parameters": {
-                        "text":[
-                            "    try {",
-                            "      currencyBuilder.currency();",
-                            "    } catch (std::exception&) {",
-                            "      std::cout << \"GENESIS_COINBASE_TX_HEX constant has an incorrect value. Please launch: \" << CryptoNote::CRYPTONOTE_NAME << \"d --\" << arg_print_genesis_tx.name;",
-                            "      return 1;",
-                            "    }"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"bool command_line_preprocessor(const boost::program_options::variables_map& vm, LoggerRef& logger);",
-                    "parameters": {
-                        "text":[
-                            "void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {",
-                            "  CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
-                            "  std::string tx_hex = Common::toHex(CryptoNote::toBinaryArray(tx));",
-
-                            "  std::cout << \"Add this line into your coin configuration file as is: \" << std::endl;",
-                            "  std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
-
-                            "  return;",
-                            "}"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"po::notify(vm);",
-                    "parameters": {
-                        "text":[
-                            "      if (command_line::get_arg(vm, arg_print_genesis_tx)) {",
-                            "        print_genesis_tx_hex(vm, logManager);",
-                            "        return false;",
-                            "      }"
-                        ]
-                    }
-                }
-
+          "action": "add_above",
+          "marker": "#include \"CryptoNoteCore/Core.h\"",
+          "parameters": {
+            "text": [
+              "#include \"CryptoNoteCore/CryptoNoteTools.h\""
             ]
+          }
         },
         {
-            "path":"/src/CryptoNoteCore/Currency.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"CurrencyBuilder& maxBlockNumber(uint64_t val) { m_currency.m_maxBlockHeight = val; return *this; }",
-                    "parameters": {
-                        "text":[
-                            "  Transaction generateGenesisTransaction();"
-                        ]
-                    }
-                }
+          "action": "add_above",
+          "marker": "arg_testnet_on  = {",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<bool>        arg_print_genesis_tx = { \"print-genesis-tx\", \"Prints genesis' block tx hex to insert it to config and exits\" };"
             ]
+          }
         },
         {
-            "path":"/src/CryptoNoteCore/Currency.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {",
-                    "parameters": {
-                        "text":[
-                            "Transaction CurrencyBuilder::generateGenesisTransaction() {",
-                            "  CryptoNote::Transaction tx;",
-                            "  CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();",
-                            "  m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, ac, tx); // zero fee in genesis",
-
-                            "  return tx;",
-                            "}"
-                        ]
-                    }
-                }
+          "action": "add_bellow",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
+          "parameters": {
+            "text": [
+              "command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);"
             ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "currencyBuilder.testnet(testnet_mode);",
+          "parameters": {
+            "text": [
+              "    try {",
+              "      currencyBuilder.currency();",
+              "    } catch (std::exception&) {",
+              "      std::cout << \"GENESIS_COINBASE_TX_HEX constant has an incorrect value. Please launch: \" << CryptoNote::CRYPTONOTE_NAME << \"d --\" << arg_print_genesis_tx.name;",
+              "      return 1;",
+              "    }"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "bool command_line_preprocessor(const boost::program_options::variables_map& vm, LoggerRef& logger);",
+          "parameters": {
+            "text": [
+              "void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {",
+              "  CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
+              "  std::string tx_hex = Common::toHex(CryptoNote::toBinaryArray(tx));",
+              "  std::cout << \"Add this line into your coin configuration file as is: \" << std::endl;",
+              "  std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
+              "  return;",
+              "}"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "po::notify(vm);",
+          "parameters": {
+            "text": [
+              "      if (command_line::get_arg(vm, arg_print_genesis_tx)) {",
+              "        print_genesis_tx_hex(vm, logManager);",
+              "        return false;",
+              "      }"
+            ]
+          }
         }
-    ]
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& maxBlockNumber(uint64_t val) { m_currency.m_maxBlockHeight = val; return *this; }",
+          "parameters": {
+            "text": [
+              "  Transaction generateGenesisTransaction();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {",
+          "parameters": {
+            "text": [
+              "Transaction CurrencyBuilder::generateGenesisTransaction() {",
+              "  CryptoNote::Transaction tx;",
+              "  CryptoNote::AccountPublicAddress ac = boost::value_initialized<CryptoNote::AccountPublicAddress>();",
+              "  m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, ac, tx); // zero fee in genesis",
+              "  return tx;",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

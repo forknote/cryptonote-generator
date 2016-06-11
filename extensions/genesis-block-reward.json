@@ -1,476 +1,466 @@
 {
-    "file":"genesis-block-reward.json",
-    "description":"Add the ability to premine",
-    "required":[ "core/bytecoin.json", "print-genesis-tx.json" ],
-    "files": [ 
+  "file": "genesis-block-reward.json",
+  "description": "Add the ability to premine",
+  "required": [
+    "core/bytecoin.json",
+    "print-genesis-tx.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
         {
-            "path":"/src/CryptoNoteConfig.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"const unsigned EMISSION_SPEED_FACTOR",
-                    "parameters": {
-                        "text":[
-                            "const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(%s);"
-                        ],
-                        "replace_text_alt":[
-                            "const uint64_t GENESIS_BLOCK_REWARD                          = 0;"
-                        ],
-                        "var":"GENESIS_BLOCK_REWARD"
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Daemon/Daemon.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"arg_testnet_on  = {",
-                    "parameters": {
-                        "text":[
-                            "  const command_line::arg_descriptor<std::vector<std::string>> arg_genesis_block_reward_address = { \"genesis-block-reward-address\", \"\" };"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);",
-                    "parameters": {
-                        "text":[
-                            "  command_line::add_arg(desc_cmd_sett, arg_genesis_block_reward_address);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {",
-                    "parameters": {
-                        "text":[
-                            "  std::vector<CryptoNote::AccountPublicAddress> targets;",
-                            "  auto genesis_block_reward_addresses = command_line::get_arg(vm, arg_genesis_block_reward_address);",
-                            "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-                            "  CryptoNote::Currency currency = currencyBuilder.currency();",
-                            "  for (const auto& address_string : genesis_block_reward_addresses) {",
-                            "     CryptoNote::AccountPublicAddress address;",
-                            "    if (!currency.parseAccountAddressString(address_string, address)) {",
-                            "      std::cout << \"Failed to parse address: \" << address_string << std::endl;",
-                            "      return;",
-                            "    }",
-                            "    targets.emplace_back(std::move(address));",
-                            "  }",
-
-                            "  if (targets.empty()) {",
-                            "    if (CryptoNote::parameters::GENESIS_BLOCK_REWARD > 0) {",
-                            "      std::cout << \"Error: genesis block reward addresses are not defined\" << std::endl;",
-                            "    } else {"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"std::cout << \"\\\"GENESIS_COINBASE_TX_HEX",
-                    "parameters": {
-                        "text":[
-                            "    }",
-                            "  } else {",
-                            "      CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
-                            "      std::string tx_hex = Common::toHex(CryptoNote::toBinaryArray(tx));",
-
-                            "      std::cout << \"Modify this line into your coin configuration file as is: \" << std::endl;",
-                            "      std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
-                            "  }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"unsigned int m_emissionSpeedFactor;",
-                    "parameters": {
-                        "text":[
-                            "  uint64_t m_genesisBlockReward;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"Transaction generateGenesisTransaction();",
-                    "parameters": {
-                        "text":[
-                            "  Transaction generateGenesisTransaction(const std::vector<AccountPublicAddress>& targets);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"CurrencyBuilder& emissionSpeedFactor(unsigned int val);",
-                    "parameters": {
-                        "text":[
-                            "  CurrencyBuilder& genesisBlockReward(uint64_t val) { m_currency.m_genesisBlockReward = val; return *this; }"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"unsigned int emissionSpeedFactor()",
-                    "parameters": {
-                        "text":[
-                            "  uint64_t genesisBlockReward() const { return m_genesisBlockReward; }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {",
-                    "parameters": {
-                        "text":[
-                            " Transaction CurrencyBuilder::generateGenesisTransaction(const std::vector<AccountPublicAddress>& targets) {",
-                            "    assert(!targets.empty());",
-                            " ",
-                            "    CryptoNote::Transaction tx;",
-                            "    tx.inputs.clear();",
-                            "    tx.outputs.clear();",
-                            "    tx.extra.clear();",
-
-                            "    tx.version = CURRENT_TRANSACTION_VERSION;",
-                            "    tx.unlockTime = m_currency.m_minedMoneyUnlockWindow;",
-
-                            "    KeyPair txkey = generateKeyPair();",
-                            "    addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);",
-
-                            "    BaseInput in;",
-                            "    in.blockIndex = 0;",
-                            "    tx.inputs.push_back(in);",
-
-                            "    uint64_t block_reward = m_currency.m_genesisBlockReward;",
-                            "    uint64_t target_amount = block_reward / targets.size();",
-                            "    uint64_t first_target_amount = target_amount + block_reward % targets.size();",
-
-                            "    for (size_t i = 0; i < targets.size(); ++i) {",
-                            "      Crypto::KeyDerivation derivation = boost::value_initialized<Crypto::KeyDerivation>();",
-                            "      Crypto::PublicKey outEphemeralPubKey = boost::value_initialized<Crypto::PublicKey>();",
-                            "      bool r = Crypto::generate_key_derivation(targets[i].viewPublicKey, txkey.secretKey, derivation);",
-                            "      assert(r == true);",
-                            "//      CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to generate_key_derivation(\" << targets[i].viewPublicKey << \", \" << txkey.sec << \")\");",
-
-                            "      r = Crypto::derive_public_key(derivation, i, targets[i].spendPublicKey, outEphemeralPubKey);",
-                            "      assert(r == true);",
-                            " //     CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to derive_public_key(\" << derivation << \", \" << i << \", \" << targets[i].spendPublicKey << \")\");",
-
-                            "      KeyOutput tk;",
-                            "      tk.key = outEphemeralPubKey;",
-
-                            "      TransactionOutput out;",
-                            "      out.amount = (i == 0) ? first_target_amount : target_amount;",
-                            "      std::cout << \"outs: \" << std::to_string(out.amount) << std::endl;",
-                            "      out.target = tk;",
-                            "      tx.outputs.push_back(out);",
-                            "    }",
-
-                            "    return tx;",
-                            "}"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins)",
-                    "parameters": {
-                        "text":[
-                            "  if (alreadyGeneratedCoins == 0 && m_genesisBlockReward != 0) {",
-                            "    baseReward = m_genesisBlockReward;",
-                            "    std::cout << \"Genesis block reward: \" << baseReward << std::endl;",
-                            "  }"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);",
-                    "parameters": {
-                        "text":[
-                            "genesisBlockReward(parameters::GENESIS_BLOCK_REWARD);"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Transfers/BlockchainSynchronizer.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"if (result.hasNewBlocks) {",
-                    "parameters": {
-                        "text":[
-                            "    if (result.newBlockHeight == 1)",
-                            "      result.newBlockHeight = 0;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"uint32_t startOffset = result.newBlockHeight - interval.startHeight;",
-                    "parameters": {
-                        "text":[
-                            "    if (result.newBlockHeight == 0)",
-                            "      startOffset = 0;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/include/IWalletLegacy.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"virtual void getAccountKeys(AccountKeys& keys) = 0;",
-                    "parameters": {
-                        "text":[
-                            "  virtual void syncAll(bool syncWalletFromZero = 0) = 0;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/WalletLegacy/WalletLegacy.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"virtual void getAccountKeys(AccountKeys& keys) override;",
-                    "parameters": {
-                        "text":[
-                            "  void syncAll(bool syncWalletFromZero) override;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"std::unique_ptr<SyncStarter> m_onInitSyncStarter;",
-                    "parameters": {
-                        "text":[
-                            "bool m_syncAll = 0;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/WalletLegacy/WalletLegacy.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"sub.syncStart.timestamp = m_account.get_createtime() - ACCOUN_CREATE_TIME_ACCURACY;",
-                    "parameters": {
-                        "text":[
-                            "  sub.syncStart.timestamp = m_account.get_createtime() - ACCOUN_CREATE_TIME_ACCURACY;",
-                            "  if (m_syncAll == 1)",
-                            "    sub.syncStart.timestamp = 0;",
-                            "  std::cout << \"Sync from timestamp: \" << sub.syncStart.timestamp << std::endl;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"void WalletLegacy::getAccountKeys(AccountKeys& keys) {",
-                    "parameters": {
-                        "text":[
-                            "void WalletLegacy::syncAll(bool syncWalletFromZero) {",
-                            "  m_syncAll = syncWalletFromZero;",
-                            "}"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGate/WalletService.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"std::string walletPassword;",
-                    "parameters": {
-                        "text":[
-                            "  bool syncFromZero;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGate/WalletService.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"auto address = wallet->createAddress();",
-                    "parameters": {
-                        "text":[
-                            "  std::string address;",
-                            "  if (conf.syncFromZero) {",
-                            "    CryptoNote::KeyPair spendKey;",
-                            "    Crypto::generate_keys(spendKey.publicKey, spendKey.secretKey);",
-                            "    address = wallet->createAddress(spendKey.secretKey);",
-                            "  } else",
-                            "    address = wallet->createAddress();"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/PaymentGateService.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"config.gateConfiguration.containerPassword",
-                    "parameters": {
-                        "text":[
-                            "    config.gateConfiguration.containerPassword,",
-                            "    config.gateConfiguration.syncFromZero"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/PaymentServiceConfiguration.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"bool printAddresses;",
-                    "parameters": {
-                        "text":[
-                            "  bool syncFromZero;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/PaymentServiceConfiguration.cpp",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"printAddresses = false;",
-                    "parameters": {
-                        "text":[
-                            "  syncFromZero = false;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"(\"log-level\", po::value<size_t>(), \"log level\")",
-                    "parameters": {
-                        "text":[
-                            "      (\"SYNC_FROM_ZERO\", \"sync from timestamp 0\")"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"if (!registerService && !unregisterService) {",
-                    "parameters": {
-                        "text":[
-                            "  if (options.count(\"SYNC_FROM_ZERO\") != 0) {",
-                            "    syncFromZero = true;",
-                            "  }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/tests/UnitTests/PaymentGateTests.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"return WalletConfiguration{ walletFile, \"pass\" };",
-                    "parameters": {
-                        "text":[
-                            "  return WalletConfiguration{ walletFile, \"pass\", false };"
-                        ]
-                    }
-                }
-            ]
-        },  
-        {
-            "path":"/src/SimpleWallet/SimpleWallet.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"arg_testnet = { \"testnet\"",
-                    "parameters": {
-                        "text":[
-                            "  const command_line::arg_descriptor<bool>      arg_SYNC_FROM_ZERO  = {\"SYNC_FROM_ZERO\", \"Sync from block 0. Use for premine wallet or brainwallet\", false};"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
-                    "parameters": {
-                        "text":[
-                            "  command_line::add_arg(desc_params, arg_SYNC_FROM_ZERO);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"if (!m_generate_new.empty())",
-                    "parameters": {
-                        "text":[
-                            "  sync_from_zero = command_line::get_arg(vm, arg_SYNC_FROM_ZERO);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"m_wallet->initAndGenerate(password);",
-                    "parameters": {
-                        "text":[
-                            "    m_wallet->syncAll(sync_from_zero);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"m_wallet.reset(new WalletLegacy(m_currency, *m_node));",
-                    "parameters": {
-                        "text":[
-                            "    m_wallet->syncAll(sync_from_zero);"
-                        ]
-                    }
-                }
-                
-            ]
-        },
-        {
-            "path":"/src/SimpleWallet/SimpleWallet.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"std::string m_wallet_file;",
-                    "parameters": {
-                        "text":[
-                            "    bool sync_from_zero;"
-                        ]
-                    }
-                }
-                
-            ]
+          "action": "add_bellow",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint64_t GENESIS_BLOCK_REWARD                          = UINT64_C(%s);"
+            ],
+            "replace_text_alt": [
+              "const uint64_t GENESIS_BLOCK_REWARD                          = 0;"
+            ],
+            "var": "GENESIS_BLOCK_REWARD"
+          }
         }
-    ]
+      ]
+    },
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "arg_testnet_on  = {",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<std::vector<std::string>> arg_genesis_block_reward_address = { \"genesis-block-reward-address\", \"\" };"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);",
+          "parameters": {
+            "text": [
+              "  command_line::add_arg(desc_cmd_sett, arg_genesis_block_reward_address);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {",
+          "parameters": {
+            "text": [
+              "  std::vector<CryptoNote::AccountPublicAddress> targets;",
+              "  auto genesis_block_reward_addresses = command_line::get_arg(vm, arg_genesis_block_reward_address);",
+              "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
+              "  CryptoNote::Currency currency = currencyBuilder.currency();",
+              "  for (const auto& address_string : genesis_block_reward_addresses) {",
+              "     CryptoNote::AccountPublicAddress address;",
+              "    if (!currency.parseAccountAddressString(address_string, address)) {",
+              "      std::cout << \"Failed to parse address: \" << address_string << std::endl;",
+              "      return;",
+              "    }",
+              "    targets.emplace_back(std::move(address));",
+              "  }",
+              "  if (targets.empty()) {",
+              "    if (CryptoNote::parameters::GENESIS_BLOCK_REWARD > 0) {",
+              "      std::cout << \"Error: genesis block reward addresses are not defined\" << std::endl;",
+              "    } else {"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "std::cout << \"\\\"GENESIS_COINBASE_TX_HEX",
+          "parameters": {
+            "text": [
+              "    }",
+              "  } else {",
+              "      CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
+              "      std::string tx_hex = Common::toHex(CryptoNote::toBinaryArray(tx));",
+              "      std::cout << \"Modify this line into your coin configuration file as is: \" << std::endl;",
+              "      std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "unsigned int m_emissionSpeedFactor;",
+          "parameters": {
+            "text": [
+              "  uint64_t m_genesisBlockReward;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "Transaction generateGenesisTransaction();",
+          "parameters": {
+            "text": [
+              "  Transaction generateGenesisTransaction(const std::vector<AccountPublicAddress>& targets);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "CurrencyBuilder& emissionSpeedFactor(unsigned int val);",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& genesisBlockReward(uint64_t val) { m_currency.m_genesisBlockReward = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "unsigned int emissionSpeedFactor()",
+          "parameters": {
+            "text": [
+              "  uint64_t genesisBlockReward() const { return m_genesisBlockReward; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& CurrencyBuilder::emissionSpeedFactor(unsigned int val) {",
+          "parameters": {
+            "text": [
+              " Transaction CurrencyBuilder::generateGenesisTransaction(const std::vector<AccountPublicAddress>& targets) {",
+              "    assert(!targets.empty());",
+              " ",
+              "    CryptoNote::Transaction tx;",
+              "    tx.inputs.clear();",
+              "    tx.outputs.clear();",
+              "    tx.extra.clear();",
+              "    tx.version = CURRENT_TRANSACTION_VERSION;",
+              "    tx.unlockTime = m_currency.m_minedMoneyUnlockWindow;",
+              "    KeyPair txkey = generateKeyPair();",
+              "    addTransactionPublicKeyToExtra(tx.extra, txkey.publicKey);",
+              "    BaseInput in;",
+              "    in.blockIndex = 0;",
+              "    tx.inputs.push_back(in);",
+              "    uint64_t block_reward = m_currency.m_genesisBlockReward;",
+              "    uint64_t target_amount = block_reward / targets.size();",
+              "    uint64_t first_target_amount = target_amount + block_reward % targets.size();",
+              "    for (size_t i = 0; i < targets.size(); ++i) {",
+              "      Crypto::KeyDerivation derivation = boost::value_initialized<Crypto::KeyDerivation>();",
+              "      Crypto::PublicKey outEphemeralPubKey = boost::value_initialized<Crypto::PublicKey>();",
+              "      bool r = Crypto::generate_key_derivation(targets[i].viewPublicKey, txkey.secretKey, derivation);",
+              "      assert(r == true);",
+              "//      CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to generate_key_derivation(\" << targets[i].viewPublicKey << \", \" << txkey.sec << \")\");",
+              "      r = Crypto::derive_public_key(derivation, i, targets[i].spendPublicKey, outEphemeralPubKey);",
+              "      assert(r == true);",
+              " //     CHECK_AND_ASSERT_MES(r, false, \"while creating outs: failed to derive_public_key(\" << derivation << \", \" << i << \", \" << targets[i].spendPublicKey << \")\");",
+              "      KeyOutput tk;",
+              "      tk.key = outEphemeralPubKey;",
+              "      TransactionOutput out;",
+              "      out.amount = (i == 0) ? first_target_amount : target_amount;",
+              "      std::cout << \"outs: \" << std::to_string(out.amount) << std::endl;",
+              "      out.target = tk;",
+              "      tx.outputs.push_back(out);",
+              "    }",
+              "    return tx;",
+              "}"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins)",
+          "parameters": {
+            "text": [
+              "  if (alreadyGeneratedCoins == 0 && m_genesisBlockReward != 0) {",
+              "    baseReward = m_genesisBlockReward;",
+              "    std::cout << \"Genesis block reward: \" << baseReward << std::endl;",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);",
+          "parameters": {
+            "text": [
+              "genesisBlockReward(parameters::GENESIS_BLOCK_REWARD);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Transfers/BlockchainSynchronizer.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "if (result.hasNewBlocks) {",
+          "parameters": {
+            "text": [
+              "    if (result.newBlockHeight == 1)",
+              "      result.newBlockHeight = 0;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "uint32_t startOffset = result.newBlockHeight - interval.startHeight;",
+          "parameters": {
+            "text": [
+              "    if (result.newBlockHeight == 0)",
+              "      startOffset = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/include/IWalletLegacy.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "virtual void getAccountKeys(AccountKeys& keys) = 0;",
+          "parameters": {
+            "text": [
+              "  virtual void syncAll(bool syncWalletFromZero = 0) = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/WalletLegacy/WalletLegacy.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getAccountKeys(AccountKeys& keys) override;",
+          "parameters": {
+            "text": [
+              "  void syncAll(bool syncWalletFromZero) override;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "std::unique_ptr<SyncStarter> m_onInitSyncStarter;",
+          "parameters": {
+            "text": [
+              "bool m_syncAll = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/WalletLegacy/WalletLegacy.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "sub.syncStart.timestamp = m_account.get_createtime() - ACCOUN_CREATE_TIME_ACCURACY;",
+          "parameters": {
+            "text": [
+              "  sub.syncStart.timestamp = m_account.get_createtime() - ACCOUN_CREATE_TIME_ACCURACY;",
+              "  if (m_syncAll == 1)",
+              "    sub.syncStart.timestamp = 0;",
+              "  std::cout << \"Sync from timestamp: \" << sub.syncStart.timestamp << std::endl;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void WalletLegacy::getAccountKeys(AccountKeys& keys) {",
+          "parameters": {
+            "text": [
+              "void WalletLegacy::syncAll(bool syncWalletFromZero) {",
+              "  m_syncAll = syncWalletFromZero;",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/WalletService.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "std::string walletPassword;",
+          "parameters": {
+            "text": [
+              "  bool syncFromZero;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/WalletService.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "auto address = wallet->createAddress();",
+          "parameters": {
+            "text": [
+              "  std::string address;",
+              "  if (conf.syncFromZero) {",
+              "    CryptoNote::KeyPair spendKey;",
+              "    Crypto::generate_keys(spendKey.publicKey, spendKey.secretKey);",
+              "    address = wallet->createAddress(spendKey.secretKey);",
+              "  } else",
+              "    address = wallet->createAddress();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "config.gateConfiguration.containerPassword",
+          "parameters": {
+            "text": [
+              "    config.gateConfiguration.containerPassword,",
+              "    config.gateConfiguration.syncFromZero"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentServiceConfiguration.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "bool printAddresses;",
+          "parameters": {
+            "text": [
+              "  bool syncFromZero;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentServiceConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "printAddresses = false;",
+          "parameters": {
+            "text": [
+              "  syncFromZero = false;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "(\"log-level\", po::value<size_t>(), \"log level\")",
+          "parameters": {
+            "text": [
+              "      (\"SYNC_FROM_ZERO\", \"sync from timestamp 0\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (!registerService && !unregisterService) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"SYNC_FROM_ZERO\") != 0) {",
+              "    syncFromZero = true;",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tests/UnitTests/PaymentGateTests.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "return WalletConfiguration{ walletFile, \"pass\" };",
+          "parameters": {
+            "text": [
+              "  return WalletConfiguration{ walletFile, \"pass\", false };"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "arg_testnet = { \"testnet\"",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<bool>      arg_SYNC_FROM_ZERO  = {\"SYNC_FROM_ZERO\", \"Sync from block 0. Use for premine wallet or brainwallet\", false};"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "Tools::wallet_rpc_server::init_options(desc_params);",
+          "parameters": {
+            "text": [
+              "  command_line::add_arg(desc_params, arg_SYNC_FROM_ZERO);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (!m_generate_new.empty())",
+          "parameters": {
+            "text": [
+              "  sync_from_zero = command_line::get_arg(vm, arg_SYNC_FROM_ZERO);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_wallet->initAndGenerate(password);",
+          "parameters": {
+            "text": [
+              "    m_wallet->syncAll(sync_from_zero);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "m_wallet.reset(new WalletLegacy(m_currency, *m_node));",
+          "parameters": {
+            "text": [
+              "    m_wallet->syncAll(sync_from_zero);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "std::string m_wallet_file;",
+          "parameters": {
+            "text": [
+              "    bool sync_from_zero;"
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

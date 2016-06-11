@@ -1,920 +1,919 @@
 {
-    "file":"multiply.json",
-    "description":"Adds core parameters as option for daemon, simplewallet and walletd",
-    "required":[ "core/bytecoin.json", "print-genesis-tx.json", "genesis-block-reward.json" ],
-    "files": [ 
+  "file": "multiply.json",
+  "description": "Adds core parameters as option for daemon, simplewallet and walletd",
+  "required": [
+    "core/bytecoin.json",
+    "print-genesis-tx.json",
+    "genesis-block-reward.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
         {
-            "path":"/src/CryptoNoteConfig.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"} // parameters",
-                    "parameters": {
-                        "text":[
-                            "const char     GENESIS_COINBASE_TX_HEX[]                     = \"%s\";"
-                        ],
-                        "var":"GENESIS_COINBASE_TX_HEX"
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"size_t m_blockGrantedFullRewardZone;",
-                    "parameters": {
-                        "text":[
-                            "  size_t m_blockGrantedFullRewardZoneV1;",
-                            "  size_t m_blockGrantedFullRewardZoneV2;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
-                    "parameters": {
-                        "text":[
-                            "  CurrencyBuilder& blockGrantedFullRewardZoneV1(size_t val) { m_currency.m_blockGrantedFullRewardZoneV1 = val; return *this; }",
-                            "  CurrencyBuilder& blockGrantedFullRewardZoneV2(size_t val) { m_currency.m_blockGrantedFullRewardZoneV2 = val; return *this; }"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"size_t blockGrantedFullRewardZone()",
-                    "parameters": {
-                        "text":[
-                            "  size_t blockGrantedFullRewardZoneV1() const { return m_blockGrantedFullRewardZoneV1; }",
-                            "  size_t blockGrantedFullRewardZoneV2() const { return m_blockGrantedFullRewardZoneV2; }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;",
-                    "parameters": {
-                        "text":[
-                            "    return m_blockGrantedFullRewardZoneV1;"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;",
-                    "parameters": {
-                        "text":[
-                            "    return m_blockGrantedFullRewardZoneV2;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Daemon/Daemon.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"#include <boost/program_options.hpp>",
-                    "parameters": {
-                        "text":[
-                            "#include <boost/algorithm/string.hpp>"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"const command_line::arg_descriptor<std::string> arg_config_file",
-                    "parameters": {
-                        "text":[
-                            "  const command_line::arg_descriptor<std::string> arg_config_file = {\"config-file\", \"Specify configuration file\", \"\"};"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"for (const auto& cp : CryptoNote::CHECKPOINTS) {",
-                    "parameters": {
-                        "text":[
-                            "for (const auto& cp : checkpoint_input) {"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"arg_testnet_on  = {\"testnet\"",
-                    "parameters": {
-                        "text":[
-                            "  const command_line::arg_descriptor<std::string> arg_GENESIS_COINBASE_TX_HEX  = {\"GENESIS_COINBASE_TX_HEX\", \"Genesis transaction hex\", CryptoNote::parameters::GENESIS_COINBASE_TX_HEX};  ",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_MONEY_SUPPLY  = {\"MONEY_SUPPLY\", \"uint64_t\", CryptoNote::parameters::MONEY_SUPPLY};",
-                            "  const command_line::arg_descriptor<unsigned>    arg_EMISSION_SPEED_FACTOR  = {\"EMISSION_SPEED_FACTOR\", \"unsigned\", CryptoNote::parameters::EMISSION_SPEED_FACTOR};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_MINIMUM_FEE  = {\"MINIMUM_FEE\", \"uint64_t\", CryptoNote::parameters::MINIMUM_FEE};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_DEFAULT_DUST_THRESHOLD  = {\"DEFAULT_DUST_THRESHOLD\", \"uint64_t\", CryptoNote::parameters::DEFAULT_DUST_THRESHOLD};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_DIFFICULTY_TARGET  = {\"DIFFICULTY_TARGET\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_TARGET};",
-                            "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"uint64_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint64_t\", 0};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint64_t\", 0};",
-                            "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
-                            "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
-                            "  const command_line::arg_descriptor<std::string> arg_CRYPTONOTE_NAME  = {\"CRYPTONOTE_NAME\", \"Cryptonote name. Used for storage directory\", \"\"};",
-                            "  const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT  = {\"CHECKPOINT\", \"Checkpoints. Format: HEIGHT:HASH\"};"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
-                    "parameters": {
-                        "text":[
-                            "    command_line::add_arg(desc_cmd_sett, arg_GENESIS_COINBASE_TX_HEX);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_MONEY_SUPPLY);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_EMISSION_SPEED_FACTOR);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_MINIMUM_FEE);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_DEFAULT_DUST_THRESHOLD);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_TARGET);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_MAX_BLOCK_SIZE_INITIAL);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_UPGRADE_HEIGHT_V2);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_UPGRADE_HEIGHT_V3);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_NAME);",
-                            "    command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
-                    "parameters": {
-                        "text":[
-                            "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
-                            "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
-                            "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
-                            "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
-                            "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
-                            "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
-                            "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
-                            "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
-                            "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
-                            "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
-                            "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
-                            "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
-                            "  {",
-                            "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "  } else {",
-                            "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  }",
-                            "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
-                            "  }",
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
-                            "  }",
-                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction();"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett), vm);",
-                    "parameters": {
-                        "text":[
-                            "        std::cout << \"Success: Configuration file openned\" << std::endl;",
-                            "        po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett, true), vm);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"po::notify(vm);",
-                    "parameters": {
-                        "text":[
-                            "      else",
-                            "      {",
-                            "        std::cout << \"Configuration error: Cannot open configuration file\" << std::endl;",
-                            "        std::cout << \"\" << std::endl;",
-                            "        std::cout << \"Usage:\" << std::endl;",
-                            "        std::cout << \"Windows:   forknoted.exe --config-file configs/dashcoin.conf\" << std::endl;",
-                            "        std::cout << \"Linux/Mac:   ./forknoted --config-file configs/dashcoin.conf\" << std::endl;",
-                            "        return false;",
-                            "      }"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
-                    "parameters": {
-                        "text":[
-                            "  std::cout << \"GENESIS_COINBASE_TX_HEX=\" << tx_hex << std::endl;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-                    "parameters": {
-                        "text":[
-                            "    currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
-                            "    currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
-                            "    currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
-                            "    currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
-                            "    currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
-                            "    currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
-                            "    currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
-                            "    currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
-                            "    currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
-                            "    currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
-                            "    currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "    currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
-                            "    currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
-                            "    if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
-                            "    {",
-                            "      currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "      currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "      currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    } else {",
-                            "      currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "    }",
-                            "    currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "    currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
-                            "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
-                            "    {",
-                            "      currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
-                            "    }",
-                            "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
-                            "    {",
-                            "      currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
-                            "    }",
-                            "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-                            "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"CryptoNote::Checkpoints checkpoints(logManager);",
-                    "parameters": {
-                        "text":[
-                            "std::vector<CryptoNote::CheckpointData> checkpoint_input;",
-                            "std::vector<std::string> checkpoint_args = command_line::get_arg(vm, arg_CHECKPOINT);",
-                            "std::vector<std::string> checkpoint_blockIds;",
-                            "if (command_line::has_arg(vm, arg_CHECKPOINT) && checkpoint_args.size() != 0)",
-                            "{",
-                            "  for(const std::string& str: checkpoint_args) {",
-                            "    std::string::size_type p = str.find(':');",
-                            "    if(p != std::string::npos)",
-                            "    {",
-                            "      uint32_t checkpoint_height = std::stoull(str.substr(0, p));",
-                            "      checkpoint_blockIds.push_back(str.substr(p+1, str.size()));",
-                            "      checkpoint_input.push_back({ checkpoint_height, checkpoint_blockIds.back().c_str() });",
-                            "    }",
-                            "  }",
-                            "}",
-                            "else",
-                            "{",
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) || command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) > 1) {",
-                            "      checkpoint_input = CryptoNote::CHECKPOINTS;",
-                            "  }",
-                            "}"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"minerConfig.init(vm);",
-                    "parameters": {
-                        "text":[
-                            "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
-                            "    if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
-                            "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
-                            "    }",
-                            "    coreConfig.configFolder = default_data_dir;",
-                            "    netNodeConfig.setConfigFolder(default_data_dir);"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"CurrencyBuilder& testnet(bool val) { m_currency.m_testnet = val; return *this; }",
-                    "parameters": {
-                        "text":[
-                            "  CurrencyBuilder& genesisCoinbaseTxHex(const std::string& val) { m_currency.m_genesisCoinbaseTxHex = val; return *this; }"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"bool m_testnet;",
-                    "parameters": {
-                        "text":[
-                            "  std::string m_genesisCoinbaseTxHex;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/CryptoNoteCore/Currency.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"std::string genesisCoinbaseTxHex = ",
-                    "parameters": {
-                        "text":[
-                            "  std::string genesisCoinbaseTxHex = m_genesisCoinbaseTxHex;"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/SimpleWallet/SimpleWallet.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"m_daemon_port = RPC_DEFAULT_PORT;",
-                    "parameters": {
-                        "text":[
-                            "    m_daemon_port = std::stoi(command_line::get_arg(vm, arg_rpc_bind_port));"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"daemon_port = RPC_DEFAULT_PORT;",
-                    "parameters": {
-                        "text":[
-                            "      daemon_port = std::stoi(command_line::get_arg(vm, arg_rpc_bind_port));"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"arg_testnet = { \"testnet\"",
-                    "parameters": {
-                        "text":[
-                            "  const command_line::arg_descriptor<std::string> arg_config_file = {\"config-file\", \"Specify configuration file\", \"\"};  ",
-                            "  const command_line::arg_descriptor<std::string> arg_GENESIS_COINBASE_TX_HEX  = {\"GENESIS_COINBASE_TX_HEX\", \"Genesis transaction hex\", CryptoNote::parameters::GENESIS_COINBASE_TX_HEX};  ",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_MONEY_SUPPLY  = {\"MONEY_SUPPLY\", \"uint64_t\", CryptoNote::parameters::MONEY_SUPPLY};",
-                            "  const command_line::arg_descriptor<unsigned>    arg_EMISSION_SPEED_FACTOR  = {\"EMISSION_SPEED_FACTOR\", \"unsigned\", CryptoNote::parameters::EMISSION_SPEED_FACTOR};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_MINIMUM_FEE  = {\"MINIMUM_FEE\", \"uint64_t\", CryptoNote::parameters::MINIMUM_FEE};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_DEFAULT_DUST_THRESHOLD  = {\"DEFAULT_DUST_THRESHOLD\", \"uint64_t\", CryptoNote::parameters::DEFAULT_DUST_THRESHOLD};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_DIFFICULTY_TARGET  = {\"DIFFICULTY_TARGET\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_TARGET};",
-                            "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"uint64_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint64_t\", 0};",
-                            "  const command_line::arg_descriptor<uint64_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint64_t\", 0};",
-                            "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
-                            "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
-                            "  const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {\"rpc-bind-port\", \"\", std::to_string(RPC_DEFAULT_PORT)};"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"CryptoNote::Currency currency = CryptoNote::CurrencyBuilder(logManager).",
-                    "parameters": {
-                        "text":[
-                            "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-                            "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
-                            "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
-                            "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
-                            "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
-                            "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
-                            "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
-                            "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
-                            "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
-                            "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
-                            "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
-
-                            "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
-                            "  {",
-                            "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "  } else {",
-                            "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  }",
-                            "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
-
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
-                            "  }",
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
-                            "  }",
-
-                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"testnet(command_line::get_arg(vm, arg_testnet)).currency();",
-                    "parameters": {
-                        "text":[
-                            "currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));",
-                            "CryptoNote::Currency currency = currencyBuilder.currency();"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"Tools::wallet_rpc_server::init_options(desc_params);",
-                    "parameters": {
-                        "text":[
-                            "  command_line::add_arg(desc_params, command_line::arg_data_dir, Tools::getDefaultDataDirectory());",
-                            "  command_line::add_arg(desc_params, arg_config_file);",
-                            "  command_line::add_arg(desc_params, arg_GENESIS_COINBASE_TX_HEX);",
-                            "  command_line::add_arg(desc_params, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
-                            "  command_line::add_arg(desc_params, arg_MONEY_SUPPLY);",
-                            "  command_line::add_arg(desc_params, arg_EMISSION_SPEED_FACTOR);",
-                            "  command_line::add_arg(desc_params, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
-                            "  command_line::add_arg(desc_params, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
-                            "  command_line::add_arg(desc_params, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2);",
-                            "  command_line::add_arg(desc_params, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
-                            "  command_line::add_arg(desc_params, arg_MINIMUM_FEE);",
-                            "  command_line::add_arg(desc_params, arg_DEFAULT_DUST_THRESHOLD);",
-                            "  command_line::add_arg(desc_params, arg_DIFFICULTY_TARGET);",
-                            "  command_line::add_arg(desc_params, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
-                            "  command_line::add_arg(desc_params, arg_MAX_BLOCK_SIZE_INITIAL);",
-                            "  command_line::add_arg(desc_params, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
-                            "  command_line::add_arg(desc_params, arg_UPGRADE_HEIGHT_V2);",
-                            "  command_line::add_arg(desc_params, arg_UPGRADE_HEIGHT_V3);",
-                            "  command_line::add_arg(desc_params, arg_DIFFICULTY_CUT);",
-                            "  command_line::add_arg(desc_params, arg_DIFFICULTY_LAG);",
-                            "  command_line::add_arg(desc_params, arg_rpc_bind_port);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"po::store(parser.run(), vm);",
-                    "parameters": {
-                        "text":[
-                            "    std::string data_dir = command_line::get_arg(vm, command_line::arg_data_dir);",
-                            "    std::string config = command_line::get_arg(vm, arg_config_file);",
-                            "    boost::filesystem::path data_dir_path(data_dir);",
-                            "    boost::filesystem::path config_path(config);",
-                            "    if (!config_path.has_parent_path())",
-                            "    {",
-                            "      config_path = data_dir_path / config_path;",
-                            "    }",
-                            "    boost::system::error_code ec;",
-                            "    if (boost::filesystem::exists(config_path, ec))",
-                            "    {",
-                            "      std::cout << \"Success: Configuration file openned\" << std::endl;",
-                            "      po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_params, true), vm);",
-                            "    }",
-                            "    else",
-                            "    {",
-                            "      std::cout << \"Configuration error: Cannot open configuration file\" << std::endl;",
-                            "      std::cout << \"\" << std::endl;",
-                            "      std::cout << \"Usage:\" << std::endl;",
-                            "      std::cout << \"Windows:   simplewallet.exe --config-file configs/dashcoin.conf\" << std::endl;",
-                            "      std::cout << \"Linux/Mac:   ./simplewallet --config-file configs/dashcoin.conf\" << std::endl;",
-                            "      return false;",
-                            "    }"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/Wallet/WalletRpcServer.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"const command_line::arg_descriptor<uint16_t> wallet_rpc_server::arg_rpc_bind_port = {",
-                    "parameters": {
-                        "text":[
-                            "const command_line::arg_descriptor<uint16_t> wallet_rpc_server::arg_rpc_bind_port = { \"wallet-rpc-bind-port\", \"Starts wallet as rpc server for wallet operations, sets bind port for server\", 0, true };"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_bind_ip = {",
-                    "parameters": {
-                        "text":[
-                            "const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_bind_ip = { \"wallet-rpc-bind-ip\", \"Specify ip to bind rpc server\", \"127.0.0.1\" };"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/P2p/NetNodeConfig.h",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"P2pProtocolTypes.h",
-                    "parameters": {
-                        "text":[
-                            "#include <boost/uuid/uuid.hpp>",
-                            "#include <boost/uuid/uuid_io.hpp>",
-                            "#include \"P2pNetworks.h\""
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"bool getHideMyPort() const;",
-                    "parameters": {
-                        "text":[
-                            "  boost::uuids::uuid getNetworkId() const;",
-                            "  std::string getP2pStatTrustedPubKey() const;"
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"void setHideMyPort(bool hide);",
-                    "parameters": {
-                        "text":[
-                            "  void setNetworkId(const boost::uuids::uuid id);",
-                            "  void setP2pStatTrustedPubKey(const std::string key);"
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"bool hideMyPort;",
-                    "parameters": {
-                        "text":[
-                            "  boost::uuids::uuid networkId;",
-                            "  std::string p2pStatTrustedPubKey;"
-                       ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/P2p/NetNodeConfig.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"const command_line::arg_descriptor<bool> arg_p2p_hide_my_port",
-                    "parameters": {
-                        "text":[
-                            "const command_line::arg_descriptor<std::string> arg_network_id = {\"BYTECOIN_NETWORK\", \"Network id\", boost::lexical_cast<std::string>(BYTECOIN_NETWORK)};",
-                            "const command_line::arg_descriptor<std::string> arg_P2P_STAT_TRUSTED_PUB_KEY = {\"P2P_STAT_TRUSTED_PUB_KEY\", \"P2P stat trusted pub key\", \"\"};"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"command_line::add_arg(desc, arg_p2p_hide_my_port);",
-                    "parameters": {
-                        "text":[
-                            "  command_line::add_arg(desc, arg_P2P_STAT_TRUSTED_PUB_KEY);",
-                            "  command_line::add_arg(desc, arg_network_id);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"allowLocalIp = command_line::get_arg(vm, arg_p2p_allow_local_ip);",
-                    "parameters": {
-                        "text":[
-                            "  p2pStatTrustedPubKey = command_line::get_arg(vm, arg_P2P_STAT_TRUSTED_PUB_KEY);",
-                            "  networkId = boost::lexical_cast<boost::uuids::uuid>(command_line::get_arg(vm, arg_network_id));"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"hideMyPort = false;",
-                    "parameters": {
-                        "text":[
-                            "  p2pStatTrustedPubKey = \"\";"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"std::string NetNodeConfig::getConfigFolder() const {",
-                    "parameters": {
-                        "text":[
-                            "  boost::uuids::uuid NetNodeConfig::getNetworkId() const {",
-                            "  return networkId;",
-                            "}",
-                            "",
-                            "  std::string NetNodeConfig::getP2pStatTrustedPubKey() const {",
-                            "  return p2pStatTrustedPubKey;",
-                            "}",
-                            ""
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"void NetNodeConfig::setConfigFolder(const std::string& folder) {",
-                    "parameters": {
-                        "text":[
-                            "void NetNodeConfig::setNetworkId(boost::uuids::uuid id) {",
-                            "  networkId = id;",
-                            "}",
-                            "",
-                            "void NetNodeConfig::setP2pStatTrustedPubKey(std::string key) {",
-                            "  p2pStatTrustedPubKey = key;",
-                            "}",
-                            ""
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/P2p/NetNode.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"boost::uuids::uuid m_network_id;",
-                    "parameters": {
-                        "text":[
-                            "    std::string m_p2pStatTrustedPubKey;"
-                       ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/P2p/NetNode.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"if (!config.getTestnet()) {",
-                    "parameters": {
-                        "text":[
-                            "    if (!config.getTestnet() && config.getSeedNodes().size() == 0) {"
-                       ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"Common::podFromHex(CryptoNote::P2P_STAT_TRUSTED_PUB_KEY, pk);",
-                    "parameters": {
-                        "text":[
-                            "    Common::podFromHex(m_p2pStatTrustedPubKey, pk);"
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"m_allow_local_ip = config.getAllowLocalIp();",
-                    "parameters": {
-                        "text":[
-                            "    m_network_id = config.getNetworkId();",
-                            "    m_p2pStatTrustedPubKey = config.getP2pStatTrustedPubKey();"
-                       ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/ConfigurationManager.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"#include \"RpcNodeConfiguration.h\"",
-                    "parameters": {
-                        "text":[
-                            "#include \"CoinBaseConfiguration.h\""
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"RpcNodeConfiguration remoteNodeConfig;",
-                    "parameters": {
-                        "text":[
-                            "  CoinBaseConfiguration coinBaseConfig;"
-                       ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/ConfigurationManager.cpp",
-            "changes": [
-                {
-                    "action":"replace",
-                    "marker":"cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
-                    "parameters": {
-                        "text":[
-                            "  cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
-                       ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
-                    "parameters": {
-                        "text":[
-                            "  confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
-                       ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"po::store(po::parse_config_file(confStream, confOptionsDesc), confOptions);",
-                    "parameters": {
-                        "text":[
-                            "    po::store(po::parse_config_file(confStream, confOptionsDesc, true), confOptions);"
-                       ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"(\"config,c\", po::value<std::string>(), \"configuration file\");",
-                    "parameters": {
-                        "text":[
-                            "  (\"config,c\", po::value<std::string>()->default_value(\"\"), \"configuration file\");"
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"RpcNodeConfiguration::initOptions(remoteNodeOptions);",
-                    "parameters": {
-                        "text":[
-                            "  po::options_description coinBaseOptions(\"Coin Base Options\");",
-                            "  CoinBaseConfiguration::initOptions(coinBaseOptions);"
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"remoteNodeConfig.init(confOptions);",
-                    "parameters": {
-                        "text":[
-                            "    coinBaseConfig.init(confOptions);"
-                       ]
-                    }
-                },
-                {
-                    "action":"_add_bellow",
-                    "marker":"remoteNodeConfig.init(cmdOptions);",
-                    "parameters": {
-                        "text":[
-                            "    coinBaseConfig.init(cmdOptions);"
-                       ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"#include <boost/program_options.hpp>",
-                    "parameters": {
-                        "text":[
-                            "#include <boost/algorithm/string.hpp>"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"netNodeConfig.init(cmdOptions);",
-                    "parameters": {
-                        "text":[
-                            "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
-                            "    if (!coinBaseConfig.CRYPTONOTE_NAME.empty()) {",
-                            "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, coinBaseConfig.CRYPTONOTE_NAME);",
-                            "    }",
-                            "    coreConfig.configFolder = default_data_dir;",
-                            "    netNodeConfig.setConfigFolder(default_data_dir);"
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/PaymentGateService.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"if (config.gateConfiguration.testnet) {",
-                    "parameters": {
-                        "text":[
-                            "  currencyBuilder.genesisCoinbaseTxHex(config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
-                            "  currencyBuilder.publicAddressBase58Prefix(config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
-                            "  currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
-                            "  currencyBuilder.emissionSpeedFactor(config.coinBaseConfig.EMISSION_SPEED_FACTOR);",
-                            "  currencyBuilder.blockGrantedFullRewardZone(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV1(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV2(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2);",
-                            "  currencyBuilder.numberOfDecimalPlaces(config.coinBaseConfig.CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
-                            "  currencyBuilder.mininumFee(config.coinBaseConfig.MINIMUM_FEE);",
-                            "  currencyBuilder.defaultDustThreshold(config.coinBaseConfig.DEFAULT_DUST_THRESHOLD);",
-                            "  currencyBuilder.difficultyTarget(config.coinBaseConfig.DIFFICULTY_TARGET);",
-                            "  currencyBuilder.minedMoneyUnlockWindow(config.coinBaseConfig.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
-                            "  currencyBuilder.maxBlockSizeInitial(config.coinBaseConfig.MAX_BLOCK_SIZE_INITIAL);",
-
-                            "  if (config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY && config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY != 0)",
-                            "  {",
-                            "    currencyBuilder.difficultyWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
-                            "    currencyBuilder.upgradeVotingWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
-                            "    currencyBuilder.upgradeWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
-                            "  } else {",
-                            "    currencyBuilder.difficultyWindow(24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
-                            "  }",
-                            "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
-                            "  currencyBuilder.lockedTxAllowedDeltaSeconds(config.coinBaseConfig.DIFFICULTY_TARGET * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);",
-
-                            "  if (config.coinBaseConfig.UPGRADE_HEIGHT_V2 && config.coinBaseConfig.UPGRADE_HEIGHT_V2 != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV2(config.coinBaseConfig.UPGRADE_HEIGHT_V2);",
-                            "  }",
-                            "  if (config.coinBaseConfig.UPGRADE_HEIGHT_V3 && config.coinBaseConfig.UPGRADE_HEIGHT_V3 != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV3(config.coinBaseConfig.UPGRADE_HEIGHT_V3);",
-                            "  }",
-                            "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_LAG);",
-                            "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);"
-                       ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/RpcNodeConfiguration.cpp",
-            "changes": [
-                {
-                    "action":"add_above",
-                    "marker":"if (options.count(\"daemon-port\") != 0 && (!options[\"daemon-port\"].defaulted() || daemonPort == 0)) {",
-                    "parameters": {
-                        "text":[
-                            "  if (options.count(\"rpc-bind-port\") != 0) {",
-                            "    daemonPort = options[\"rpc-bind-port\"].as<uint16_t>();",
-                            "  }"
-                       ]
-                    }
-                }
-            ]
-        },
-        {
-            "path":"/src/PaymentGateService/CoinBaseConfiguration.h",
-            "action":"add",
-            "source":"/multiply/files/CoinBaseConfiguration.h"
-        },
-        {
-            "path":"/src/PaymentGateService/CoinBaseConfiguration.cpp",
-            "action":"add",
-            "source":"/multiply/files/CoinBaseConfiguration.cpp"
-        },
-        {
-            "path":"/README.md",
-            "action":"add",
-            "source":"/multiply/files/README.md"
+          "action": "add_above",
+          "marker": "} // parameters",
+          "parameters": {
+            "text": [
+              "const char     GENESIS_COINBASE_TX_HEX[]                     = \"%s\";"
+            ],
+            "var": "GENESIS_COINBASE_TX_HEX"
+          }
         }
-    ]
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  size_t m_blockGrantedFullRewardZoneV1;",
+              "  size_t m_blockGrantedFullRewardZoneV2;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& blockGrantedFullRewardZoneV1(size_t val) { m_currency.m_blockGrantedFullRewardZoneV1 = val; return *this; }",
+              "  CurrencyBuilder& blockGrantedFullRewardZoneV2(size_t val) { m_currency.m_blockGrantedFullRewardZoneV2 = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  size_t blockGrantedFullRewardZoneV1() const { return m_blockGrantedFullRewardZoneV1; }",
+              "  size_t blockGrantedFullRewardZoneV2() const { return m_blockGrantedFullRewardZoneV2; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;",
+          "parameters": {
+            "text": [
+              "    return m_blockGrantedFullRewardZoneV1;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;",
+          "parameters": {
+            "text": [
+              "    return m_blockGrantedFullRewardZoneV2;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "#include <boost/program_options.hpp>",
+          "parameters": {
+            "text": [
+              "#include <boost/algorithm/string.hpp>"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const command_line::arg_descriptor<std::string> arg_config_file",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<std::string> arg_config_file = {\"config-file\", \"Specify configuration file\", \"\"};"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "for (const auto& cp : CryptoNote::CHECKPOINTS) {",
+          "parameters": {
+            "text": [
+              "for (const auto& cp : checkpoint_input) {"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "arg_testnet_on  = {\"testnet\"",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<std::string> arg_GENESIS_COINBASE_TX_HEX  = {\"GENESIS_COINBASE_TX_HEX\", \"Genesis transaction hex\", CryptoNote::parameters::GENESIS_COINBASE_TX_HEX};  ",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_MONEY_SUPPLY  = {\"MONEY_SUPPLY\", \"uint64_t\", CryptoNote::parameters::MONEY_SUPPLY};",
+              "  const command_line::arg_descriptor<unsigned>    arg_EMISSION_SPEED_FACTOR  = {\"EMISSION_SPEED_FACTOR\", \"unsigned\", CryptoNote::parameters::EMISSION_SPEED_FACTOR};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_MINIMUM_FEE  = {\"MINIMUM_FEE\", \"uint64_t\", CryptoNote::parameters::MINIMUM_FEE};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_DEFAULT_DUST_THRESHOLD  = {\"DEFAULT_DUST_THRESHOLD\", \"uint64_t\", CryptoNote::parameters::DEFAULT_DUST_THRESHOLD};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_DIFFICULTY_TARGET  = {\"DIFFICULTY_TARGET\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_TARGET};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"uint64_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
+              "  const command_line::arg_descriptor<std::string> arg_CRYPTONOTE_NAME  = {\"CRYPTONOTE_NAME\", \"Cryptonote name. Used for storage directory\", \"\"};",
+              "  const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT  = {\"CHECKPOINT\", \"Checkpoints. Format: HEIGHT:HASH\"};"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_GENESIS_COINBASE_TX_HEX);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
+              "    command_line::add_arg(desc_cmd_sett, arg_MONEY_SUPPLY);",
+              "    command_line::add_arg(desc_cmd_sett, arg_EMISSION_SPEED_FACTOR);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
+              "    command_line::add_arg(desc_cmd_sett, arg_MINIMUM_FEE);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DEFAULT_DUST_THRESHOLD);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_TARGET);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
+              "    command_line::add_arg(desc_cmd_sett, arg_MAX_BLOCK_SIZE_INITIAL);",
+              "    command_line::add_arg(desc_cmd_sett, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+              "    command_line::add_arg(desc_cmd_sett, arg_UPGRADE_HEIGHT_V2);",
+              "    command_line::add_arg(desc_cmd_sett, arg_UPGRADE_HEIGHT_V3);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_NAME);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
+          "parameters": {
+            "text": [
+              "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
+              "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
+              "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
+              "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
+              "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
+              "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
+              "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
+              "  currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
+              "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
+              "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
+              "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
+              "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
+              "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
+              "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
+              "  {",
+              "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "  } else {",
+              "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  }",
+              "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
+              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
+              "  }",
+              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
+              "  }",
+              "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+              "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
+              "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction();"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett), vm);",
+          "parameters": {
+            "text": [
+              "        std::cout << \"Success: Configuration file openned\" << std::endl;",
+              "        po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett, true), vm);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "po::notify(vm);",
+          "parameters": {
+            "text": [
+              "      else",
+              "      {",
+              "        std::cout << \"Configuration error: Cannot open configuration file\" << std::endl;",
+              "        std::cout << \"\" << std::endl;",
+              "        std::cout << \"Usage:\" << std::endl;",
+              "        std::cout << \"Windows:   forknoted.exe --config-file configs/dashcoin.conf\" << std::endl;",
+              "        std::cout << \"Linux/Mac:   ./forknoted --config-file configs/dashcoin.conf\" << std::endl;",
+              "        return false;",
+              "      }"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "std::cout << \"\\\"GENESIS_COINBASE_TX_HEX\\\":\\\"\" << tx_hex << \"\\\",\" << std::endl;",
+          "parameters": {
+            "text": [
+              "  std::cout << \"GENESIS_COINBASE_TX_HEX=\" << tx_hex << std::endl;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
+          "parameters": {
+            "text": [
+              "    currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
+              "    currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
+              "    currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
+              "    currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
+              "    currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
+              "    currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
+              "    currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
+              "    currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
+              "    currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
+              "    currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
+              "    currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "    currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
+              "    currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
+              "    if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
+              "    {",
+              "      currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "      currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "      currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    } else {",
+              "      currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "    }",
+              "    currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "    currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
+              "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
+              "    {",
+              "      currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
+              "    }",
+              "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
+              "    {",
+              "      currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
+              "    }",
+              "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+              "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "CryptoNote::Checkpoints checkpoints(logManager);",
+          "parameters": {
+            "text": [
+              "std::vector<CryptoNote::CheckpointData> checkpoint_input;",
+              "std::vector<std::string> checkpoint_args = command_line::get_arg(vm, arg_CHECKPOINT);",
+              "std::vector<std::string> checkpoint_blockIds;",
+              "if (command_line::has_arg(vm, arg_CHECKPOINT) && checkpoint_args.size() != 0)",
+              "{",
+              "  for(const std::string& str: checkpoint_args) {",
+              "    std::string::size_type p = str.find(':');",
+              "    if(p != std::string::npos)",
+              "    {",
+              "      uint32_t checkpoint_height = std::stoull(str.substr(0, p));",
+              "      checkpoint_blockIds.push_back(str.substr(p+1, str.size()));",
+              "      checkpoint_input.push_back({ checkpoint_height, checkpoint_blockIds.back().c_str() });",
+              "    }",
+              "  }",
+              "}",
+              "else",
+              "{",
+              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) || command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) > 1) {",
+              "      checkpoint_input = CryptoNote::CHECKPOINTS;",
+              "  }",
+              "}"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "minerConfig.init(vm);",
+          "parameters": {
+            "text": [
+              "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
+              "    if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
+              "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
+              "    }",
+              "    coreConfig.configFolder = default_data_dir;",
+              "    netNodeConfig.setConfigFolder(default_data_dir);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& testnet(bool val) { m_currency.m_testnet = val; return *this; }",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& genesisCoinbaseTxHex(const std::string& val) { m_currency.m_genesisCoinbaseTxHex = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "bool m_testnet;",
+          "parameters": {
+            "text": [
+              "  std::string m_genesisCoinbaseTxHex;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "std::string genesisCoinbaseTxHex = ",
+          "parameters": {
+            "text": [
+              "  std::string genesisCoinbaseTxHex = m_genesisCoinbaseTxHex;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "m_daemon_port = RPC_DEFAULT_PORT;",
+          "parameters": {
+            "text": [
+              "    m_daemon_port = std::stoi(command_line::get_arg(vm, arg_rpc_bind_port));"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "daemon_port = RPC_DEFAULT_PORT;",
+          "parameters": {
+            "text": [
+              "      daemon_port = std::stoi(command_line::get_arg(vm, arg_rpc_bind_port));"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "arg_testnet = { \"testnet\"",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<std::string> arg_config_file = {\"config-file\", \"Specify configuration file\", \"\"};  ",
+              "  const command_line::arg_descriptor<std::string> arg_GENESIS_COINBASE_TX_HEX  = {\"GENESIS_COINBASE_TX_HEX\", \"Genesis transaction hex\", CryptoNote::parameters::GENESIS_COINBASE_TX_HEX};  ",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_MONEY_SUPPLY  = {\"MONEY_SUPPLY\", \"uint64_t\", CryptoNote::parameters::MONEY_SUPPLY};",
+              "  const command_line::arg_descriptor<unsigned>    arg_EMISSION_SPEED_FACTOR  = {\"EMISSION_SPEED_FACTOR\", \"unsigned\", CryptoNote::parameters::EMISSION_SPEED_FACTOR};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_MINIMUM_FEE  = {\"MINIMUM_FEE\", \"uint64_t\", CryptoNote::parameters::MINIMUM_FEE};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_DEFAULT_DUST_THRESHOLD  = {\"DEFAULT_DUST_THRESHOLD\", \"uint64_t\", CryptoNote::parameters::DEFAULT_DUST_THRESHOLD};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_DIFFICULTY_TARGET  = {\"DIFFICULTY_TARGET\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_TARGET};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"uint64_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
+              "  const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {\"rpc-bind-port\", \"\", std::to_string(RPC_DEFAULT_PORT)};"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "CryptoNote::Currency currency = CryptoNote::CurrencyBuilder(logManager).",
+          "parameters": {
+            "text": [
+              "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
+              "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
+              "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
+              "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
+              "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
+              "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
+              "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
+              "  currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
+              "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
+              "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
+              "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
+              "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
+              "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
+              "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
+              "  {",
+              "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "  } else {",
+              "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  }",
+              "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
+              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
+              "  }",
+              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
+              "  }",
+              "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+              "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "testnet(command_line::get_arg(vm, arg_testnet)).currency();",
+          "parameters": {
+            "text": [
+              "currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));",
+              "CryptoNote::Currency currency = currencyBuilder.currency();"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "Tools::wallet_rpc_server::init_options(desc_params);",
+          "parameters": {
+            "text": [
+              "  command_line::add_arg(desc_params, command_line::arg_data_dir, Tools::getDefaultDataDirectory());",
+              "  command_line::add_arg(desc_params, arg_config_file);",
+              "  command_line::add_arg(desc_params, arg_GENESIS_COINBASE_TX_HEX);",
+              "  command_line::add_arg(desc_params, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
+              "  command_line::add_arg(desc_params, arg_MONEY_SUPPLY);",
+              "  command_line::add_arg(desc_params, arg_EMISSION_SPEED_FACTOR);",
+              "  command_line::add_arg(desc_params, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+              "  command_line::add_arg(desc_params, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
+              "  command_line::add_arg(desc_params, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2);",
+              "  command_line::add_arg(desc_params, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
+              "  command_line::add_arg(desc_params, arg_MINIMUM_FEE);",
+              "  command_line::add_arg(desc_params, arg_DEFAULT_DUST_THRESHOLD);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_TARGET);",
+              "  command_line::add_arg(desc_params, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
+              "  command_line::add_arg(desc_params, arg_MAX_BLOCK_SIZE_INITIAL);",
+              "  command_line::add_arg(desc_params, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+              "  command_line::add_arg(desc_params, arg_UPGRADE_HEIGHT_V2);",
+              "  command_line::add_arg(desc_params, arg_UPGRADE_HEIGHT_V3);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_CUT);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_LAG);",
+              "  command_line::add_arg(desc_params, arg_rpc_bind_port);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "po::store(parser.run(), vm);",
+          "parameters": {
+            "text": [
+              "    std::string data_dir = command_line::get_arg(vm, command_line::arg_data_dir);",
+              "    std::string config = command_line::get_arg(vm, arg_config_file);",
+              "    boost::filesystem::path data_dir_path(data_dir);",
+              "    boost::filesystem::path config_path(config);",
+              "    if (!config_path.has_parent_path())",
+              "    {",
+              "      config_path = data_dir_path / config_path;",
+              "    }",
+              "    boost::system::error_code ec;",
+              "    if (boost::filesystem::exists(config_path, ec))",
+              "    {",
+              "      std::cout << \"Success: Configuration file openned\" << std::endl;",
+              "      po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_params, true), vm);",
+              "    }",
+              "    else",
+              "    {",
+              "      std::cout << \"Configuration error: Cannot open configuration file\" << std::endl;",
+              "      std::cout << \"\" << std::endl;",
+              "      std::cout << \"Usage:\" << std::endl;",
+              "      std::cout << \"Windows:   simplewallet.exe --config-file configs/dashcoin.conf\" << std::endl;",
+              "      std::cout << \"Linux/Mac:   ./simplewallet --config-file configs/dashcoin.conf\" << std::endl;",
+              "      return false;",
+              "    }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Wallet/WalletRpcServer.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "const command_line::arg_descriptor<uint16_t> wallet_rpc_server::arg_rpc_bind_port = {",
+          "parameters": {
+            "text": [
+              "const command_line::arg_descriptor<uint16_t> wallet_rpc_server::arg_rpc_bind_port = { \"wallet-rpc-bind-port\", \"Starts wallet as rpc server for wallet operations, sets bind port for server\", 0, true };"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_bind_ip = {",
+          "parameters": {
+            "text": [
+              "const command_line::arg_descriptor<std::string> wallet_rpc_server::arg_rpc_bind_ip = { \"wallet-rpc-bind-ip\", \"Specify ip to bind rpc server\", \"127.0.0.1\" };"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/P2p/NetNodeConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "P2pProtocolTypes.h",
+          "parameters": {
+            "text": [
+              "#include <boost/uuid/uuid.hpp>",
+              "#include <boost/uuid/uuid_io.hpp>",
+              "#include \"P2pNetworks.h\""
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "bool getHideMyPort() const;",
+          "parameters": {
+            "text": [
+              "  boost::uuids::uuid getNetworkId() const;",
+              "  std::string getP2pStatTrustedPubKey() const;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "void setHideMyPort(bool hide);",
+          "parameters": {
+            "text": [
+              "  void setNetworkId(const boost::uuids::uuid id);",
+              "  void setP2pStatTrustedPubKey(const std::string key);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "bool hideMyPort;",
+          "parameters": {
+            "text": [
+              "  boost::uuids::uuid networkId;",
+              "  std::string p2pStatTrustedPubKey;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/P2p/NetNodeConfig.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const command_line::arg_descriptor<bool> arg_p2p_hide_my_port",
+          "parameters": {
+            "text": [
+              "const command_line::arg_descriptor<std::string> arg_network_id = {\"BYTECOIN_NETWORK\", \"Network id\", boost::lexical_cast<std::string>(BYTECOIN_NETWORK)};",
+              "const command_line::arg_descriptor<std::string> arg_P2P_STAT_TRUSTED_PUB_KEY = {\"P2P_STAT_TRUSTED_PUB_KEY\", \"P2P stat trusted pub key\", \"\"};"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "command_line::add_arg(desc, arg_p2p_hide_my_port);",
+          "parameters": {
+            "text": [
+              "  command_line::add_arg(desc, arg_P2P_STAT_TRUSTED_PUB_KEY);",
+              "  command_line::add_arg(desc, arg_network_id);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "allowLocalIp = command_line::get_arg(vm, arg_p2p_allow_local_ip);",
+          "parameters": {
+            "text": [
+              "  p2pStatTrustedPubKey = command_line::get_arg(vm, arg_P2P_STAT_TRUSTED_PUB_KEY);",
+              "  networkId = boost::lexical_cast<boost::uuids::uuid>(command_line::get_arg(vm, arg_network_id));"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "hideMyPort = false;",
+          "parameters": {
+            "text": [
+              "  p2pStatTrustedPubKey = \"\";"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "std::string NetNodeConfig::getConfigFolder() const {",
+          "parameters": {
+            "text": [
+              "  boost::uuids::uuid NetNodeConfig::getNetworkId() const {",
+              "  return networkId;",
+              "}",
+              "",
+              "  std::string NetNodeConfig::getP2pStatTrustedPubKey() const {",
+              "  return p2pStatTrustedPubKey;",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void NetNodeConfig::setConfigFolder(const std::string& folder) {",
+          "parameters": {
+            "text": [
+              "void NetNodeConfig::setNetworkId(boost::uuids::uuid id) {",
+              "  networkId = id;",
+              "}",
+              "",
+              "void NetNodeConfig::setP2pStatTrustedPubKey(std::string key) {",
+              "  p2pStatTrustedPubKey = key;",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/P2p/NetNode.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "boost::uuids::uuid m_network_id;",
+          "parameters": {
+            "text": [
+              "    std::string m_p2pStatTrustedPubKey;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/P2p/NetNode.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "if (!config.getTestnet()) {",
+          "parameters": {
+            "text": [
+              "    if (!config.getTestnet() && config.getSeedNodes().size() == 0) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "Common::podFromHex(CryptoNote::P2P_STAT_TRUSTED_PUB_KEY, pk);",
+          "parameters": {
+            "text": [
+              "    Common::podFromHex(m_p2pStatTrustedPubKey, pk);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "m_allow_local_ip = config.getAllowLocalIp();",
+          "parameters": {
+            "text": [
+              "    m_network_id = config.getNetworkId();",
+              "    m_p2pStatTrustedPubKey = config.getP2pStatTrustedPubKey();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/ConfigurationManager.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "#include \"RpcNodeConfiguration.h\"",
+          "parameters": {
+            "text": [
+              "#include \"CoinBaseConfiguration.h\""
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "RpcNodeConfiguration remoteNodeConfig;",
+          "parameters": {
+            "text": [
+              "  CoinBaseConfiguration coinBaseConfig;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/ConfigurationManager.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
+          "parameters": {
+            "text": [
+              "  cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
+          "parameters": {
+            "text": [
+              "  confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "po::store(po::parse_config_file(confStream, confOptionsDesc), confOptions);",
+          "parameters": {
+            "text": [
+              "    po::store(po::parse_config_file(confStream, confOptionsDesc, true), confOptions);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "(\"config,c\", po::value<std::string>(), \"configuration file\");",
+          "parameters": {
+            "text": [
+              "  (\"config,c\", po::value<std::string>()->default_value(\"\"), \"configuration file\");"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "RpcNodeConfiguration::initOptions(remoteNodeOptions);",
+          "parameters": {
+            "text": [
+              "  po::options_description coinBaseOptions(\"Coin Base Options\");",
+              "  CoinBaseConfiguration::initOptions(coinBaseOptions);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "remoteNodeConfig.init(confOptions);",
+          "parameters": {
+            "text": [
+              "    coinBaseConfig.init(confOptions);"
+            ]
+          }
+        },
+        {
+          "action": "_add_bellow",
+          "marker": "remoteNodeConfig.init(cmdOptions);",
+          "parameters": {
+            "text": [
+              "    coinBaseConfig.init(cmdOptions);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "#include <boost/program_options.hpp>",
+          "parameters": {
+            "text": [
+              "#include <boost/algorithm/string.hpp>"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "netNodeConfig.init(cmdOptions);",
+          "parameters": {
+            "text": [
+              "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
+              "    if (!coinBaseConfig.CRYPTONOTE_NAME.empty()) {",
+              "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, coinBaseConfig.CRYPTONOTE_NAME);",
+              "    }",
+              "    coreConfig.configFolder = default_data_dir;",
+              "    netNodeConfig.setConfigFolder(default_data_dir);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "if (config.gateConfiguration.testnet) {",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.genesisCoinbaseTxHex(config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
+              "  currencyBuilder.publicAddressBase58Prefix(config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
+              "  currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+              "  currencyBuilder.emissionSpeedFactor(config.coinBaseConfig.EMISSION_SPEED_FACTOR);",
+              "  currencyBuilder.blockGrantedFullRewardZone(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+              "  currencyBuilder.blockGrantedFullRewardZoneV1(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1);",
+              "  currencyBuilder.blockGrantedFullRewardZoneV2(config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2);",
+              "  currencyBuilder.numberOfDecimalPlaces(config.coinBaseConfig.CRYPTONOTE_DISPLAY_DECIMAL_POINT);",
+              "  currencyBuilder.mininumFee(config.coinBaseConfig.MINIMUM_FEE);",
+              "  currencyBuilder.defaultDustThreshold(config.coinBaseConfig.DEFAULT_DUST_THRESHOLD);",
+              "  currencyBuilder.difficultyTarget(config.coinBaseConfig.DIFFICULTY_TARGET);",
+              "  currencyBuilder.minedMoneyUnlockWindow(config.coinBaseConfig.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);",
+              "  currencyBuilder.maxBlockSizeInitial(config.coinBaseConfig.MAX_BLOCK_SIZE_INITIAL);",
+              "  if (config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY && config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY != 0)",
+              "  {",
+              "    currencyBuilder.difficultyWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+              "    currencyBuilder.upgradeVotingWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+              "    currencyBuilder.upgradeWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
+              "  } else {",
+              "    currencyBuilder.difficultyWindow(24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
+              "  }",
+              "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
+              "  currencyBuilder.lockedTxAllowedDeltaSeconds(config.coinBaseConfig.DIFFICULTY_TARGET * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);",
+              "  if (config.coinBaseConfig.UPGRADE_HEIGHT_V2 && config.coinBaseConfig.UPGRADE_HEIGHT_V2 != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV2(config.coinBaseConfig.UPGRADE_HEIGHT_V2);",
+              "  }",
+              "  if (config.coinBaseConfig.UPGRADE_HEIGHT_V3 && config.coinBaseConfig.UPGRADE_HEIGHT_V3 != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV3(config.coinBaseConfig.UPGRADE_HEIGHT_V3);",
+              "  }",
+              "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_LAG);",
+              "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/RpcNodeConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"daemon-port\") != 0 && (!options[\"daemon-port\"].defaulted() || daemonPort == 0)) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"rpc-bind-port\") != 0) {",
+              "    daemonPort = options[\"rpc-bind-port\"].as<uint16_t>();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "action": "add",
+      "source": "/multiply/files/CoinBaseConfiguration.h"
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "action": "add",
+      "source": "/multiply/files/CoinBaseConfiguration.cpp"
+    },
+    {
+      "path": "/README.md",
+      "action": "add",
+      "source": "/multiply/files/README.md"
+    }
+  ]
 }

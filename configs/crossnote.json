@@ -1,31 +1,36 @@
 {
-    "extensions": [ "core/bytecoin.json", "print-genesis-tx.json", "mandatory-transaction-in-block.json", "genesis-block-reward.json" ],
-    "base_coin":{
-        "name":"bytecoin",
-        "git":"https://github.com/amjuarez/bytecoin.git"
-    },
-    "core":{
-        "CRYPTONOTE_NAME":"crossnote.testnet",
-        "DIFFICULTY_TARGET": 20,
-        "DIFFICULTY_WINDOW": 5,
-        "DIFFICULTY_CUT": 1,
-        "DIFFICULTY_LAG": 1,
-        "CRYPTONOTE_DISPLAY_DECIMAL_POINT":12,
-        "CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":503261011,
-        "MONEY_SUPPLY":18446744073709551615,
-        "GENESIS_BLOCK_REWARD":18446744073709551615,
-        "CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW":5,
-        "P2P_DEFAULT_PORT":8080,
-        "RPC_DEFAULT_PORT":8081,
-        "SEED_NODES": [
-            "108.61.188.93:8080"
-        ],
-        "CHECKPOINTS": [
-        ],
-        "P2P_STAT_TRUSTED_PUB_KEY":"",
-        "GENESIS_COINBASE_TX_HEX":"010501ff000482808080808080804002b904097d17607436dabf446a2a54e970bc4538620c2d10ba0e67cc83ff9d88a6ffffffffffffffff3f025f4616b4f5848c9eae3aa644355e79b616f3936048892db4ef87e2c45545953effffffffffffffff3f02cbd0341b31f3ebc92eb83fab24a1e2b7550d29b3b7a5c14bd86acdd5f92f1962ffffffffffffffff3f02069b6304ee0195e93ccf4771102d49d17a8c8fb2329155aa64397fb668cd3887210195af41342d7156aa0857a79574309c47102d7efb55476cb123f0e7b56048ecbf",
-        "BYTECOIN_NETWORK":"12112111-1110-4101-1311-221212111120",
-        "UPGRADE_HEIGHT_V2":1,
-        "UPGRADE_HEIGHT_V3":2
-    }
+  "extensions": [
+    "core/bytecoin.json",
+    "print-genesis-tx.json",
+    "mandatory-transaction-in-block.json",
+    "genesis-block-reward.json"
+  ],
+  "base_coin": {
+    "name": "bytecoin",
+    "git": "https://github.com/amjuarez/bytecoin.git"
+  },
+  "core": {
+    "CRYPTONOTE_NAME": "crossnote.testnet",
+    "DIFFICULTY_TARGET": 20,
+    "DIFFICULTY_WINDOW": 5,
+    "DIFFICULTY_CUT": 1,
+    "DIFFICULTY_LAG": 1,
+    "CRYPTONOTE_DISPLAY_DECIMAL_POINT": 12,
+    "CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX": 503261011,
+    "MONEY_SUPPLY": 18446744073709551615,
+    "GENESIS_BLOCK_REWARD": 18446744073709551615,
+    "CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW": 5,
+    "P2P_DEFAULT_PORT": 8080,
+    "RPC_DEFAULT_PORT": 8081,
+    "MANDATORY_TRANSACTION": 1,
+    "SEED_NODES": [
+      "108.61.188.93:8080"
+    ],
+    "CHECKPOINTS": [],
+    "P2P_STAT_TRUSTED_PUB_KEY": "",
+    "GENESIS_COINBASE_TX_HEX": "010501ff000482808080808080804002b904097d17607436dabf446a2a54e970bc4538620c2d10ba0e67cc83ff9d88a6ffffffffffffffff3f025f4616b4f5848c9eae3aa644355e79b616f3936048892db4ef87e2c45545953effffffffffffffff3f02cbd0341b31f3ebc92eb83fab24a1e2b7550d29b3b7a5c14bd86acdd5f92f1962ffffffffffffffff3f02069b6304ee0195e93ccf4771102d49d17a8c8fb2329155aa64397fb668cd3887210195af41342d7156aa0857a79574309c47102d7efb55476cb123f0e7b56048ecbf",
+    "BYTECOIN_NETWORK": "12112111-1110-4101-1311-221212111120",
+    "UPGRADE_HEIGHT_V2": 1,
+    "UPGRADE_HEIGHT_V3": 2
+  }
 }

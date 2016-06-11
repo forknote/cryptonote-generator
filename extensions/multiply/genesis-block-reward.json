@@ -1,145 +1,149 @@
 {
-    "file":"multiply/genesis-block-reward.json",
-    "description":"Add the ability to premine in multiply",
-    "required":[ "core/bytecoin.json", "genesis-block-reward.json", "multiply.json" ],
-    "files": [ 
+  "file": "multiply/genesis-block-reward.json",
+  "description": "Add the ability to premine in multiply",
+  "required": [
+    "core/bytecoin.json",
+    "genesis-block-reward.json",
+    "multiply.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
         {
-            "path":"/src/Daemon/Daemon.cpp",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
-                    "parameters": {
-                        "text":[
-                            "  const command_line::arg_descriptor<uint64_t>    arg_GENESIS_BLOCK_REWARD  = {\"GENESIS_BLOCK_REWARD\", \"uint64_t\", 0};"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
-                    "parameters": {
-                        "text":[
-                            "    command_line::add_arg(desc_cmd_sett, arg_GENESIS_BLOCK_REWARD);"
-                        ]
-                    }
-                },
-                {
-                    "action":"replace",
-                    "marker":"CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
-                    "parameters": {
-                        "text":[
-                            "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
-                            "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
-                            "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
-                            "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
-                            "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
-                            "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
-                            "  currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
-                            "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
-                            "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
-                            "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
-                            "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
-                            "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
-                            "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
-                            "  {",
-                            "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-                            "  } else {",
-                            "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  }",
-                            "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-                            "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
-                            "  }",
-                            "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
-                            "  {",
-                            "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
-                            "  }",
-                            "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-                            "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-                            "  currencyBuilder.genesisBlockReward(command_line::get_arg(vm, arg_GENESIS_BLOCK_REWARD));",
-                            "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction(targets);"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"currencyBuilder.testnet(testnet_mode);",
-                    "parameters": {
-                        "text":[
-                            "    currencyBuilder.genesisBlockReward(command_line::get_arg(vm, arg_GENESIS_BLOCK_REWARD));"
-                        ]
-                    }
-                }
+          "action": "add_bellow",
+          "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<uint64_t>    arg_GENESIS_BLOCK_REWARD  = {\"GENESIS_BLOCK_REWARD\", \"uint64_t\", 0};"
             ]
+          }
         },
         {
-            "path":"/src/PaymentGateService/CoinBaseConfiguration.h",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"uint64_t MONEY_SUPPLY;",
-                    "parameters": {
-                        "text":[
-                            "  uint64_t GENESIS_BLOCK_REWARD;"
-                        ]
-                    }
-                }
+          "action": "add_bellow",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_GENESIS_BLOCK_REWARD);"
             ]
+          }
         },
         {
-            "path":"/src/PaymentGateService/CoinBaseConfiguration.cpp",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
-                    "parameters": {
-                        "text":[
-                            "    GENESIS_BLOCK_REWARD=CryptoNote::parameters::GENESIS_BLOCK_REWARD;"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_bellow",
-                    "marker":"(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
-                    "parameters": {
-                        "text":[
-                            "    (\"GENESIS_BLOCK_REWARD\", po::value<uint64_t>()->default_value(0), \"uint64_t\")"
-                        ]
-                    }
-                },
-                {
-                    "action":"add_above",
-                    "marker":"if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
-                    "parameters": {
-                        "text":[
-                            "  if (options.count(\"GENESIS_BLOCK_REWARD\")) {",
-                            "    GENESIS_BLOCK_REWARD = options[\"GENESIS_BLOCK_REWARD\"].as<uint64_t>();",
-                            "  }"
-                        ]
-                    }
-                }
+          "action": "replace",
+          "marker": "CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction(targets);",
+          "parameters": {
+            "text": [
+              "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
+              "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
+              "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
+              "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
+              "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
+              "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
+              "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
+              "  currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
+              "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
+              "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
+              "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
+              "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
+              "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
+              "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
+              "  {",
+              "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "  } else {",
+              "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  }",
+              "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
+              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
+              "  }",
+              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
+              "  {",
+              "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
+              "  }",
+              "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+              "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
+              "  currencyBuilder.genesisBlockReward(command_line::get_arg(vm, arg_GENESIS_BLOCK_REWARD));",
+              "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction(targets);"
             ]
+          }
         },
         {
-            "path":"/src/PaymentGateService/PaymentGateService.cpp",
-            "changes": [
-                {
-                    "action":"add_bellow",
-                    "marker":"currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
-                    "parameters": {
-                        "text":[
-                            "  currencyBuilder.genesisBlockReward(config.coinBaseConfig.GENESIS_BLOCK_REWARD);"
-                       ]
-                    }
-                }
+          "action": "add_above",
+          "marker": "currencyBuilder.testnet(testnet_mode);",
+          "parameters": {
+            "text": [
+              "    currencyBuilder.genesisBlockReward(command_line::get_arg(vm, arg_GENESIS_BLOCK_REWARD));"
             ]
+          }
         }
-    ]
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "uint64_t MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "  uint64_t GENESIS_BLOCK_REWARD;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "    GENESIS_BLOCK_REWARD=CryptoNote::parameters::GENESIS_BLOCK_REWARD;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
+          "parameters": {
+            "text": [
+              "    (\"GENESIS_BLOCK_REWARD\", po::value<uint64_t>()->default_value(0), \"uint64_t\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"GENESIS_BLOCK_REWARD\")) {",
+              "    GENESIS_BLOCK_REWARD = options[\"GENESIS_BLOCK_REWARD\"].as<uint64_t>();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.genesisBlockReward(config.coinBaseConfig.GENESIS_BLOCK_REWARD);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }
