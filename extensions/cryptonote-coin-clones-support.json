@@ -1,0 +1,84 @@
+{
+  "file": "cryptonote-coin-clones-support.json",
+  "description": "Adding support for the second generation clones of Cryptonote coin",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const size_t CRYPTONOTE_COIN_VERSION                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t CRYPTONOTE_COIN_VERSION                          = 0;"
+            ],
+            "var": "CRYPTONOTE_COIN_VERSION"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "unsigned int m_emissionSpeedFactor;",
+          "parameters": {
+            "text": [
+              "  size_t m_cryptonoteCoinVersion;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "CurrencyBuilder& emissionSpeedFactor(unsigned int val);",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& cryptonoteCoinVersion(size_t val) { m_currency.m_cryptonoteCoinVersion = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "unsigned int emissionSpeedFactor()",
+          "parameters": {
+            "text": [
+              "  size_t cryptonoteCoinVersion() const { return m_cryptonoteCoinVersion; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);",
+          "parameters": {
+            "text": [
+              "cryptonoteCoinVersion(parameters::CRYPTONOTE_COIN_VERSION);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "uint64_t penalizedFee = blockMajorVersion >= BLOCK_MAJOR_VERSION_2",
+          "parameters": {
+            "text": [
+              "if (cryptonoteCoinVersion() == 1) {",
+              "  penalizedFee = getPenalizedAmount(fee, medianSize, currentBlockSize);",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

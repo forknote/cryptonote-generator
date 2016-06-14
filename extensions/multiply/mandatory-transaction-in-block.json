@@ -118,6 +118,54 @@
       ]
     },
     {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "uint64_t MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "  bool MANDATORY_TRANSACTION;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "    MANDATORY_TRANSACTION=CryptoNote::parameters::MANDATORY_TRANSACTION;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
+          "parameters": {
+            "text": [
+              "    (\"MANDATORY_TRANSACTION\", po::value<bool>()->default_value(0), \"bool\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"MANDATORY_TRANSACTION\")) {",
+              "    MANDATORY_TRANSACTION = options[\"MANDATORY_TRANSACTION\"].as<bool>();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/PaymentGateService/PaymentGateService.cpp",
       "changes": [
         {
@@ -125,7 +173,7 @@
           "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
           "parameters": {
             "text": [
-              "  currencyBuilder.genesisBlockReward(config.coinBaseConfig.GENESIS_BLOCK_REWARD);"
+              "  currencyBuilder.mandatoryTransaction(config.coinBaseConfig.MANDATORY_TRANSACTION);"
             ]
           }
         }

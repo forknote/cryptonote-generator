@@ -6,14 +6,84 @@
   ],
   "files": [
     {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "arg_testnet_on  = {",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<bool>        arg_enable_cors = { \"enable-cors\", \"Adds header 'Access-Control-Allow-Origin' to the daemon's RPC responses\", false };"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
+          "parameters": {
+            "text": [
+              "command_line::add_arg(desc_cmd_sett, arg_enable_cors);"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "rpcServer.start(rpcConfig.bindIp, rpcConfig.bindPort);",
+          "parameters": {
+            "text": [
+              "rpcServer.enableCors(command_line::get_arg(vm, arg_enable_cors));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "const ICryptoNoteProtocolQuery& m_protocolQuery;",
+          "parameters": {
+            "text": [
+              "bool m_cors_enabled;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "typedef std::function<bool(RpcServer*, const HttpRequest& request, HttpResponse& response)> HandlerFunction;",
+          "parameters": {
+            "text": [
+              "bool enableCors(const bool is_enabled);"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/Rpc/RpcServer.cpp",
       "changes": [
+        {
+          "action": "add_above",
+          "marker": "bool RpcServer::isCoreReady() {",
+          "parameters": {
+            "text": [
+              "bool RpcServer::enableCors(const bool is_enabled) {",
+              "  m_cors_enabled = is_enabled;",
+              "  return true;",
+              "}",
+              ""
+            ]
+          }
+        },
         {
           "action": "add_above",
           "marker": "response.addHeader(\"Content-Type\", \"application/json\");",
           "parameters": {
             "text": [
-              "response.addHeader(\"Access-Control-Allow-Origin\", \"*\");"
+              "if (m_cors_enabled) {",
+              "  response.addHeader(\"Access-Control-Allow-Origin\", \"*\");",
+              "}"
             ]
           }
         }
