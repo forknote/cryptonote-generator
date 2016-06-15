@@ -24,6 +24,52 @@
       ]
     },
     {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  size_t m_mandatoryTransaction;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& mandatoryTransaction(size_t val) { m_currency.m_mandatoryTransaction = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  size_t mandatoryTransaction() const { return m_mandatoryTransaction; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+          "parameters": {
+            "text": [
+              "mandatoryTransaction(parameters::MANDATORY_TRANSACTION);"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/CryptoNoteCore/Core.cpp",
       "changes": [
         {
@@ -31,7 +77,7 @@
           "marker": "m_blockchain.addNewBlock(b, bvc);",
           "parameters": {
             "text": [
-              "  if (parameters::MANDATORY_TRANSACTION) {",
+              "  if (m_currency.mandatoryTransaction()) {",
               "    if (b.transactionHashes.size() < 1 && get_block_height(b) > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) {",
               "      logger(INFO) << \"New block must have at least one transaction\";",
               "      bvc.m_verifivation_failed = true;",
@@ -47,7 +93,7 @@
           "marker": "size_t cumulative_size = txs_size + getObjectBinarySize(b.baseTransaction);",
           "parameters": {
             "text": [
-              "  if (parameters::MANDATORY_TRANSACTION) {",
+              "  if (m_currency.mandatoryTransaction()) {",
               "    if (txs_size == 0 && get_block_height(b) > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) { ",
               "      logger(ERROR, BRIGHT_RED) << \"Need at least one transaction beside base transaction\";",
               "      return false;",
@@ -61,7 +107,7 @@
           "marker": "m_mempool.get_difference(knownTxsIds, addedTxsIds, deletedTxsIds);",
           "parameters": {
             "text": [
-              "    if (parameters::MANDATORY_TRANSACTION) {",
+              "    if (m_currency.mandatoryTransaction()) {",
               "      if (knownTxsIds.size() == 0 && addedTxsIds.size() == 0 && get_current_blockchain_height() > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) {",
               "        if (get_miner().is_mining()) {",
               "          get_miner().stop();",
@@ -81,7 +127,7 @@
           "marker": "success_msg_writer(true) << \"Money successfully sent, transaction \" << Common::podToHex(txInfo.hash);",
           "parameters": {
             "text": [
-              "if (CryptoNote::parameters::MANDATORY_TRANSACTION) {",
+              "if (m_currency.mandatoryTransaction()) {",
               "  const char* args_mining_chars[] = {};",
               "  std::vector<std::string> args_mining(args_mining_chars, args_mining_chars);",
               "  start_mining(args_mining);",

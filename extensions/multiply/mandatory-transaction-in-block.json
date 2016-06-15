@@ -8,38 +8,6 @@
   ],
   "files": [
     {
-      "path": "/src/CryptoNoteCore/Currency.h",
-      "changes": [
-        {
-          "action": "add_above",
-          "marker": "size_t m_blockGrantedFullRewardZone;",
-          "parameters": {
-            "text": [
-              "  size_t m_mandatoryTransaction;"
-            ]
-          }
-        },
-        {
-          "action": "add_above",
-          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
-          "parameters": {
-            "text": [
-              "  CurrencyBuilder& mandatoryTransaction(size_t val) { m_currency.m_mandatoryTransaction = val; return *this; }"
-            ]
-          }
-        },
-        {
-          "action": "add_above",
-          "marker": "size_t blockGrantedFullRewardZone()",
-          "parameters": {
-            "text": [
-              "  size_t mandatoryTransaction() const { return m_mandatoryTransaction; }"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/Daemon/Daemon.cpp",
       "changes": [
         {
@@ -47,7 +15,7 @@
           "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<bool>    arg_MANDATORY_TRANSACTION  = {\"MANDATORY_TRANSACTION\", \"bool\", false};"
+              "  const command_line::arg_descriptor<bool>    arg_MANDATORY_TRANSACTION  = {\"MANDATORY_TRANSACTION\", \"bool\", CryptoNote::parameters::MANDATORY_TRANSACTION};"
             ]
           }
         },
@@ -174,34 +142,6 @@
           "parameters": {
             "text": [
               "  currencyBuilder.mandatoryTransaction(config.coinBaseConfig.MANDATORY_TRANSACTION);"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/CryptoNoteCore/Core.cpp",
-      "changes": [
-        {
-          "action": "replace",
-          "marker": "if (parameters::MANDATORY_TRANSACTION) {",
-          "parameters": {
-            "text": [
-              "  if (m_currency.mandatoryTransaction()) {"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/SimpleWallet/SimpleWallet.cpp",
-      "changes": [
-        {
-          "action": "replace",
-          "marker": "if (CryptoNote::parameters::MANDATORY_TRANSACTION) {",
-          "parameters": {
-            "text": [
-              "  if (m_currency.mandatoryTransaction()) {"
             ]
           }
         }

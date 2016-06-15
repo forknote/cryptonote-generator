@@ -5,6 +5,7 @@
     "simplewallet-default-fee.json",
     "max-transaction-size-limit.json",
     "mandatory-transaction-in-block.json",
+    "kill-height.json",
     "cryptonote-coin-clones-support.json",
     "genesis-block-reward.json",
     "blockchain-explorer.json",
@@ -12,6 +13,7 @@
     "multiply.json",
     "multiply/max-transaction-size-limit.json",
     "multiply/mandatory-transaction-in-block.json",
+    "multiply/kill-height.json",
     "multiply/cryptonote-coin-clones-support.json",
     "multiply/genesis-block-reward.json",
     "get-blockchain-settings.json"

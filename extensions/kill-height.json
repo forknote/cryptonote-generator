@@ -1,0 +1,92 @@
+{
+  "file": "kill-height.json",
+  "description": "Kill the blockchain @ block. No new blocks accepted afterwards. Use 0 for infinite blockchains",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  uint32_t m_killHeight;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& killHeight(uint32_t val) { m_currency.m_killHeight = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  uint32_t killHeight() const { return m_killHeight; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+          "parameters": {
+            "text": [
+              "killHeight(parameters::KILL_HEIGHT);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint32_t KILL_HEIGHT                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t KILL_HEIGHT                          = 0;"
+            ],
+            "var": "KILL_HEIGHT"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "m_blockchain.addNewBlock(b, bvc);",
+          "parameters": {
+            "text": [
+              "  if (m_currency.killHeight() != 0 && get_block_height(b) > m_currency.killHeight()) {",
+              "    logger(ERROR, BRIGHT_RED) << \"Cannot add more blocks. Block \" << m_currency.killHeight() << \" is the kill block\";",
+              "    bvc.m_verifivation_failed = true;",
+              "    return false;",
+              "  }",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

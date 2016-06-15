@@ -1,0 +1,105 @@
+{
+  "file": "multiply/kill-height.json",
+  "description": "Add the ability to kill blockchain at 'block' in multiply",
+  "required": [
+    "core/bytecoin.json",
+    "genesis-block-reward.json",
+    "multiply.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<uint32_t>    arg_KILL_HEIGHT  = {\"KILL_HEIGHT\", \"uint32_t\", 0};"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_KILL_HEIGHT);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.testnet(testnet_mode);",
+          "parameters": {
+            "text": [
+              "    currencyBuilder.killHeight(command_line::get_arg(vm, arg_KILL_HEIGHT));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "uint64_t MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "  uint32_t KILL_HEIGHT;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "    KILL_HEIGHT=CryptoNote::parameters::KILL_HEIGHT;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
+          "parameters": {
+            "text": [
+              "    (\"KILL_HEIGHT\", po::value<uint32_t>()->default_value(0), \"uint32_t\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"KILL_HEIGHT\")) {",
+              "    KILL_HEIGHT = options[\"KILL_HEIGHT\"].as<uint32_t>();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.killHeight(config.coinBaseConfig.KILL_HEIGHT);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
