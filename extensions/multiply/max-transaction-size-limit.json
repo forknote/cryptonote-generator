@@ -47,7 +47,8 @@
           "marker": "currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));",
           "parameters": {
             "text": [
-              "currencyBuilder.maxTransactionSizeLimit(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT));"
+              "currencyBuilder.maxTransactionSizeLimit(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT));",
+              "currencyBuilder.fusionTxMaxSize(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT) * 30 / 100);"
             ]
           }
         }
@@ -109,7 +110,8 @@
           "marker": "currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);",
           "parameters": {
             "text": [
-              "  currencyBuilder.maxTransactionSizeLimit(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT);"
+              "currencyBuilder.maxTransactionSizeLimit(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT);",
+              "currencyBuilder.fusionTxMaxSize(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT * 30 / 100);"
             ]
           }
         }

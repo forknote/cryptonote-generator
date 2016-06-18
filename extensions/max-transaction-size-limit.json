@@ -95,6 +95,16 @@
               "maxTransactionSizeLimit(parameters::MAX_TRANSACTION_SIZE_LIMIT);"
             ]
           }
+        },
+        {
+          "action": "replace",
+          "marker": "fusionTxMaxSize(parameters::FUSION_TX_MAX_SIZE);",
+          "parameters": {
+            "text": [
+              "// fusion transactions fix",
+              "fusionTxMaxSize(parameters::MAX_TRANSACTION_SIZE_LIMIT * 30 / 100);"
+            ]
+          }
         }
       ]
     }
