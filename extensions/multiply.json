@@ -308,7 +308,7 @@
               "}",
               "else",
               "{",
-              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) || command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) > 1) {",
+              "  if (command_line::get_arg(vm, arg_CRYPTONOTE_NAME) == \"bytecoin\") {",
               "      checkpoint_input = CryptoNote::CHECKPOINTS;",
               "  }",
               "}"
