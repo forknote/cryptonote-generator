@@ -31,7 +31,7 @@
           "marker": "size_t m_blockGrantedFullRewardZone;",
           "parameters": {
             "text": [
-              "  size_t m_mandatoryTransaction;"
+              "  bool m_mandatoryTransaction;"
             ]
           }
         },
@@ -49,7 +49,7 @@
           "marker": "size_t blockGrantedFullRewardZone()",
           "parameters": {
             "text": [
-              "  size_t mandatoryTransaction() const { return m_mandatoryTransaction; }"
+              "  bool mandatoryTransaction() const { return m_mandatoryTransaction; }"
             ]
           }
         }
