@@ -15,7 +15,7 @@
           "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<bool>    arg_MANDATORY_TRANSACTION  = {\"MANDATORY_TRANSACTION\", \"bool\", CryptoNote::parameters::MANDATORY_TRANSACTION};"
+              "  const command_line::arg_descriptor<uint32_t>    arg_MANDATORY_TRANSACTION  = {\"MANDATORY_TRANSACTION\", \"uint32_t\", CryptoNote::parameters::MANDATORY_TRANSACTION};"
             ]
           }
         },
@@ -47,7 +47,7 @@
           "marker": "uint16_t m_daemon_port;",
           "parameters": {
             "text": [
-              "uint64_t m_mandatoryTransaction;"
+              "uint32_t m_mandatoryTransaction;"
             ]
           }
         }
@@ -61,7 +61,7 @@
           "marker": "arg_testnet = { \"testnet\"",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<uint64_t> arg_MANDATORY_TRANSACTION  = {\"MANDATORY_TRANSACTION\", \"Max transaction limit size\", false};  "
+              "  const command_line::arg_descriptor<uint32_t> arg_MANDATORY_TRANSACTION  = {\"MANDATORY_TRANSACTION\", \"Max transaction limit size\", false};  "
             ]
           }
         },
@@ -93,7 +93,7 @@
           "marker": "uint64_t MONEY_SUPPLY;",
           "parameters": {
             "text": [
-              "  bool MANDATORY_TRANSACTION;"
+              "  uint32_t MANDATORY_TRANSACTION;"
             ]
           }
         }
@@ -116,7 +116,7 @@
           "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
           "parameters": {
             "text": [
-              "    (\"MANDATORY_TRANSACTION\", po::value<bool>()->default_value(0), \"bool\")"
+              "    (\"MANDATORY_TRANSACTION\", po::value<uint32_t>()->default_value(0), \"uint32_t\")"
             ]
           }
         },
@@ -126,7 +126,7 @@
           "parameters": {
             "text": [
               "  if (options.count(\"MANDATORY_TRANSACTION\")) {",
-              "    MANDATORY_TRANSACTION = options[\"MANDATORY_TRANSACTION\"].as<bool>();",
+              "    MANDATORY_TRANSACTION = options[\"MANDATORY_TRANSACTION\"].as<uint32_t>();",
               "  }"
             ]
           }

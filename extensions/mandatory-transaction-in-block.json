@@ -13,10 +13,10 @@
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
-              "const bool MANDATORY_TRANSACTION                          = %s;"
+              "const uint32_t MANDATORY_TRANSACTION                          = %s;"
             ],
             "replace_text_alt": [
-              "const bool MANDATORY_TRANSACTION                          = 0;"
+              "const uint32_t MANDATORY_TRANSACTION                          = 0;"
             ],
             "var": "MANDATORY_TRANSACTION"
           }
@@ -31,7 +31,7 @@
           "marker": "size_t m_blockGrantedFullRewardZone;",
           "parameters": {
             "text": [
-              "  bool m_mandatoryTransaction;"
+              "  uint32_t m_mandatoryTransaction;"
             ]
           }
         },
@@ -49,7 +49,7 @@
           "marker": "size_t blockGrantedFullRewardZone()",
           "parameters": {
             "text": [
-              "  bool mandatoryTransaction() const { return m_mandatoryTransaction; }"
+              "  uint32_t mandatoryTransaction() const { return m_mandatoryTransaction; }"
             ]
           }
         }
