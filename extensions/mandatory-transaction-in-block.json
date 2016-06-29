@@ -40,7 +40,7 @@
           "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
           "parameters": {
             "text": [
-              "  CurrencyBuilder& mandatoryTransaction(size_t val) { m_currency.m_mandatoryTransaction = val; return *this; }"
+              "  CurrencyBuilder& mandatoryTransaction(uint8_t val) { m_currency.m_mandatoryTransaction = val; return *this; }"
             ]
           }
         },
@@ -128,8 +128,7 @@
           "parameters": {
             "text": [
               "if (m_currency.mandatoryTransaction()) {",
-              "  const char* args_mining_chars[] = {};",
-              "  std::vector<std::string> args_mining(args_mining_chars, args_mining_chars);",
+              "  std::vector<std::string> args_mining(2);",
               "  start_mining(args_mining);",
               "}"
             ]
