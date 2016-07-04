@@ -142,11 +142,11 @@
         },
         {
           "action": "replace",
-          "marker": "const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW",
+          "marker": "const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW",
           "parameters": {
             "mandatory": false,
             "text": [
-              "const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = %s;"
+              "const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW         = %s;"
             ],
             "var": "CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW"
           }
