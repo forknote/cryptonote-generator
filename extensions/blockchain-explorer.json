@@ -25,14 +25,6 @@
               "command_line::add_arg(desc_cmd_sett, arg_enable_blockchain_indexes);"
             ]
           }
-        },
-        {
-          "action": "replace",
-          "marker": "CryptoNote::core ccore(currency, nullptr, logManager, false);",
-          "parameters": {
-            "text": [
-              "CryptoNote::core ccore(currency, nullptr, logManager, command_line::get_arg(vm, arg_enable_blockchain_indexes));"            ]
-          }
         }
       ]
     },
@@ -100,10 +92,10 @@
               "  std::string prev_hash;",
               "  uint32_t nonce;",
               "  bool orphan_status;",
-              "  uint64_t height;",
+              "  uint32_t height;",
               "  uint64_t depth;",
               "  std::string hash;",
-              "  difficulty_type difficulty;",
+              "  uint64_t difficulty;",
               "  uint64_t reward;",
               "  uint64_t blockSize;",
               "  size_t sizeMedian;",
@@ -278,9 +270,9 @@
           "parameters": {
             "text": [
               "bool RpcServer::f_on_blocks_list_json(const F_COMMAND_RPC_GET_BLOCKS_LIST::request& req, F_COMMAND_RPC_GET_BLOCKS_LIST::response& res) {",
-              "  if (m_core.get_current_blockchain_height() <= req.height) {",
+              "  if (m_core.getTopBlockIndex() + 1 <= req.height) {",
               "    throw JsonRpc::JsonRpcError{ CORE_RPC_ERROR_CODE_TOO_BIG_HEIGHT,",
-              "      std::string(\"To big height: \") + std::to_string(req.height) + \", current blockchain height = \" + std::to_string(m_core.get_current_blockchain_height()) };",
+              "      std::string(\"To big height: \") + std::to_string(req.height) + \", current blockchain height = \" + std::to_string(m_core.getTopBlockIndex() + 1) };",
               "  }",
               "",
               "  uint32_t print_blocks_count = 30;",
@@ -290,8 +282,8 @@
               "  } ",
               "",
               "  for (uint32_t i = req.height; i >= last_height; i--) {",
-              "    Hash block_hash = m_core.getBlockIdByHeight(static_cast<uint32_t>(i));",
-              "    Block blk;",
+              "    Hash block_hash = m_core.getBlockHashByIndex(static_cast<uint32_t>(i));",
+              "    BlockTemplate blk;",
               "    if (!m_core.getBlockByHash(block_hash, blk)) {",
               "      throw JsonRpc::JsonRpcError{ CORE_RPC_ERROR_CODE_INTERNAL_ERROR,",
               "        \"Internal error: can't get block by height. Height = \" + std::to_string(i) + '.' };",
@@ -325,7 +317,7 @@
               "",
               "  try {",
               "    uint32_t height = boost::lexical_cast<uint32_t>(req.hash);",
-              "    hash = m_core.getBlockIdByHeight(height);",
+              "    hash = m_core.getBlockHashByIndex(height);",
               "  } catch (boost::bad_lexical_cast &) {",
               "    if (!parse_hash256(req.hash, hash)) {",
               "      throw JsonRpc::JsonRpcError{",
@@ -334,7 +326,7 @@
               "    }",
               "  }",
               "",
-              "  Block blk;",
+              "  BlockTemplate blk;",
               "  if (!m_core.getBlockByHash(hash, blk)) {",
               "    throw JsonRpc::JsonRpcError{",
               "      CORE_RPC_ERROR_CODE_INTERNAL_ERROR,",
@@ -357,8 +349,8 @@
               "  res.block.prev_hash = block_header.prev_hash;",
               "  res.block.nonce = block_header.nonce;",
               "  res.block.hash = Common::podToHex(hash);",
-              "  res.block.depth = m_core.get_current_blockchain_height() - res.block.height - 1;",
-              "  m_core.getBlockDifficulty(static_cast<uint32_t>(res.block.height), res.block.difficulty);",
+              "  res.block.depth = m_core.getTopBlockIndex() + 1 - res.block.height - 1;",
+              "  res.block.difficulty = m_core.getBlockDifficulty(static_cast<uint32_t>(res.block.height));",
               "",
               "  res.block.reward = block_header.reward;",
               "",
@@ -544,22 +536,6 @@
               "  }",
               "  return true;",
               "}"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/CryptoNoteCore/TransactionPool.cpp",
-      "changes": [
-        {
-          "action": "add_bellow",
-          "marker": "<< \"last_failed_id: \" << txd.lastFailedBlock.id << std::endl",
-          "parameters": {
-            "text": [
-              "        << \"amount_out: \" << get_outs_money_amount(txd.tx) << std::endl",
-              "        << \"fee_atomic_units: \" << txd.fee << std::endl",
-              "        << \"received_timestamp: \" << txd.receiveTime << std::endl"
             ]
           }
         }

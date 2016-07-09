@@ -385,20 +385,6 @@
       ]
     },
     {
-      "path": "/tests/UnitTests/PaymentGateTests.cpp",
-      "changes": [
-        {
-          "action": "replace",
-          "marker": "return WalletConfiguration{ walletFile, \"pass\" };",
-          "parameters": {
-            "text": [
-              "  return WalletConfiguration{ walletFile, \"pass\", false };"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/SimpleWallet/SimpleWallet.cpp",
       "changes": [
         {

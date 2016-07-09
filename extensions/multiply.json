@@ -317,7 +317,7 @@
         },
         {
           "action": "add_bellow",
-          "marker": "minerConfig.init(vm);",
+          "marker": "netNodeConfig.setTestnet(testnet_mode);",
           "parameters": {
             "text": [
               "    std::string default_data_dir = Tools::getDefaultDataDirectory();",

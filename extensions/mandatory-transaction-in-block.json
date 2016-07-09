@@ -70,18 +70,40 @@
       ]
     },
     {
+      "path": "/src/CryptoNoteCore/BlockValidationErrors.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "PROOF_OF_WORK_TOO_WEAK,",
+          "parameters": {
+            "text": [
+              "NOT_ENOUGH_TRANSACTIONS,"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "case BlockValidationError::PROOF_OF_WORK_TOO_WEAK: return \"Proof of work is too weak\";",
+          "parameters": {
+            "text": [
+              "case BlockValidationError::NOT_ENOUGH_TRANSACTIONS: return \"New block must have at least one transaction\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/CryptoNoteCore/Core.cpp",
       "changes": [
         {
           "action": "add_above",
-          "marker": "m_blockchain.addNewBlock(b, bvc);",
+          "marker": "auto currentDifficulty = cache->getDifficultyForNextBlock(previousBlockIndex);",
           "parameters": {
             "text": [
-              "  if (m_currency.mandatoryTransaction()) {",
-              "    if (b.transactionHashes.size() < 1 && get_block_height(b) > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) {",
-              "      logger(INFO) << \"New block must have at least one transaction\";",
-              "      bvc.m_verifivation_failed = true;",
-              "      return false;",
+              "  if (currency.mandatoryTransaction()) {",
+              "    if (cachedBlock.getBlock().transactionHashes.size() < 1 && cache->getBlockIndex(cachedBlock.getBlockHash()) > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) {",
+              "      logger(Logging::WARNING) << \"New block must have at least one transaction\";",
+              "      return error::BlockValidationError::NOT_ENOUGH_TRANSACTIONS;",
               "    }",
               "  }",
               ""
@@ -90,47 +112,15 @@
         },
         {
           "action": "add_above",
-          "marker": "size_t cumulative_size = txs_size + getObjectBinarySize(b.baseTransaction);",
+          "marker": "size_t cumulativeSize = transactionsSize + getObjectBinarySize(b.baseTransaction);",
           "parameters": {
             "text": [
-              "  if (m_currency.mandatoryTransaction()) {",
-              "    if (txs_size == 0 && get_block_height(b) > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) { ",
-              "      logger(ERROR, BRIGHT_RED) << \"Need at least one transaction beside base transaction\";",
+              "  if (currency.mandatoryTransaction()) {",
+              "    if (transactionsSize == 0 && height > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) { ",
+              "      logger(Logging::ERROR, Logging::BRIGHT_RED) << \"Need at least one transaction beside base transaction\";",
               "      return false;",
               "    }",
               "  }"
-            ]
-          }
-        },
-        {
-          "action": "add_bellow",
-          "marker": "m_mempool.get_difference(knownTxsIds, addedTxsIds, deletedTxsIds);",
-          "parameters": {
-            "text": [
-              "    if (m_currency.mandatoryTransaction()) {",
-              "      if (knownTxsIds.size() == 0 && addedTxsIds.size() == 0 && get_current_blockchain_height() > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) {",
-              "        if (get_miner().is_mining()) {",
-              "          get_miner().stop();",
-              "        }",
-              "      }",
-              "    }"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/SimpleWallet/SimpleWallet.cpp",
-      "changes": [
-        {
-          "action": "add_bellow",
-          "marker": "success_msg_writer(true) << \"Money successfully sent, transaction \" << Common::podToHex(txInfo.hash);",
-          "parameters": {
-            "text": [
-              "if (m_currency.mandatoryTransaction()) {",
-              "  std::vector<std::string> args_mining(2);",
-              "  start_mining(args_mining);",
-              "}"
             ]
           }
         }

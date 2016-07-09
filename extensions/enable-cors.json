@@ -42,7 +42,7 @@
       "changes": [
         {
           "action": "add_bellow",
-          "marker": "const ICryptoNoteProtocolQuery& m_protocolQuery;",
+          "marker": "ICryptoNoteProtocolHandler& m_protocol;",
           "parameters": {
             "text": [
               "bool m_cors_enabled;"

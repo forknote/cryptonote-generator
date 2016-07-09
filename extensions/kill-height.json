@@ -70,17 +70,39 @@
       ]
     },
     {
+      "path": "/src/CryptoNoteCore/BlockValidationErrors.h",
+      "changes": [
+        {
+          "action": "add_bellow",
+          "marker": "PROOF_OF_WORK_TOO_WEAK,",
+          "parameters": {
+            "text": [
+              "NO_MORE_BLOCK,"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "case BlockValidationError::PROOF_OF_WORK_TOO_WEAK: return \"Proof of work is too weak\";",
+          "parameters": {
+            "text": [
+              "case BlockValidationError::NO_MORE_BLOCK: return \"Kill block reached\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/CryptoNoteCore/Core.cpp",
       "changes": [
         {
           "action": "add_above",
-          "marker": "m_blockchain.addNewBlock(b, bvc);",
+          "marker": "auto currentDifficulty = cache->getDifficultyForNextBlock(previousBlockIndex);",
           "parameters": {
             "text": [
-              "  if (m_currency.killHeight() != 0 && get_block_height(b) > m_currency.killHeight()) {",
-              "    logger(ERROR, BRIGHT_RED) << \"Cannot add more blocks. Block \" << m_currency.killHeight() << \" is the kill block\";",
-              "    bvc.m_verifivation_failed = true;",
-              "    return false;",
+              "  if (currency.killHeight() != 0 && cache->getBlockIndex(cachedBlock.getBlockHash()) > currency.killHeight()) {",
+              "    logger(Logging::ERROR, Logging::BRIGHT_RED) << \"Cannot add more blocks. Block \" << currency.killHeight() << \" is the kill block\";",
+              "      return error::BlockValidationError::NO_MORE_BLOCK;",
               "  }",
               ""
             ]

@@ -83,7 +83,7 @@
       "changes": [
         {
           "action": "add_above",
-          "marker": "CurrencyBuilder& maxBlockNumber(uint64_t val) { m_currency.m_maxBlockHeight = val; return *this; }",
+          "marker": "CurrencyBuilder& maxBlockNumber(uint32_t val) { m_currency.m_maxBlockHeight = val; return *this; }",
           "parameters": {
             "text": [
               "  Transaction generateGenesisTransaction();"
