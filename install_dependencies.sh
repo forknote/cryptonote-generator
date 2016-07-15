@@ -73,11 +73,6 @@ function installMac {
   doneMessage
 }
 
-function doneMessage {
-  echo "Cryptonote generator configuration finished."
-  echo "type 'bash generator.sh [-h] [-f FILE] [-c <string>]' to generate Cryptonote coin."
-}
-
 function unsupportedOS {
 	echo "Unsupported OS. Only MacOSX and Ubuntu are supported."
 }
@@ -87,9 +82,15 @@ function installUbuntu {
   set -x
 
   sudo apt-get update
-  sudo apt-get -y install build-essential python-dev gcc-4.8 g++-4.8 git cmake libboost1.55-all-dev
+  sudo apt-get -y install build-essential python-dev gcc-4.9 g++-4.9 git cmake libboost1.58-all-dev librocksdb-dev
+  export CXXFLAGS="-std=c++11"
 
   doneMessage
+}
+
+function doneMessage {
+  echo "Cryptonote generator configuration finished."
+  echo "type 'bash generator.sh [-h] [-f FILE] [-c <string>]' to generate Cryptonote coin."
 }
 
 if [[ $OSTYPE == darwin* ]] ; then
