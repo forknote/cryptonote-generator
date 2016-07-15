@@ -324,7 +324,7 @@
               "    if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
               "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
               "    }",
-              "    coreConfig.configFolder = default_data_dir;",
+              "    dbConfig.setDataDir(default_data_dir);",
               "    netNodeConfig.setConfigFolder(default_data_dir);"
             ]
           }

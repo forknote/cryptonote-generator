@@ -33,7 +33,7 @@ if [[ "$OSTYPE" == "msys" ]]; then
 	cmake -G "Visual Studio 12 Win64" "..\.."
 	msbuild.exe Bytecoin.sln /property:Configuration=Release ${COMPILE_ARGS}
 else
-	cmake -D STATIC=ON -D ARCH="x86-64" -D CMAKE_BUILD_TYPE=Release ../..
+	cmake -DCMAKE_C_COMPILER="/usr/local/opt/llvm35/bin/clang-3.5" -DCMAKE_CXX_COMPILER="/usr/local/opt/llvm35/bin/clang++-3.5" -D STATIC=ON -D ARCH="x86-64" -D CMAKE_BUILD_TYPE=Release ../..
 	echo "make ${COMPILE_ARGS}"
 	make ${COMPILE_ARGS}
 fi

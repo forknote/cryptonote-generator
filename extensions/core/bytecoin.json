@@ -175,6 +175,17 @@
         },
         {
           "action": "replace",
+          "marker": "const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  =",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = %s;"
+            ],
+            "var": "CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2"
+          }
+        },
+        {
+          "action": "replace",
           "marker": "const size_t   MAX_BLOCK_SIZE_INITIAL",
           "parameters": {
             "mandatory": false,
