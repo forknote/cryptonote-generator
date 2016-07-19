@@ -37,7 +37,7 @@
         },
         {
           "action": "add_bellow",
-          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val) { m_currency.m_blockGrantedFullRewardZone = val; return *this; }",
           "parameters": {
             "text": [
               "  CurrencyBuilder& blockGrantedFullRewardZoneV1(size_t val) { m_currency.m_blockGrantedFullRewardZoneV1 = val; return *this; }",
@@ -75,6 +75,16 @@
           "parameters": {
             "text": [
               "    return m_blockGrantedFullRewardZoneV2;"
+            ]
+          }
+        },
+        {
+          "action": "add_bellow",
+          "marker": "m_blockGrantedFullRewardZone(currency.m_blockGrantedFullRewardZone),",
+          "parameters": {
+            "text": [
+              "m_blockGrantedFullRewardZoneV1(currency.m_blockGrantedFullRewardZoneV1),",
+              "m_blockGrantedFullRewardZoneV2(currency.m_blockGrantedFullRewardZoneV2),"
             ]
           }
         }
@@ -119,20 +129,20 @@
               "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
               "  const command_line::arg_descriptor<uint64_t>    arg_MONEY_SUPPLY  = {\"MONEY_SUPPLY\", \"uint64_t\", CryptoNote::parameters::MONEY_SUPPLY};",
               "  const command_line::arg_descriptor<unsigned>    arg_EMISSION_SPEED_FACTOR  = {\"EMISSION_SPEED_FACTOR\", \"unsigned\", CryptoNote::parameters::EMISSION_SPEED_FACTOR};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
               "  const command_line::arg_descriptor<uint64_t>    arg_MINIMUM_FEE  = {\"MINIMUM_FEE\", \"uint64_t\", CryptoNote::parameters::MINIMUM_FEE};",
               "  const command_line::arg_descriptor<uint64_t>    arg_DEFAULT_DUST_THRESHOLD  = {\"DEFAULT_DUST_THRESHOLD\", \"uint64_t\", CryptoNote::parameters::DEFAULT_DUST_THRESHOLD};",
               "  const command_line::arg_descriptor<uint64_t>    arg_DIFFICULTY_TARGET  = {\"DIFFICULTY_TARGET\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_TARGET};",
-              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"uint64_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"uint32_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
+              "  const command_line::arg_descriptor<size_t>      arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"size_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
               "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
-              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
-              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
               "  const command_line::arg_descriptor<std::string> arg_CRYPTONOTE_NAME  = {\"CRYPTONOTE_NAME\", \"Cryptonote name. Used for storage directory\", \"\"};",
               "  const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT  = {\"CHECKPOINT\", \"Checkpoints. Format: HEIGHT:HASH\"};"
             ]
@@ -171,7 +181,7 @@
           "marker": "CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
           "parameters": {
             "text": [
-              "  CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
+              "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
               "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
               "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
               "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
@@ -214,7 +224,7 @@
           "marker": "po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett), vm);",
           "parameters": {
             "text": [
-              "        std::cout << \"Success: Configuration file openned\" << std::endl;",
+              "        std::cout << \"Success: Configuration file openned: \" << config_path << std::endl;",
               "        po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), desc_cmd_sett, true), vm);"
             ]
           }
@@ -324,8 +334,16 @@
               "    if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
               "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
               "    }",
-              "    coreConfig.configFolder = default_data_dir;",
               "    netNodeConfig.setConfigFolder(default_data_dir);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (dbConfig.isConfigFolderDefaulted()) {",
+          "parameters": {
+            "text": [
+              "    dbConfig.setDataDir(default_data_dir);"
             ]
           }
         }
@@ -365,6 +383,15 @@
               "  std::string genesisCoinbaseTxHex = m_genesisCoinbaseTxHex;"
             ]
           }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_genesisCoinbaseTxHex(currency.m_genesisCoinbaseTxHex),"
+            ]
+          }
         }
       ]
     },
@@ -399,15 +426,15 @@
               "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX  = {\"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX};",
               "  const command_line::arg_descriptor<uint64_t>    arg_MONEY_SUPPLY  = {\"MONEY_SUPPLY\", \"uint64_t\", CryptoNote::parameters::MONEY_SUPPLY};",
               "  const command_line::arg_descriptor<unsigned>    arg_EMISSION_SPEED_FACTOR  = {\"EMISSION_SPEED_FACTOR\", \"unsigned\", CryptoNote::parameters::EMISSION_SPEED_FACTOR};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2  = {\"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT  = {\"CRYPTONOTE_DISPLAY_DECIMAL_POINT\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT};",
               "  const command_line::arg_descriptor<uint64_t>    arg_MINIMUM_FEE  = {\"MINIMUM_FEE\", \"uint64_t\", CryptoNote::parameters::MINIMUM_FEE};",
               "  const command_line::arg_descriptor<uint64_t>    arg_DEFAULT_DUST_THRESHOLD  = {\"DEFAULT_DUST_THRESHOLD\", \"uint64_t\", CryptoNote::parameters::DEFAULT_DUST_THRESHOLD};",
               "  const command_line::arg_descriptor<uint64_t>    arg_DIFFICULTY_TARGET  = {\"DIFFICULTY_TARGET\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_TARGET};",
-              "  const command_line::arg_descriptor<size_t>      arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"size_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
-              "  const command_line::arg_descriptor<uint64_t>    arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"uint64_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW  = {\"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW\", \"uint32_t\", CryptoNote::parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW};",
+              "  const command_line::arg_descriptor<size_t>      arg_MAX_BLOCK_SIZE_INITIAL  = {\"MAX_BLOCK_SIZE_INITIAL\", \"size_t\", CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL};",
               "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
@@ -831,7 +858,6 @@
               "    if (!coinBaseConfig.CRYPTONOTE_NAME.empty()) {",
               "      boost::replace_all(default_data_dir, CryptoNote::CRYPTONOTE_NAME, coinBaseConfig.CRYPTONOTE_NAME);",
               "    }",
-              "    coreConfig.configFolder = default_data_dir;",
               "    netNodeConfig.setConfigFolder(default_data_dir);"
             ]
           }

@@ -77,6 +77,7 @@ function generate_coin {
 	if [ ! -z "${UPDATES_PATH}"  ]; then
 		# Generate new coin
 		cd "${NEW_COIN_PATH}" && patch -s -p1 < "${UPDATES_PATH}" && cd "${SCRIPTS_PATH}"
+        chmod -R 755 ${NEW_COIN_PATH}
 
 		bash "${SCRIPTS_PATH}/compile.sh" -c "${COMPILE_ARGS}" -z
 	fi

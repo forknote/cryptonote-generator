@@ -194,6 +194,15 @@
               "genesisBlockReward(parameters::GENESIS_BLOCK_REWARD);"
             ]
           }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_genesisBlockReward(currency.m_genesisBlockReward),"
+            ]
+          }
         }
       ]
     },

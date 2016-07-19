@@ -66,6 +66,15 @@
               "mandatoryTransaction(parameters::MANDATORY_TRANSACTION);"
             ]
           }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_mandatoryTransaction(currency.m_mandatoryTransaction),"
+            ]
+          }
         }
       ]
     },

@@ -77,6 +77,15 @@
               "}"
             ]
           }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_cryptonoteCoinVersion(currency.m_cryptonoteCoinVersion),"
+            ]
+          }
         }
       ]
     }

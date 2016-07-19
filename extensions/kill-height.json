@@ -48,6 +48,15 @@
               "killHeight(parameters::KILL_HEIGHT);"
             ]
           }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_killHeight(currency.m_killHeight),"
+            ]
+          }
         }
       ]
     },
