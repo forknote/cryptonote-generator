@@ -182,7 +182,7 @@
           "parameters": {
             "text": [
               "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-              "  currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));"
+              "  currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
               "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
               "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
               "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
@@ -261,7 +261,7 @@
           "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
           "parameters": {
             "text": [
-              "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));"
+              "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
               "    currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
               "    currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
               "    currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
@@ -882,7 +882,7 @@
           "marker": "if (config.gateConfiguration.testnet) {",
           "parameters": {
             "text": [
-              "  currencyBuilder.cryptonoteName(config.coinBaseConfig.CRYPTONOTE_NAME);"
+              "  currencyBuilder.cryptonoteName(config.coinBaseConfig.CRYPTONOTE_NAME);",
               "  currencyBuilder.genesisCoinbaseTxHex(config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
               "  currencyBuilder.publicAddressBase58Prefix(config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
               "  currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
