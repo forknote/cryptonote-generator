@@ -222,20 +222,6 @@
       ]
     },
     {
-      "path": "/src/Daemon/Daemon.cpp",
-      "changes": [
-        {
-          "action": "add_bellow",
-          "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-          "parameters": {
-            "text": [
-              "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/Rpc/RpcServer.h",
       "changes": [
         {

@@ -78,14 +78,20 @@ function unsupportedOS {
 }
 
 function installUbuntu {
+  . /etc/lsb-release
+
   # print commands
   set -x
 
-  sudo apt-get update
-  sudo apt-get -y install build-essential python-dev gcc-4.9 g++-4.9 git cmake libboost1.58-all-dev librocksdb-dev
-  export CXXFLAGS="-std=gnu++11"
+  if [[ $DISTRIB_RELEASE == 16* ]] ; then
+    sudo apt-get update
+    sudo apt-get -y install build-essential python-dev gcc-4.9 g++-4.9 git cmake libboost1.58-all-dev librocksdb-dev
+    export CXXFLAGS="-std=gnu++11"
 
-  doneMessage
+    doneMessage
+  else
+    echo "Only Ubuntu 16.04 is supported"
+  fi
 }
 
 function doneMessage {
