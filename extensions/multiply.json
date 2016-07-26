@@ -182,7 +182,6 @@
           "parameters": {
             "text": [
               "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-              "  currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
               "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
               "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
               "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
@@ -261,7 +260,6 @@
           "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
           "parameters": {
             "text": [
-              "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
               "    currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
               "    currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
               "    currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
@@ -448,8 +446,8 @@
               "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
-              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
-              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"uint64_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
               "  const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {\"rpc-bind-port\", \"\", std::to_string(RPC_DEFAULT_PORT)};"
             ]
           }
@@ -882,7 +880,6 @@
           "marker": "if (config.gateConfiguration.testnet) {",
           "parameters": {
             "text": [
-              "  currencyBuilder.cryptonoteName(config.coinBaseConfig.CRYPTONOTE_NAME);",
               "  currencyBuilder.genesisCoinbaseTxHex(config.coinBaseConfig.GENESIS_COINBASE_TX_HEX);",
               "  currencyBuilder.publicAddressBase58Prefix(config.coinBaseConfig.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);",
               "  currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
