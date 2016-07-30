@@ -321,8 +321,6 @@
               "  res.block.nonce = block_header.nonce;",
               "  res.block.hash = Common::podToHex(hash);",
               "  res.block.depth = m_core.getTopBlockIndex() - res.block.height;",
-              " std::cout << m_core.getBlockDifficulty(res.block.height) << \"\\n\";",
-              " std::cout << blkDetails.difficulty << \"\\n\";",
               "  res.block.difficulty = m_core.getBlockDifficulty(res.block.height);",
               "  res.block.transactionsCumulativeSize = blkDetails.transactionsCumulativeSize;",
               "  res.block.alreadyGeneratedCoins = blkDetails.alreadyGeneratedCoins;",

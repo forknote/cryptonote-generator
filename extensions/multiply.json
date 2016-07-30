@@ -215,6 +215,7 @@
               "  }",
               "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
               "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
+              "",
               "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction();"
             ]
           }
@@ -659,12 +660,19 @@
           }
         },
         {
-          "action": "add_bellow",
-          "marker": "allowLocalIp = command_line::get_arg(vm, arg_p2p_allow_local_ip);",
+          "action": "add_above",
+          "marker": "if (vm.count(arg_p2p_allow_local_ip.name) != 0 && (!vm[arg_p2p_allow_local_ip.name].defaulted() || !allowLocalIp)) {",
           "parameters": {
             "text": [
-              "  p2pStatTrustedPubKey = command_line::get_arg(vm, arg_P2P_STAT_TRUSTED_PUB_KEY);",
-              "  networkId = boost::lexical_cast<boost::uuids::uuid>(command_line::get_arg(vm, arg_network_id));"
+              "",
+              "  if (vm.count(arg_P2P_STAT_TRUSTED_PUB_KEY.name) != 0 && (!vm[arg_P2P_STAT_TRUSTED_PUB_KEY.name].defaulted())) {",
+              "    p2pStatTrustedPubKey = command_line::get_arg(vm, arg_P2P_STAT_TRUSTED_PUB_KEY);",
+              "  }",
+              "",
+              "  if (vm.count(arg_network_id.name) != 0 && (!vm[arg_network_id.name].defaulted())) {",
+              "    networkId = boost::lexical_cast<boost::uuids::uuid>(command_line::get_arg(vm, arg_network_id));",
+              "  }",
+              ""
             ]
           }
         },
@@ -682,11 +690,11 @@
           "marker": "std::string NetNodeConfig::getConfigFolder() const {",
           "parameters": {
             "text": [
-              "  boost::uuids::uuid NetNodeConfig::getNetworkId() const {",
+              "boost::uuids::uuid NetNodeConfig::getNetworkId() const {",
               "  return networkId;",
               "}",
               "",
-              "  std::string NetNodeConfig::getP2pStatTrustedPubKey() const {",
+              "std::string NetNodeConfig::getP2pStatTrustedPubKey() const {",
               "  return p2pStatTrustedPubKey;",
               "}",
               ""
@@ -786,15 +794,6 @@
       "changes": [
         {
           "action": "replace",
-          "marker": "cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
-          "parameters": {
-            "text": [
-              "  cmdOptionsDesc.add(cmdGeneralOptions).add(remoteNodeOptions).add(netNodeOptions).add(coinBaseOptions);"
-            ]
-          }
-        },
-        {
-          "action": "replace",
           "marker": "confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",
           "parameters": {
             "text": [
@@ -808,15 +807,6 @@
           "parameters": {
             "text": [
               "    po::store(po::parse_config_file(confStream, confOptionsDesc, true), confOptions);"
-            ]
-          }
-        },
-        {
-          "action": "replace",
-          "marker": "(\"config,c\", po::value<std::string>(), \"configuration file\");",
-          "parameters": {
-            "text": [
-              "  (\"config,c\", po::value<std::string>()->default_value(\"\"), \"configuration file\");"
             ]
           }
         },
@@ -840,15 +830,6 @@
           }
         },
         {
-          "action": "_add_bellow",
-          "marker": "remoteNodeConfig.init(cmdOptions);",
-          "parameters": {
-            "text": [
-              "    coinBaseConfig.init(cmdOptions);"
-            ]
-          }
-        },
-        {
           "action": "add_bellow",
           "marker": "#include <boost/program_options.hpp>",
           "parameters": {
@@ -858,8 +839,8 @@
           }
         },
         {
-          "action": "add_bellow",
-          "marker": "netNodeConfig.init(cmdOptions);",
+          "action": "add_above",
+          "marker": "gateConfiguration.init(confOptions);",
           "parameters": {
             "text": [
               "    std::string default_data_dir = Tools::getDefaultDataDirectory();",
@@ -913,6 +894,27 @@
               "  }",
               "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_LAG);",
               "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CryptoNote::DataBaseConfig dbConfig;",
+          "parameters": {
+            "text": [
+              "      std::string data_dir = config.dataDir;",
+              "      if (!config.coinBaseConfig.CRYPTONOTE_NAME.empty()) {",
+              "        boost::replace_all(data_dir, CryptoNote::CRYPTONOTE_NAME, config.coinBaseConfig.CRYPTONOTE_NAME);",
+              "      }"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "dbConfig.setDataDir(config.dataDir);",
+          "parameters": {
+            "text": [
+              "dbConfig.setDataDir(data_dir);"
             ]
           }
         }
