@@ -33,8 +33,6 @@
 // along with Forknote.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CoinBaseConfiguration.h"
-//delete
-#include <iostream>
 
 namespace PaymentService {
 
@@ -88,9 +86,6 @@ void CoinBaseConfiguration::initOptions(boost::program_options::options_descript
 }
 
 void CoinBaseConfiguration::init(const boost::program_options::variables_map& options) {
-  // delete. just for tests
-  std::cout << options["CRYPTONOTE_NAME"].as<std::string>() << " ::: a\n";
-
   if (options.count("CRYPTONOTE_NAME")) {
     CRYPTONOTE_NAME = options["CRYPTONOTE_NAME"].as<std::string>();
   }

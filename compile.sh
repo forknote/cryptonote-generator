@@ -57,6 +57,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/Release/${__CONFIG_core_CRYPTONOTE_NAME}d.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/walletd.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/Release/miner.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
 			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
 			rm -rf ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs/.git
@@ -71,6 +72,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_CRYPTONOTE_NAME}d ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/miner ${BUILD_PATH}/${MAC_BUILD_NAME}
 		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
 			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
 			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.git
@@ -85,6 +87,7 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/${__CONFIG_core_CRYPTONOTE_NAME}d ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${LINUX_BUILD_NAME}
+		cp ${NEW_COIN_PATH}/build/release/src/miner ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
 			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
 			rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs/.git

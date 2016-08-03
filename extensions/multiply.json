@@ -665,13 +665,13 @@
           "parameters": {
             "text": [
               "",
-              "  if (vm.count(arg_P2P_STAT_TRUSTED_PUB_KEY.name) != 0 && (!vm[arg_P2P_STAT_TRUSTED_PUB_KEY.name].defaulted())) {",
+              "//  if (vm.count(arg_P2P_STAT_TRUSTED_PUB_KEY.name) != 0 && (!vm[arg_P2P_STAT_TRUSTED_PUB_KEY.name].defaulted())) {",
               "    p2pStatTrustedPubKey = command_line::get_arg(vm, arg_P2P_STAT_TRUSTED_PUB_KEY);",
-              "  }",
+              "//  }",
               "",
-              "  if (vm.count(arg_network_id.name) != 0 && (!vm[arg_network_id.name].defaulted())) {",
+              "//  if (vm.count(arg_network_id.name) != 0 && (!vm[arg_network_id.name].defaulted())) {",
               "    networkId = boost::lexical_cast<boost::uuids::uuid>(command_line::get_arg(vm, arg_network_id));",
-              "  }",
+              "//  }",
               ""
             ]
           }
@@ -792,6 +792,41 @@
     {
       "path": "/src/PaymentGateService/ConfigurationManager.cpp",
       "changes": [
+        {
+          "action": "add_above",
+          "marker": "if (cmdOptions[\"testnet\"].as<bool>()) {",
+          "parameters": {
+            "text": [
+              "  if (!(cmdOptions[\"BYTECOIN_NETWORK\"].as<std::string>().compare(\"11100111-1100-0101-1011-001210110110\"))) {",
+              "    netNodeConfig.setNetworkId(boost::lexical_cast<boost::uuids::uuid>(confOptions[\"BYTECOIN_NETWORK\"].as<std::string>()));",
+              "  }",
+              "",
+              "  if (!(cmdOptions[\"P2P_STAT_TRUSTED_PUB_KEY\"].as<std::string>().compare(\"\"))) {",
+              "    netNodeConfig.setP2pStatTrustedPubKey(confOptions[\"P2P_STAT_TRUSTED_PUB_KEY\"].as<std::string>());",
+              "  }",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "po::variables_map confOptions;",
+          "parameters": {
+            "text": [
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (cmdOptions.count(\"config\")) {",
+          "parameters": {
+            "text": [
+              "po::variables_map confOptions;"
+            ]
+          }
+        },
+
         {
           "action": "replace",
           "marker": "confOptionsDesc.add(confGeneralOptions).add(remoteNodeOptions).add(netNodeOptions);",

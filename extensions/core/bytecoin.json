@@ -4,6 +4,49 @@
   "required": [],
   "files": [
     {
+      "path": "/src/CryptoNoteCore/RocksDBWrapper.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "std::vector<std::pair<std::string, std::string>> rawData(std::move(batch.extractRawDataToInsert()));",
+          "parameters": {
+            "text": [
+              "std::vector<std::pair<std::string, std::string>> rawData(batch.extractRawDataToInsert());"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "notification.txs = std::move(m_core.getPoolTransactionHashes());",
+          "parameters": {
+            "text": [
+              "notification.txs = m_core.getPoolTransactionHashes();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tests/Common/VectorMainChainStorage.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "return std::move(storage);",
+          "parameters": {
+            "text": [
+              "return storage;"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
       "path": "/src/CMakeLists.txt",
       "changes": [
         {
