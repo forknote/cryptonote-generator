@@ -1,0 +1,9 @@
+{
+  "file": "bug-fixes.json",
+  "description": "Fixing bugs in core",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+  ]
+}

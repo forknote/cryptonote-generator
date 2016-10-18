@@ -13,7 +13,7 @@
           "marker": "arg_testnet_on  = {",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<bool>        arg_enable_cors = { \"enable-cors\", \"Adds header 'Access-Control-Allow-Origin' to the daemon's RPC responses\", false };"
+              "  const command_line::arg_descriptor<std::string>        arg_enable_cors = { \"enable-cors\", \"Adds header 'Access-Control-Allow-Origin' to the daemon's RPC responses. Uses the value as domain. Use * for all\", \"\" };"
             ]
           }
         },
@@ -45,7 +45,7 @@
           "marker": "ICryptoNoteProtocolHandler& m_protocol;",
           "parameters": {
             "text": [
-              "bool m_cors_enabled;"
+              "std::string m_cors_domain;"
             ]
           }
         },
@@ -54,7 +54,7 @@
           "marker": "typedef std::function<bool(RpcServer*, const HttpRequest& request, HttpResponse& response)> HandlerFunction;",
           "parameters": {
             "text": [
-              "bool enableCors(const bool is_enabled);"
+              "bool enableCors(const std::string domain);"
             ]
           }
         }
@@ -68,8 +68,8 @@
           "marker": "bool RpcServer::isCoreReady() {",
           "parameters": {
             "text": [
-              "bool RpcServer::enableCors(const bool is_enabled) {",
-              "  m_cors_enabled = is_enabled;",
+              "bool RpcServer::enableCors(const std::string domain) {",
+              "  m_cors_domain = domain;",
               "  return true;",
               "}",
               ""
@@ -81,8 +81,8 @@
           "marker": "response.addHeader(\"Content-Type\", \"application/json\");",
           "parameters": {
             "text": [
-              "if (m_cors_enabled) {",
-              "  response.addHeader(\"Access-Control-Allow-Origin\", \"*\");",
+              "if (!m_cors_domain.empty()) {",
+              "  response.addHeader(\"Access-Control-Allow-Origin\", \" + m_cors_domain + \");",
               "}"
             ]
           }

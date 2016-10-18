@@ -16,7 +16,8 @@
     "multiply/kill-height.json",
     "multiply/cryptonote-coin-clones-support.json",
     "multiply/genesis-block-reward.json",
-    "get-blockchain-settings.json"
+    "get-blockchain-settings.json",
+    "bug-fixes.json"
   ],
   "base_coin": {
     "name": "bytecoin",
