@@ -1,0 +1,25 @@
+{
+  "file": "walletd-extension.json",
+  "description": "Extends the functionality of walletd by implementing additional RPC",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/PaymentGate/WalletService.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "result.push_back(std::move(item));",
+          "parameters": {
+            "text": [
+              "    if (!block.transactions.empty()) {",
+              "      result.push_back(std::move(item));",
+              "    }"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

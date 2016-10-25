@@ -82,7 +82,7 @@
           "parameters": {
             "text": [
               "if (!m_cors_domain.empty()) {",
-              "  response.addHeader(\"Access-Control-Allow-Origin\", \" + m_cors_domain + \");",
+              "  response.addHeader(\"Access-Control-Allow-Origin\", m_cors_domain);",
               "}"
             ]
           }

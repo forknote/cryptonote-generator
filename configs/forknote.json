@@ -17,6 +17,7 @@
     "multiply/cryptonote-coin-clones-support.json",
     "multiply/genesis-block-reward.json",
     "get-blockchain-settings.json",
+    "walletd-extension.json",
     "bug-fixes.json"
   ],
   "base_coin": {
