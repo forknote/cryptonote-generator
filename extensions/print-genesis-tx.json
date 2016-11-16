@@ -27,7 +27,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
           "parameters": {
             "text": [
@@ -36,7 +36,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "currencyBuilder.testnet(testnet_mode);",
           "parameters": {
             "text": [
@@ -50,7 +50,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "bool command_line_preprocessor(const boost::program_options::variables_map& vm, LoggerRef& logger);",
           "parameters": {
             "text": [
@@ -65,7 +65,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "po::notify(vm);",
           "parameters": {
             "text": [

@@ -9,7 +9,7 @@
       "path": "/src/CryptoNoteConfig.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "const uint64_t DEFAULT_DUST_THRESHOLD",
           "parameters": {
             "text": [
@@ -56,7 +56,7 @@
       "path": "/src/CryptoNoteCore/Currency.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "size_t m_minerTxBlobReservedSize;",
           "parameters": {
             "text": [
@@ -65,7 +65,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CurrencyBuilder& minerTxBlobReservedSize(size_t val) { m_currency.m_minerTxBlobReservedSize = val; return *this; }",
           "parameters": {
             "text": [
@@ -74,7 +74,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "size_t minerTxBlobReservedSize() const { return m_minerTxBlobReservedSize; }",
           "parameters": {
             "text": [
@@ -88,7 +88,16 @@
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
+          "marker": "m_minerTxBlobReservedSize(currency.m_minerTxBlobReservedSize),",
+          "parameters": {
+            "text": [
+              "m_maxTransactionSizeLimit(currency.m_maxTransactionSizeLimit),"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
           "marker": "minerTxBlobReservedSize(parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE);",
           "parameters": {
             "text": [

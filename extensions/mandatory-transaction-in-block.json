@@ -82,7 +82,7 @@
       "path": "/src/CryptoNoteCore/BlockValidationErrors.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "PROOF_OF_WORK_TOO_WEAK,",
           "parameters": {
             "text": [
@@ -91,7 +91,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "case BlockValidationError::PROOF_OF_WORK_TOO_WEAK: return \"Proof of work is too weak\";",
           "parameters": {
             "text": [

@@ -11,7 +11,7 @@
       "path": "/src/Daemon/Daemon.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
           "parameters": {
             "text": [
@@ -20,7 +20,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
           "parameters": {
             "text": [
@@ -43,7 +43,7 @@
       "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "uint64_t MONEY_SUPPLY;",
           "parameters": {
             "text": [
@@ -57,7 +57,7 @@
       "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
           "parameters": {
             "text": [
@@ -66,7 +66,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
           "parameters": {
             "text": [
@@ -91,7 +91,7 @@
       "path": "/src/PaymentGateService/PaymentGateService.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
           "parameters": {
             "text": [

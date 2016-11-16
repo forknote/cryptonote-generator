@@ -10,7 +10,7 @@
       "path": "/src/CryptoNoteConfig.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
@@ -37,7 +37,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "command_line::add_arg(desc_cmd_sett, arg_print_genesis_tx);",
           "parameters": {
             "text": [
@@ -46,7 +46,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "void print_genesis_tx_hex(const po::variables_map& vm, LoggerManager& logManager) {",
           "parameters": {
             "text": [
@@ -70,7 +70,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "std::cout << \"\\\"GENESIS_COINBASE_TX_HEX",
           "parameters": {
             "text": [
@@ -90,7 +90,7 @@
       "path": "/src/CryptoNoteCore/Currency.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "unsigned int m_emissionSpeedFactor;",
           "parameters": {
             "text": [
@@ -99,7 +99,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "Transaction generateGenesisTransaction();",
           "parameters": {
             "text": [
@@ -108,7 +108,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CurrencyBuilder& emissionSpeedFactor(unsigned int val);",
           "parameters": {
             "text": [
@@ -117,7 +117,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "unsigned int emissionSpeedFactor()",
           "parameters": {
             "text": [
@@ -175,7 +175,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins)",
           "parameters": {
             "text": [
@@ -187,7 +187,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);",
           "parameters": {
             "text": [
@@ -220,7 +220,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "uint32_t startOffset = result.newBlockHeight - interval.startHeight;",
           "parameters": {
             "text": [
@@ -235,7 +235,7 @@
       "path": "/include/IWalletLegacy.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "virtual void getAccountKeys(AccountKeys& keys) = 0;",
           "parameters": {
             "text": [
@@ -258,7 +258,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "std::unique_ptr<SyncStarter> m_onInitSyncStarter;",
           "parameters": {
             "text": [
@@ -300,7 +300,7 @@
       "path": "/src/PaymentGate/WalletService.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "std::string walletPassword;",
           "parameters": {
             "text": [
@@ -349,7 +349,7 @@
       "path": "/src/PaymentGateService/PaymentServiceConfiguration.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "bool printAddresses;",
           "parameters": {
             "text": [
@@ -363,7 +363,7 @@
       "path": "/src/PaymentGateService/PaymentServiceConfiguration.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "printAddresses = false;",
           "parameters": {
             "text": [
@@ -372,7 +372,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "(\"log-level\", po::value<size_t>(), \"log level\")",
           "parameters": {
             "text": [
@@ -406,7 +406,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "Tools::wallet_rpc_server::init_options(desc_params);",
           "parameters": {
             "text": [
@@ -433,7 +433,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "m_wallet.reset(new WalletLegacy(m_currency, *m_node));",
           "parameters": {
             "text": [
@@ -447,7 +447,7 @@
       "path": "/src/SimpleWallet/SimpleWallet.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "std::string m_wallet_file;",
           "parameters": {
             "text": [

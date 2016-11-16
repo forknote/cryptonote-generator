@@ -152,7 +152,7 @@
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {",
           "parameters": {
             "text": [
@@ -161,7 +161,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "Currency::Currency(Currency&& currency) :",
           "parameters": {
             "text": [
@@ -219,7 +219,7 @@
       "path": "/src/P2p/NetNode.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CryptoNote::PeerlistManager& getPeerlistManager() { return m_peerlist; }",
           "parameters": {
             "text": [
@@ -234,7 +234,7 @@
       "path": "/src/Daemon/Daemon.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
           "parameters": {
             "text": [
@@ -243,7 +243,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
           "parameters": {
             "text": [

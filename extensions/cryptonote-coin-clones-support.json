@@ -27,7 +27,7 @@
       "path": "/src/CryptoNoteCore/Currency.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "unsigned int m_emissionSpeedFactor;",
           "parameters": {
             "text": [
@@ -36,7 +36,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CurrencyBuilder& emissionSpeedFactor(unsigned int val);",
           "parameters": {
             "text": [
@@ -45,7 +45,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "unsigned int emissionSpeedFactor()",
           "parameters": {
             "text": [
@@ -59,7 +59,7 @@
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);",
           "parameters": {
             "text": [
@@ -68,7 +68,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "uint64_t penalizedFee = blockMajorVersion >= BLOCK_MAJOR_VERSION_2",
           "parameters": {
             "text": [

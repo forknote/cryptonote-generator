@@ -20,6 +20,324 @@
           }
         }
       ]
+    },
+
+    {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "struct SendFusionTransaction {",
+          "parameters": {
+            "text": [
+              "struct TransactionOutputInformationSerialized {",
+              "  // output info",
+              "  uint8_t type;",
+              "  uint64_t amount;",
+              "  uint32_t globalOutputIndex;",
+              "  uint32_t outputInTransaction;",
+              "",
+              "  // transaction info",
+              "  std::string transactionHash;",
+              "  std::string transactionPublicKey;",
+              "  std::string outputKey;         // Type: Key ",
+              "  uint32_t requiredSignatures; // Type: Multisignature",
+              "",
+              "  void serialize(CryptoNote::ISerializer& serializer);",
+              "};",
+              "",
+              "struct GetUnspendOuts {",
+              "  struct Request {",
+              "    std::string address;",
+              "    std::string viewKey;",
+              "    uint64_t amount;",
+              "    uint32_t mixIn;",
+              "    bool useDust;",
+              "    uint64_t dustThreshold;",
+              "",
+              "    void serialize(CryptoNote::ISerializer& serializer);",
+              "  };",
+              "",
+              "  struct Response {",
+              "    std::vector<TransactionOutputInformationSerialized> outputs;",
+              "",
+              "    void serialize(CryptoNote::ISerializer& serializer);",
+              "  };",
+              "};",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void SendFusionTransaction::Request::serialize(CryptoNote::ISerializer& serializer) {",
+          "parameters": {
+            "text": [
+              "void GetUnspendOuts::Request::serialize(CryptoNote::ISerializer& serializer) {",
+              "  if (!serializer(address, \"address\")) {",
+              "    throw RequestSerializationError();",
+              "  }",
+              "",
+              "  serializer(viewKey, \"viewKey\");",
+              "  serializer(amount, \"amount\");",
+              "  serializer(mixIn, \"mixIn\");",
+              "  serializer(useDust, \"useDust\");",
+              "  serializer(dustThreshold, \"dustThreshold\");",
+              "}",
+              "",
+              "void GetUnspendOuts::Response::serialize(CryptoNote::ISerializer& serializer) {",
+              "  serializer(outputs, \"outputs\");",
+              "}",
+              "",
+              "void TransactionOutputInformationSerialized::serialize(CryptoNote::ISerializer& serializer) {",
+              "  serializer(type, \"type\");",
+              "  serializer(amount, \"amount\");",
+              "  serializer(globalOutputIndex, \"globalOutputIndex\");",
+              "  serializer(outputInTransaction, \"outputInTransaction\");",
+              "  serializer(transactionHash, \"transactionHash\");",
+              "  serializer(transactionPublicKey, \"transactionPublicKey\");",
+              "  serializer(outputKey, \"outputKey\");",
+              "  serializer(requiredSignatures, \"requiredSignatures\");",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcServer.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::error_code handleSendFusionTransaction(const SendFusionTransaction::Request& request, SendFusionTransaction::Response& response);",
+          "parameters": {
+            "text": [
+              "  std::error_code handleGetUnspendOuts(const GetUnspendOuts::Request& request, GetUnspendOuts::Response& response);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcServer.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "handlers.emplace(\"sendFusionTransaction\", jsonHandler<SendFusionTransaction::Request, SendFusionTransaction::Response>(std::bind(&PaymentServiceJsonRpcServer::handleSendFusionTransaction, this, std::placeholders::_1, std::placeholders::_2)));",
+          "parameters": {
+            "text": [
+              "  handlers.emplace(\"getUnspendOuts\", jsonHandler<GetUnspendOuts::Request, GetUnspendOuts::Response>(std::bind(&PaymentServiceJsonRpcServer::handleGetUnspendOuts, this, std::placeholders::_1, std::placeholders::_2)));"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "std::error_code PaymentServiceJsonRpcServer::handleSendFusionTransaction(const SendFusionTransaction::Request& request, SendFusionTransaction::Response& response) {",
+          "parameters": {
+            "text": [
+              "std::error_code PaymentServiceJsonRpcServer::handleGetUnspendOuts(const GetUnspendOuts::Request& request, GetUnspendOuts::Response& response) {",
+              "  return service.getUnspendOuts(request, response.outputs);",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/include/IWallet.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "struct WalletTransaction {",
+          "parameters": {
+            "text": [
+              "struct WalletOutput {",
+              "  // output info",
+              "  uint8_t type;",
+              "  uint64_t amount;",
+              "  uint32_t globalOutputIndex;",
+              "  uint32_t outputInTransaction;",
+              "",
+              "  // transaction info",
+              "  std::string transactionHash;",
+              "  std::string transactionPublicKey;",
+              "  std::string outputKey;         // Type: Key ",
+              "  uint32_t requiredSignatures; // Type: Multisignature",
+              "};",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "virtual void deleteAddress(const std::string& address) = 0;",
+          "parameters": {
+            "text": [
+              "  virtual std::vector<WalletOutput> getAddressOutputs(const std::string& address) const = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tests/UnitTests/TestWalletService.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void deleteAddress(const std::string& address) override { }",
+          "parameters": {
+            "text": [
+              "  virtual std::vector<WalletOutput> getAddressOutputs(const std::string& address) const override { return {}; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Wallet/WalletGreen.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void deleteAddress(const std::string& address) override;",
+          "parameters": {
+            "text": [
+              "  virtual std::vector<WalletOutput> getAddressOutputs(const std::string& address) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Wallet/WalletGreen.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void WalletGreen::deleteAddress(const std::string& address) {",
+          "parameters": {
+            "text": [
+              "std::vector<WalletOutput> WalletGreen::getAddressOutputs(const std::string& address) const {",
+              "  throwIfNotInitialized();",
+              "  throwIfStopped();",
+              "",
+              "  std::vector<WalletOutput> outputs;",
+              "",
+              "  const auto& wallet = getWalletRecord(address);",
+              "",
+              "  ITransfersContainer* container = wallet.container;",
+              "  WalletOuts outs;",
+              "  container->getOutputs(outs.outs, ITransfersContainer::IncludeKeyUnlocked);",
+              "",
+              "  for (const auto& out: outs.outs) {",
+              "    WalletOutput output;",
+              "",
+              "    output.type = uint8_t(out.type);",
+              "    output.amount = out.amount;",
+              "",
+              "    output.globalOutputIndex = out.globalOutputIndex;",
+              "    output.outputInTransaction = out.outputInTransaction;",
+              "    output.transactionHash = Common::podToHex(out.transactionHash);",
+              "    output.transactionPublicKey = Common::podToHex(out.transactionPublicKey);",
+              "    output.outputKey = Common::podToHex(out.outputKey);",
+              "    output.requiredSignatures = out.requiredSignatures;",
+              "",
+              "    outputs.push_back(output);",
+              "  }",
+              "",
+              "  return outputs;",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/PaymentGate/WalletService.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "std::error_code getStatus(uint32_t& blockCount, uint32_t& knownBlockCount, std::string& lastBlockHash, uint32_t& peerCount);",
+          "parameters": {
+            "text": [
+              "  std::error_code getUnspendOuts(const GetUnspendOuts::Request& request, std::vector<TransactionOutputInformationSerialized>& outputs);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/WalletService.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::vector<PaymentService::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(",
+          "parameters": {
+            "text": [
+              "std::vector<PaymentService::TransactionOutputInformationSerialized> convertWalletOutputsToTransactionOutputInformationSerialized(",
+              "  const std::vector<CryptoNote::WalletOutput>& outputs) {",
+              "",
+              "  std::vector<PaymentService::TransactionOutputInformationSerialized> rpcOutputs;",
+              "  rpcOutputs.reserve(outputs.size());",
+              "  for (const auto& output: outputs) {",
+              "    PaymentService::TransactionOutputInformationSerialized rpcOutput;",
+              "",
+              "    rpcOutput.type = output.type;",
+              "    rpcOutput.amount = output.amount;",
+              "    rpcOutput.globalOutputIndex = output.globalOutputIndex;",
+              "    rpcOutput.outputInTransaction = output.outputInTransaction;",
+              "    rpcOutput.transactionHash = output.transactionHash;",
+              "    rpcOutput.transactionPublicKey = output.transactionPublicKey;",
+              "    rpcOutput.outputKey = output.outputKey;",
+              "    rpcOutput.requiredSignatures = output.requiredSignatures;",
+              "",
+              "    rpcOutputs.push_back(std::move(rpcOutput));",
+              "  }",
+              "",
+              "  return rpcOutputs;",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "std::error_code WalletService::getStatus(uint32_t& blockCount, uint32_t& knownBlockCount, std::string& lastBlockHash, uint32_t& peerCount) {",
+          "parameters": {
+            "text": [
+              "std::error_code WalletService::getUnspendOuts(const GetUnspendOuts::Request& request, std::vector<TransactionOutputInformationSerialized>& outputs) {",
+              "  try {",
+              "    System::EventLock lk(readyEvent);",
+              "",
+              "    if (!CryptoNote::validateAddress(request.address, currency)) {",
+              "      logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << \"Can't validate address \" << request.address;",
+              "      throw std::system_error(make_error_code(CryptoNote::error::BAD_ADDRESS));",
+              "    }",
+              "",
+              "    auto outs = wallet.getAddressOutputs(request.address);",
+              "",
+              "  //  outputs = outs.outs;",
+              "",
+              "    logger(Logging::DEBUGGING) << \"Got unspend outs for address \" << request.address;",
+              "  } catch (std::exception& x) {",
+              "    logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << \"Error while getting unspend outs: \" << x.what();",
+              "    return make_error_code(CryptoNote::error::INTERNAL_WALLET_ERROR);",
+              "  }",
+              "",
+              "  return std::error_code();",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
     }
   ]
 }

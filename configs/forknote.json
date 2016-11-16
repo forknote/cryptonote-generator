@@ -17,6 +17,8 @@
     "multiply/cryptonote-coin-clones-support.json",
     "multiply/genesis-block-reward.json",
     "get-blockchain-settings.json",
+    "daemon-getrandom_outs-json.json",
+    "simplewallet-import-keys.json",
     "walletd-extension.json",
     "bug-fixes.json"
   ],

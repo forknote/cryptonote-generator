@@ -26,7 +26,7 @@
       "path": "/src/CryptoNoteCore/Currency.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "size_t m_blockGrantedFullRewardZone;",
           "parameters": {
             "text": [
@@ -36,7 +36,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val) { m_currency.m_blockGrantedFullRewardZone = val; return *this; }",
           "parameters": {
             "text": [
@@ -46,7 +46,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "size_t blockGrantedFullRewardZone()",
           "parameters": {
             "text": [
@@ -79,7 +79,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "m_blockGrantedFullRewardZone(currency.m_blockGrantedFullRewardZone),",
           "parameters": {
             "text": [
@@ -149,7 +149,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "command_line::add_arg(desc_cmd_sett, arg_testnet_on);",
           "parameters": {
             "text": [
@@ -257,7 +257,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
           "parameters": {
             "text": [
@@ -298,7 +298,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "CryptoNote::Checkpoints checkpoints(logManager);",
           "parameters": {
             "text": [
@@ -327,7 +327,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "po::notify(vm);",
           "parameters": {
             "text": [
@@ -339,7 +339,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "netNodeConfig.setTestnet(testnet_mode);",
           "parameters": {
             "text": [
@@ -371,7 +371,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "bool m_testnet;",
           "parameters": {
             "text": [
@@ -506,7 +506,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "Tools::wallet_rpc_server::init_options(desc_params);",
           "parameters": {
             "text": [
@@ -535,7 +535,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "po::store(parser.run(), vm);",
           "parameters": {
             "text": [
@@ -605,7 +605,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "bool getHideMyPort() const;",
           "parameters": {
             "text": [
@@ -615,7 +615,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "void setHideMyPort(bool hide);",
           "parameters": {
             "text": [
@@ -625,7 +625,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "bool hideMyPort;",
           "parameters": {
             "text": [
@@ -650,7 +650,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "command_line::add_arg(desc, arg_p2p_hide_my_port);",
           "parameters": {
             "text": [
@@ -677,7 +677,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "hideMyPort = false;",
           "parameters": {
             "text": [
@@ -723,7 +723,7 @@
       "path": "/src/P2p/NetNode.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "boost::uuids::uuid m_network_id;",
           "parameters": {
             "text": [
@@ -755,7 +755,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "m_allow_local_ip = config.getAllowLocalIp();",
           "parameters": {
             "text": [
@@ -770,7 +770,7 @@
       "path": "/src/PaymentGateService/ConfigurationManager.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "#include \"RpcNodeConfiguration.h\"",
           "parameters": {
             "text": [
@@ -779,7 +779,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "RpcNodeConfiguration remoteNodeConfig;",
           "parameters": {
             "text": [
@@ -846,7 +846,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "RpcNodeConfiguration::initOptions(remoteNodeOptions);",
           "parameters": {
             "text": [
@@ -856,7 +856,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "remoteNodeConfig.init(confOptions);",
           "parameters": {
             "text": [
@@ -865,7 +865,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "#include <boost/program_options.hpp>",
           "parameters": {
             "text": [

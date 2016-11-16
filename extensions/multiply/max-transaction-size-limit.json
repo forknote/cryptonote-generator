@@ -11,7 +11,7 @@
       "path": "/src/SimpleWallet/SimpleWallet.h",
       "changes": [
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "uint16_t m_daemon_port;",
           "parameters": {
             "text": [
@@ -34,7 +34,7 @@
           }
         },
         {
-          "action": "add_bellow",
+          "action": "add_below",
           "marker": "Tools::wallet_rpc_server::init_options(desc_params);",
           "parameters": {
             "text": [

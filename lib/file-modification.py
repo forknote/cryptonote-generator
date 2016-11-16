@@ -202,7 +202,7 @@ for file in extension['files']:
                     if change['marker'] in line:
                         sys.__stdout__.write("  + Delete line at marker: " + change['marker'] + "\n")
                         delete_line = True
-                if change['action'] == "add_bellow":
+                if change['action'] == "add_below":
                     if change['marker'] in line:
                         sys.__stdout__.write("  + Added text after marker: " + change['marker'] + "\n")
                         replace_text = text_creator(change)

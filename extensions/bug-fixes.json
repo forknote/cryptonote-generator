@@ -5,5 +5,40 @@
     "core/bytecoin.json"
   ],
   "files": [
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+
+        {
+          "action": "add_below",
+          "marker": "bool RpcServer::on_get_random_outs(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::response& res) {",
+          "parameters": {
+            "text": [
+              "std::cout << \"outs_count:\" << req.outs_count << std::endl;"
+            ]
+          }
+        },
+
+        {
+          "action": "add_above",
+          "marker": "std::vector<uint32_t> globalIndexes;",
+          "parameters": {
+            "text": [
+              "std::cout << \"amount:\" << amount << std::endl;"
+            ]
+          }
+        },
+
+        {
+          "action": "add_above",
+          "marker": "res.outs.back().outs.push_back({globalIndexes[i], publicKeys[i]});",
+          "parameters": {
+            "text": [
+              "std::cout << \"index:\" << globalIndexes[i] << \":\" << publicKeys[i] << std::endl;"
+            ]
+          }
+        }
+      ]
+    }
   ]
 }

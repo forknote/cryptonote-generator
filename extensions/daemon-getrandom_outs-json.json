@@ -1,0 +1,132 @@
+{
+  "file": "daemon-getrandom_outs-json.json",
+  "description": "Adds getrandom_outs as json to the daemon.",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request {",
+          "parameters": {
+            "text": [
+              "struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_request {",
+              "  std::vector<uint64_t> amounts;",
+              "  uint16_t outs_count;",
+              "",
+              "  void serialize(ISerializer &s) {",
+              "    KV_MEMBER(amounts)",
+              "    KV_MEMBER(outs_count)",
+              "  }",
+              "};",
+              "",
+              "struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_out_entry {",
+              "  uint32_t global_amount_index;",
+              "  Crypto::PublicKey out_key;",
+              "  void serialize(ISerializer &s) {",
+              "    KV_MEMBER(global_amount_index)",
+              "    KV_MEMBER(out_key)",
+              "  }",
+              "};",
+              "",
+              "struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_outs_for_amount {",
+              "  uint64_t amount;",
+              "  std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_out_entry> outs;",
+              "",
+              "  void serialize(ISerializer &s) {",
+              "    KV_MEMBER(amount)",
+              "    KV_MEMBER(outs)",
+              "  }",
+              "};",
+              "",
+              "struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_response {",
+              "  std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_outs_for_amount> outs;",
+              "  std::string status;",
+              "",
+              "  void serialize(ISerializer &s) {",
+              "    KV_MEMBER(outs)",
+              "    KV_MEMBER(status)",
+              "  }",
+              "};",
+              "",
+              "struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON {",
+              "  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_request request;",
+              "  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_response response;",
+              "",
+              "  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_out_entry out_entry;",
+              "  typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_outs_for_amount outs_for_amount;",
+              "};",
+              "",
+              "//-----------------------------------------------",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "bool on_get_info(const COMMAND_RPC_GET_INFO::request& req, COMMAND_RPC_GET_INFO::response& res);",
+          "parameters": {
+            "text": [
+              "bool on_get_random_outs_json(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON::request& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON::response& res);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "{ \"/getinfo\", { jsonMethod<COMMAND_RPC_GET_INFO>(&RpcServer::on_get_info), true } },",
+          "parameters": {
+            "text": [
+              "{ \"/getrandom_outs\", { jsonMethod<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON>(&RpcServer::on_get_random_outs_json), false } },"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool RpcServer::on_get_random_outs(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::response& res) {",
+          "parameters": {
+            "text": [
+              "bool RpcServer::on_get_random_outs_json(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON::request& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON::response& res) {",
+              "  res.status = \"Failed\";",
+              "",
+              "  for (uint64_t amount : req.amounts) {",
+              "    std::vector<uint32_t> globalIndexes;",
+              "    std::vector<Crypto::PublicKey> publicKeys;",
+              "    if (!m_core.getRandomOutputs(amount, static_cast<uint16_t>(req.outs_count), globalIndexes, publicKeys)) {",
+              "      return true;",
+              "    }",
+              "",
+              "    assert(globalIndexes.size() == publicKeys.size());",
+              "    res.outs.emplace_back(COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_outs_for_amount{amount, {}});",
+              "    for (size_t i = 0; i < globalIndexes.size(); ++i) {",
+              "      COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_JSON_out_entry out_entry;",
+              "      out_entry.global_amount_index = globalIndexes[i];",
+              "      out_entry.out_key = publicKeys[i];",
+              "      res.outs.back().outs.push_back(out_entry);",
+              "    }",
+              "  }",
+              "",
+              "  res.status = CORE_RPC_STATUS_OK;",
+              "",
+              "  return true;",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
