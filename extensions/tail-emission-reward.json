@@ -1,5 +1,5 @@
 {
-  "file": "tail-emission.json",
+  "file": "tail-emission-reward.json",
   "description": "Add tail emission",
   "required": [
     "core/bytecoin.json"

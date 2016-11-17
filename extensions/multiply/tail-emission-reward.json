@@ -1,5 +1,5 @@
 {
-  "file": "multiply/tail-emission.json",
+  "file": "multiply/tail-emission-reward.json",
   "description": "Add tail emission in multiply",
   "required": [
     "core/bytecoin.json",
