@@ -1,1 +1,103 @@
-tail-emission.json
+{
+  "file": "tail-emission.json",
+  "description": "Add tail emission",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  uint64_t m_tailEmissionReward;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& tailEmissionReward(uint64_t val) { m_currency.m_tailEmissionReward = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  uint64_t tailEmissionReward() const { return m_tailEmissionReward; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+          "parameters": {
+            "text": [
+              "killHeight(parameters::TAIL_EMISSION_REWARD);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_tailEmissionReward(currency.m_tailEmissionReward),"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint64_t TAIL_EMISSION_REWARD                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint64_t TAIL_EMISSION_REWARD                          = 0;"
+            ],
+            "var": "TAIL_EMISSION_REWARD"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;",
+          "parameters": {
+            "text": [
+                "  if (baseReward < m_tailEmissionReward) {",
+                "    baseReward = m_tailEmissionReward;",
+                "  }",
+                "",
+                "  if (alreadyGeneratedCoins + baseReward >= m_moneySupply) {",
+                "    baseReward = 0;",
+                "  }",
+                ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
