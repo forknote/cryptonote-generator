@@ -1,0 +1,148 @@
+{
+  "file": "fee-address.json",
+  "description": "Adding fee address option to the daemon",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "const command_line::arg_descriptor<bool>        arg_console     = {\"no-console\", \"Disable daemon console commands\"};",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<std::string> arg_set_fee_address = { \"fee-address\", \"Sets fee address for light wallets to the daemon's RPC responses.\", \"\" };"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_console);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_set_fee_address);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "rpcServer.start(rpcConfig.bindIp, rpcConfig.bindPort);",
+          "parameters": {
+            "text": [
+              "  rpcServer.setFeeAddress(command_line::get_arg(vm, arg_set_fee_address));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "struct COMMAND_RPC_GETBLOCKCOUNT {",
+          "parameters": {
+            "text": [
+                "struct COMMAND_RPC_GET_FEE_ADDRESS {",
+                "  typedef EMPTY_STRUCT request;",
+                "",
+                "  struct response {",
+                "    std::string fee_address;",
+                "    std::string status;",
+                "",
+                "    void serialize(ISerializer &s) {",
+                "      KV_MEMBER(fee_address)",
+                "      KV_MEMBER(status)",
+                "    }",
+                "  };",
+                "};",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "{ \"/sendrawtransaction\", { jsonMethod<COMMAND_RPC_SEND_RAW_TX>(&RpcServer::on_send_raw_tx), false } },",
+          "parameters": {
+            "text": [
+                "  { \"/feeaddress\", { jsonMethod<COMMAND_RPC_GET_FEE_ADDRESS>(&RpcServer::on_get_fee_address), true } },"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool RpcServer::isCoreReady() {",
+          "parameters": {
+            "text": [
+                "bool RpcServer::setFeeAddress(const std::string fee_address) {",
+                "  m_fee_address = fee_address;",
+                "  return true;",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool RpcServer::on_stop_daemon(const COMMAND_RPC_STOP_DAEMON::request& req, COMMAND_RPC_STOP_DAEMON::response& res) {",
+          "parameters": {
+            "text": [
+                "bool RpcServer::on_get_fee_address(const COMMAND_RPC_GET_FEE_ADDRESS::request& req, COMMAND_RPC_GET_FEE_ADDRESS::response& res) {",
+                "  if (m_fee_address.empty()) {",
+                "    res.status = \"Node's fee address is not set\";",
+                "    return false;",
+                "  }",
+                "",
+                "  res.fee_address = m_fee_address;",
+                "  res.status = CORE_RPC_STATUS_OK;",
+                "  return true;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "typedef std::function<bool(RpcServer*, const HttpRequest& request, HttpResponse& response)> HandlerFunction;",
+          "parameters": {
+            "text": [
+                "  bool setFeeAddress(const std::string fee_address);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "RawBlockLegacy prepareRawBlockLegacy(BinaryArray&& blockBlob);",
+          "parameters": {
+            "text": [
+                "",
+                "  bool on_get_fee_address(const COMMAND_RPC_GET_FEE_ADDRESS::request& req, COMMAND_RPC_GET_FEE_ADDRESS::response& res);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "ICryptoNoteProtocolHandler& m_protocol;",
+          "parameters": {
+            "text": [
+                "  std::string m_fee_address;"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

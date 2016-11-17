@@ -10,6 +10,7 @@
     "genesis-block-reward.json",
     "blockchain-explorer.json",
     "enable-cors.json",
+    "fee-address.json",
     "multiply.json",
     "multiply/max-transaction-size-limit.json",
     "multiply/mandatory-transaction-in-block.json",
