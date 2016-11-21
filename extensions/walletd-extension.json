@@ -6,23 +6,6 @@
   ],
   "files": [
     {
-      "path": "/src/PaymentGate/WalletService.cpp",
-      "changes": [
-        {
-          "action": "replace",
-          "marker": "result.push_back(std::move(item));",
-          "parameters": {
-            "text": [
-              "    if (!block.transactions.empty()) {",
-              "      result.push_back(std::move(item));",
-              "    }"
-            ]
-          }
-        }
-      ]
-    },
-
-    {
       "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.h",
       "changes": [
         {

@@ -12,6 +12,7 @@
     "blockchain-explorer.json",
     "enable-cors.json",
     "fee-address.json",
+    "versionized-parameters.json",
     "multiply.json",
     "multiply/max-transaction-size-limit.json",
     "multiply/mandatory-transaction-in-block.json",

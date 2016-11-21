@@ -1,0 +1,299 @@
+{
+  "file": "versionized-parameters.json",
+  "description": "Change parameters when hardfork.",
+  "required": [],
+  "files": [
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "const size_t   DIFFICULTY_WINDOW",
+          "parameters": {
+            "text": [
+              "const size_t   DIFFICULTY_WINDOW_V2                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t   DIFFICULTY_WINDOW_V2                          = DIFFICULTY_WINDOW;"
+            ],
+            "var": "DIFFICULTY_WINDOW_V2"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "const size_t   DIFFICULTY_CUT",
+          "parameters": {
+            "text": [
+              "const size_t   DIFFICULTY_CUT_V2                             = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t   DIFFICULTY_CUT_V2                             = DIFFICULTY_CUT;"
+            ],
+            "var": "DIFFICULTY_CUT_V2"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "const size_t   DIFFICULTY_LAG",
+          "parameters": {
+            "text": [
+              "const size_t   DIFFICULTY_LAG_V2                             = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t   DIFFICULTY_LAG_V2                             = DIFFICULTY_LAG;"
+            ],
+            "var": "DIFFICULTY_LAG_V2"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const size_t   DIFFICULTY_WINDOW_V2",
+          "parameters": {
+            "text": [
+              "const size_t   DIFFICULTY_WINDOW_V1                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t   DIFFICULTY_WINDOW_V1                          = DIFFICULTY_WINDOW;"
+            ],
+            "var": "DIFFICULTY_WINDOW_V1"
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "const size_t   DIFFICULTY_CUT_V2",
+          "parameters": {
+            "text": [
+              "const size_t   DIFFICULTY_CUT_V1                             = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t   DIFFICULTY_CUT_V1                             = DIFFICULTY_CUT;"
+            ],
+            "var": "DIFFICULTY_CUT_V1"
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "const size_t   DIFFICULTY_LAG_V2",
+          "parameters": {
+            "text": [
+              "const size_t   DIFFICULTY_LAG_V1                             = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t   DIFFICULTY_LAG_V1                             = DIFFICULTY_LAG;"
+            ],
+            "var": "DIFFICULTY_LAG_V1"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "size_t difficultyWindow() const { return m_difficultyWindow; }",
+          "parameters": {
+            "text": [
+              "size_t difficultyWindowByBlockVersion(uint8_t blockMajorVersion) const;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "size_t difficultyLag() const { return m_difficultyLag; }",
+          "parameters": {
+            "text": [
+              "size_t difficultyLagByBlockVersion(uint8_t blockMajorVersion) const;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "size_t difficultyCut() const { return m_difficultyCut; }",
+          "parameters": {
+            "text": [
+              "size_t difficultyCutByBlockVersion(uint8_t blockMajorVersion) const;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyLag; }",
+          "parameters": {
+            "text": [
+              "size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "Difficulty nextDifficulty(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;",
+          "parameters": {
+            "text": [
+              "Difficulty nextDifficulty(uint8_t version, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;"
+            ]
+          }
+        }
+      ]
+    },
+  
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {",
+          "parameters": {
+            "text": [
+              "size_t Currency::difficultyWindowByBlockVersion(uint8_t blockMajorVersion) const {",
+              "  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {",
+              "    return m_difficultyWindow;",
+              "  } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {",
+              "    return CryptoNote::parameters::DIFFICULTY_WINDOW_V2;",
+              "  } else {",
+              "    return CryptoNote::parameters::DIFFICULTY_WINDOW_V1;",
+              "  }",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {",
+          "parameters": {
+            "text": [
+              "size_t Currency::difficultyLagByBlockVersion(uint8_t blockMajorVersion) const {",
+              "  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {",
+              "    return m_difficultyLag;",
+              "  } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {",
+              "    return CryptoNote::parameters::DIFFICULTY_LAG_V2;",
+              "  } else {",
+              "    return CryptoNote::parameters::DIFFICULTY_LAG_V1;",
+              "  }",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {",
+          "parameters": {
+            "text": [
+              "size_t Currency::difficultyCutByBlockVersion(uint8_t blockMajorVersion) const {",
+              "  if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {",
+              "    return m_difficultyCut;",
+              "  } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {",
+              "    return CryptoNote::parameters::DIFFICULTY_CUT_V2;",
+              "  } else {",
+              "    return CryptoNote::parameters::DIFFICULTY_CUT_V1;",
+              "  }",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {",
+          "parameters": {
+            "text": [
+              "size_t Currency::difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const {",
+              "  return difficultyWindowByBlockVersion(blockMajorVersion) + difficultyLagByBlockVersion(blockMajorVersion);",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const CachedBlock& block, Difficulty currentDifficulty) const {",
+          "parameters": {
+            "text": [
+              "Difficulty Currency::nextDifficulty(uint8_t version, std::vector<uint64_t> timestamps,",
+              "  std::vector<Difficulty> cumulativeDifficulties) const {",
+              "",
+              "  size_t c_difficultyWindow = difficultyWindowByBlockVersion(version);",
+              "  size_t c_difficultyCut = difficultyCutByBlockVersion(version);",
+              "",
+              "  assert(c_difficultyWindow >= 2);",
+              "",
+              "  if (timestamps.size() > c_difficultyWindow) {",
+              "    timestamps.resize(c_difficultyWindow);",
+              "    cumulativeDifficulties.resize(c_difficultyWindow);",
+              "  }",
+              "",
+              "  size_t length = timestamps.size();",
+              "  assert(length == cumulativeDifficulties.size());",
+              "  assert(length <= c_difficultyWindow);",
+              "  if (length <= 1) {",
+              "    return 1;",
+              "  }",
+              "",
+              "  sort(timestamps.begin(), timestamps.end());",
+              "",
+              "  size_t cutBegin, cutEnd;",
+              "  assert(2 * c_difficultyCut <= c_difficultyWindow - 2);",
+              "  if (length <= c_difficultyWindow - 2 * c_difficultyCut) {",
+              "    cutBegin = 0;",
+              "    cutEnd = length;",
+              "  } else {",
+              "    cutBegin = (length - (c_difficultyWindow - 2 * c_difficultyCut) + 1) / 2;",
+              "    cutEnd = cutBegin + (c_difficultyWindow - 2 * c_difficultyCut);",
+              "  }",
+              "  assert(/*cut_begin >= 0 &&*/ cutBegin + 2 <= cutEnd && cutEnd <= length);",
+              "  uint64_t timeSpan = timestamps[cutEnd - 1] - timestamps[cutBegin];",
+              "  if (timeSpan == 0) {",
+              "    timeSpan = 1;",
+              "  }",
+              "",
+              "  Difficulty totalWork = cumulativeDifficulties[cutEnd - 1] - cumulativeDifficulties[cutBegin];",
+              "  assert(totalWork > 0);",
+              "",
+              "  uint64_t low, high;",
+              "  low = mul128(totalWork, m_difficultyTarget, &high);",
+              "  if (high != 0 || std::numeric_limits<uint64_t>::max() - low < (timeSpan - 1)) {",
+              "    return 0;",
+              "  }",
+              "",
+              "  return (low + timeSpan - 1) / timeSpan;",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "size_t blocksCount = std::min(static_cast<size_t>(topBlockIndex), currency.difficultyBlocksCount());",
+          "parameters": {
+            "text": [
+              "  uint8_t nextBlockMajorVersion = getBlockMajorVersionForHeight(topBlockIndex);",
+              "",
+              "  size_t blocksCount = std::min(static_cast<size_t>(topBlockIndex), currency.difficultyBlocksCountByBlockVersion(nextBlockMajorVersion));"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return currency.nextDifficulty(timestamps, difficulties);",
+          "parameters": {
+            "text": [
+              "  return currency.nextDifficulty(nextBlockMajorVersion, timestamps, difficulties);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
