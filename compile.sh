@@ -58,11 +58,6 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/Release/simplewallet.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/walletd.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/Release/miner.exe ${BUILD_PATH}/${WINDOWS_BUILD_NAME}
-		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
-			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs
-			rm -rf ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs/.git
-			rm -rf ${BUILD_PATH}/${WINDOWS_BUILD_NAME}/configs/.gitignore
-		fi
 		cd ${BUILD_PATH}
 		zip -r ${WINDOWS_BUILD_NAME}.zip ${WINDOWS_BUILD_NAME}/
 		;;
@@ -73,11 +68,6 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${MAC_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/miner ${BUILD_PATH}/${MAC_BUILD_NAME}
-		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
-			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${MAC_BUILD_NAME}/configs
-			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.git
-			rm -rf ${BUILD_PATH}/${MAC_BUILD_NAME}/configs/.gitignore
-		fi
 		cd ${BUILD_PATH}
 		zip -r ${MAC_BUILD_NAME}.zip ${MAC_BUILD_NAME}/
 		;;
@@ -88,11 +78,6 @@ if [[ $archive == "1" ]]; then
 		cp ${NEW_COIN_PATH}/build/release/src/simplewallet ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/walletd ${BUILD_PATH}/${LINUX_BUILD_NAME}
 		cp ${NEW_COIN_PATH}/build/release/src/miner ${BUILD_PATH}/${LINUX_BUILD_NAME}
-		if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
-			git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs
-			rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs/.git
-			rm -rf ${BUILD_PATH}/${LINUX_BUILD_NAME}/configs/.gitignore
-		fi
 		cd ${BUILD_PATH}
 		tar -zcvf ${LINUX_BUILD_NAME}.tar.gz ${LINUX_BUILD_NAME}
 		;;
