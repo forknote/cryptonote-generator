@@ -63,37 +63,64 @@
         }
       ]
     },
-
+    {
+      "path": "/src/CryptoNoteCore/SwappedMap.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#include <iomanip>",
+          "parameters": {
+            "text": [
+              "#include <iostream>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint32_t offset = std::max(static_cast<uint32_t>(blockIndex + 1 - count), cacheStart) - cacheStart;",
+          "parameters": {
+            "text": [
+              "  if (offset == 0) {",
+              "    ++offset;",
+              "    ++cacheStart;",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
     {
       "path": "/src/Rpc/RpcServer.cpp",
       "changes": [
-
         {
-          "action": "add_below",
-          "marker": "bool RpcServer::on_get_random_outs(const COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::request& req, COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS::response& res) {",
+          "action": "replace",
+          "marker": "if (m_core.getTopBlockIndex() + 1 < req.height) {",
           "parameters": {
             "text": [
-              "std::cout << \"outs_count:\" << req.outs_count << std::endl;"
+              "  if (m_core.getTopBlockIndex() < req.height) {"
             ]
           }
         },
-
         {
-          "action": "add_above",
-          "marker": "std::vector<uint32_t> globalIndexes;",
+          "action": "replace",
+          "marker": "uint32_t index = static_cast<uint32_t>(req.height) - 1;",
           "parameters": {
             "text": [
-              "std::cout << \"amount:\" << amount << std::endl;"
+              "  uint32_t index = static_cast<uint32_t>(req.height);"
             ]
           }
         },
-
         {
-          "action": "add_above",
-          "marker": "res.outs.back().outs.push_back({globalIndexes[i], publicKeys[i]});",
+          "action": "replace",
+          "marker": "assert(cachedBlock.getBlockIndex() == req.height - 1);",
           "parameters": {
             "text": [
-              "std::cout << \"index:\" << globalIndexes[i] << \":\" << publicKeys[i] << std::endl;"
+              "  assert(cachedBlock.getBlockIndex() == req.height);"
             ]
           }
         }
