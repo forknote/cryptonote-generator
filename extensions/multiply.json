@@ -335,7 +335,7 @@
           "marker": "po::notify(vm);",
           "parameters": {
             "text": [
-              "      if (command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
+              "      if (command_line::get_arg(vm, command_line::arg_data_dir) == Tools::getDefaultDataDirectory() && command_line::has_arg(vm, arg_CRYPTONOTE_NAME) && !command_line::get_arg(vm, arg_CRYPTONOTE_NAME).empty()) {",
               "        boost::replace_all(data_dir, CryptoNote::CRYPTONOTE_NAME, command_line::get_arg(vm, arg_CRYPTONOTE_NAME));",
               "      }",
               "      data_dir_path = data_dir;"
@@ -946,7 +946,7 @@
           "parameters": {
             "text": [
               "      std::string data_dir = config.dataDir;",
-              "      if (!config.coinBaseConfig.CRYPTONOTE_NAME.empty()) {",
+              "      if (config.dataDir == Tools::getDefaultDataDirectory() && !config.coinBaseConfig.CRYPTONOTE_NAME.empty()) {",
               "        boost::replace_all(data_dir, CryptoNote::CRYPTONOTE_NAME, config.coinBaseConfig.CRYPTONOTE_NAME);",
               "      }"
             ]

@@ -1,0 +1,55 @@
+{
+  "file": "simplewallet-export-keys.json",
+  "description": "Adds export keys functionality to simlpewallet",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "multiline": true,
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "m_consoleHandler.setHandler(\"balance\", boost::bind(&simple_wallet::show_balance, this, _1), \"Show current wallet balance\");",
+          "parameters": {
+            "text": [
+                "  m_consoleHandler.setHandler(\"export_keys\", boost::bind(&simple_wallet::export_keys, this, _1), \"Show the secret keys of the openned wallet\");"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool simple_wallet::show_balance(const std::vector<std::string>& args/* = std::vector<std::string>()*/) {",
+          "parameters": {
+            "text": [
+                "bool simple_wallet::export_keys(const std::vector<std::string>& args/* = std::vector<std::string>()*/) {",
+                "  AccountKeys keys;",
+                "  m_wallet->getAccountKeys(keys);",
+                "  success_msg_writer(true) << \"Spend secret key: \" << Common::podToHex(keys.spendSecretKey);",
+                "  success_msg_writer(true) << \"View secret key: \" <<  Common::podToHex(keys.viewSecretKey);",
+                "",
+                "  return true;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "bool show_balance(const std::vector<std::string> &args = std::vector<std::string>());",
+          "parameters": {
+            "text": [
+              "    bool export_keys(const std::vector<std::string> &args = std::vector<std::string>());"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
