@@ -1,0 +1,399 @@
+{
+  "file": "multiply/versionized-parameters.json",
+  "description": "Change parameters when hardfork in multiply.",
+  "required": [
+    "core/bytecoin.json",
+    "versionized-parameters.json",
+    "multiply.json",
+    "get-blockchain-settings.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_difficultyWindow;",
+          "parameters": {
+            "text": [
+              "  size_t m_difficultyWindowV1;",
+              "  size_t m_difficultyWindowV2;",
+              "  size_t m_difficultyLagV1;",
+              "  size_t m_difficultyLagV2;",
+              "  size_t m_difficultyCutV1;",
+              "  size_t m_difficultyCutV2;",
+              "  uint64_t m_expectedNumberOfBlocksPerDay;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& difficultyWindow(size_t val);",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& difficultyWindowV1(size_t val) { m_currency.m_difficultyWindowV1 = val; return *this; }",
+              "  CurrencyBuilder& difficultyWindowV2(size_t val) { m_currency.m_difficultyWindowV2 = val; return *this; }",
+              "  CurrencyBuilder& difficultyLagV1(size_t val) { m_currency.m_difficultyLagV1 = val; return *this; }",
+              "  CurrencyBuilder& difficultyLagV2(size_t val) { m_currency.m_difficultyLagV2 = val; return *this; }",
+              "  CurrencyBuilder& difficultyCutV1(size_t val) { m_currency.m_difficultyCutV1 = val; return *this; }",
+              "  CurrencyBuilder& difficultyCutV2(size_t val) { m_currency.m_difficultyCutV2 = val; return *this; }",
+              "  CurrencyBuilder& expectedNumberOfBlocksPerDay(uint64_t val) { m_currency.m_expectedNumberOfBlocksPerDay = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t difficultyWindowByBlockVersion(uint8_t blockMajorVersion) const;",
+          "parameters": {
+            "text": [
+              "  size_t difficultyWindowV1() const { return m_difficultyWindowV1; }",
+              "  size_t difficultyWindowV2() const { return m_difficultyWindowV2; }",
+              "  size_t difficultyLagV1() const { return m_difficultyLagV1; }",
+              "  size_t difficultyLagV2() const { return m_difficultyLagV2; }",
+              "  size_t difficultyCutV1() const { return m_difficultyCutV1; }",
+              "  size_t difficultyCutV2() const { return m_difficultyCutV2; }",
+              "  uint64_t expectedNumberOfBlocksPerDay() const { return m_expectedNumberOfBlocksPerDay; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::DIFFICULTY_WINDOW_V1;",
+          "parameters": {
+            "text": [
+              "    return m_difficultyWindowV1;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::DIFFICULTY_WINDOW_V2;",
+          "parameters": {
+            "text": [
+              "    return m_difficultyWindowV2;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::DIFFICULTY_LAG_V1;",
+          "parameters": {
+            "text": [
+              "    return m_difficultyLagV1;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::DIFFICULTY_LAG_V2;",
+          "parameters": {
+            "text": [
+              "    return m_difficultyLagV2;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::DIFFICULTY_CUT_V1;",
+          "parameters": {
+            "text": [
+              "    return m_difficultyCutV1;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return CryptoNote::parameters::DIFFICULTY_CUT_V2;",
+          "parameters": {
+            "text": [
+              "    return m_difficultyCutV2;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_difficultyWindow(currency.m_difficultyWindow),",
+          "parameters": {
+            "text": [
+              "m_difficultyWindowV1(currency.m_difficultyWindowV1),",
+              "m_difficultyWindowV2(currency.m_difficultyWindowV2),",
+              "m_difficultyLagV1(currency.m_difficultyLagV1),",
+              "m_difficultyLagV2(currency.m_difficultyLagV2),",
+              "m_difficultyCutV1(currency.m_difficultyCutV1),",
+              "m_difficultyCutV2(currency.m_difficultyCutV2),",
+              "m_expectedNumberOfBlocksPerDay(currency.m_expectedNumberOfBlocksPerDay),"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  =",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW_V1  = {\"DIFFICULTY_WINDOW_V1\", \"size_t\", CryptoNote::parameters::DIFFICULTY_WINDOW_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW_V2  = {\"DIFFICULTY_WINDOW_V2\", \"size_t\", CryptoNote::parameters::DIFFICULTY_WINDOW_V2};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT_V1  = {\"DIFFICULTY_CUT_V1\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT_V2  = {\"DIFFICULTY_CUT_V2\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT_V2};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG_V1  = {\"DIFFICULTY_LAG_V1\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG_V2  = {\"DIFFICULTY_LAG_V2\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG_V2};"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_WINDOW);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_WINDOW_V1);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_WINDOW_V2);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT_V1);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT_V2);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG_V1);",
+              "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG_V2);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.difficultyWindowV1(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW_V1));",
+              "  currencyBuilder.difficultyWindowV2(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW_V2));",
+              "  currencyBuilder.difficultyLagV1(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V1));",
+              "  currencyBuilder.difficultyLagV2(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V2));",
+              "  currencyBuilder.difficultyCutV1(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V1));",
+              "  currencyBuilder.difficultyCutV2(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V2));",
+              "  currencyBuilder.expectedNumberOfBlocksPerDay(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW_V1  = {\"DIFFICULTY_WINDOW_V1\", \"size_t\", CryptoNote::parameters::DIFFICULTY_WINDOW_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW_V2  = {\"DIFFICULTY_WINDOW_V2\", \"size_t\", CryptoNote::parameters::DIFFICULTY_WINDOW_V2};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG_V1  = {\"DIFFICULTY_LAG_V1\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG_V2  = {\"DIFFICULTY_LAG_V2\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG_V2};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT_V1  = {\"DIFFICULTY_CUT_V1\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT_V1};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT_V2  = {\"DIFFICULTY_CUT_V2\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT_V2};"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.difficultyWindowV1(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW_V1));",
+              "  currencyBuilder.difficultyWindowV2(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW_V2));",
+              "  currencyBuilder.difficultyCutV1(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V1));",
+              "  currencyBuilder.difficultyCutV2(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V2));",
+              "  currencyBuilder.difficultyLagV1(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V1));",
+              "  currencyBuilder.difficultyLagV2(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V2));",
+              "  currencyBuilder.expectedNumberOfBlocksPerDay(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "command_line::add_arg(desc_params, arg_DIFFICULTY_WINDOW);",
+          "parameters": {
+            "text": [
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_WINDOW_V1);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_WINDOW_V2);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_CUT_V1);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_CUT_V2);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_LAG_V1);",
+              "  command_line::add_arg(desc_params, arg_DIFFICULTY_LAG_V2);",
+              "  command_line::add_arg(desc_params, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.difficultyWindow(config.coinBaseConfig.DIFFICULTY_WINDOW);",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.difficultyWindowV1(config.coinBaseConfig.DIFFICULTY_WINDOW_V1);",
+              "  currencyBuilder.difficultyWindowV2(config.coinBaseConfig.DIFFICULTY_WINDOW_V2);",
+              "  currencyBuilder.difficultyLagV1(config.coinBaseConfig.DIFFICULTY_LAG_V1);",
+              "  currencyBuilder.difficultyLagV2(config.coinBaseConfig.DIFFICULTY_LAG_V2);",
+              "  currencyBuilder.difficultyCutV1(config.coinBaseConfig.DIFFICULTY_CUT_V1);",
+              "  currencyBuilder.difficultyCutV2(config.coinBaseConfig.DIFFICULTY_CUT_V2);",
+              "  currencyBuilder.expectedNumberOfBlocksPerDay(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t DIFFICULTY_WINDOW;",
+          "parameters": {
+            "text": [
+              "  size_t DIFFICULTY_WINDOW_V1;",
+              "  size_t DIFFICULTY_WINDOW_V2;",
+              "  size_t DIFFICULTY_LAG_V1;",
+              "  size_t DIFFICULTY_LAG_V2;",
+              "  size_t DIFFICULTY_CUT_V1;",
+              "  size_t DIFFICULTY_CUT_V2;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "DIFFICULTY_WINDOW=CryptoNote::parameters::DIFFICULTY_WINDOW;",
+          "parameters": {
+            "text": [
+              "    DIFFICULTY_WINDOW_V1=CryptoNote::parameters::DIFFICULTY_WINDOW_V1;",
+              "    DIFFICULTY_WINDOW_V2=CryptoNote::parameters::DIFFICULTY_WINDOW_V2;",
+              "    DIFFICULTY_LAG_V1=CryptoNote::parameters::DIFFICULTY_LAG_V1;",
+              "    DIFFICULTY_LAG_V2=CryptoNote::parameters::DIFFICULTY_LAG_V2;",
+              "    DIFFICULTY_CUT_V1=CryptoNote::parameters::DIFFICULTY_CUT_V1;",
+              "    DIFFICULTY_CUT_V2=CryptoNote::parameters::DIFFICULTY_CUT_V2;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "(\"DIFFICULTY_WINDOW\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_WINDOW), \"size_t\")",
+          "parameters": {
+            "text": [
+                "    (\"DIFFICULTY_WINDOW_V1\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_WINDOW_V1), \"size_t\")",
+                "    (\"DIFFICULTY_WINDOW_V2\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_WINDOW_V2), \"size_t\")",
+                "    (\"DIFFICULTY_CUT_V1\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT_V2), \"size_t\")",
+                "    (\"DIFFICULTY_CUT_V2\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT_V1), \"size_t\")",
+                "    (\"DIFFICULTY_LAG_V1\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG_V1), \"size_t\")",
+                "    (\"DIFFICULTY_LAG_V2\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG_V2), \"size_t\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"DIFFICULTY_WINDOW\")) {",
+          "parameters": {
+            "text": [
+                "  if (options.count(\"DIFFICULTY_WINDOW_V1\")) {",
+                "    DIFFICULTY_WINDOW_V1 = options[\"DIFFICULTY_WINDOW_V1\"].as<size_t>();",
+                "  }",
+                "  if (options.count(\"DIFFICULTY_WINDOW_V2\")) {",
+                "    DIFFICULTY_WINDOW_V2 = options[\"DIFFICULTY_WINDOW_V2\"].as<size_t>();",
+                "  }",
+                "  if (options.count(\"DIFFICULTY_CUT_V1\")) {",
+                "    DIFFICULTY_CUT_V1 = options[\"DIFFICULTY_CUT_V1\"].as<size_t>();",
+                "  }",
+                "  if (options.count(\"DIFFICULTY_CUT_V2\")) {",
+                "    DIFFICULTY_CUT_V2 = options[\"DIFFICULTY_CUT_V2\"].as<size_t>();",
+                "  }",
+                "  if (options.count(\"DIFFICULTY_LAG_V1\")) {",
+                "    DIFFICULTY_LAG_V1 = options[\"DIFFICULTY_LAG_V1\"].as<size_t>();",
+                "  }",
+                "  if (options.count(\"DIFFICULTY_LAG_V2\")) {",
+                "    DIFFICULTY_LAG_V2 = options[\"DIFFICULTY_LAG_V2\"].as<size_t>();",
+                "  }"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::string BYTECOIN_NETWORK;",
+          "parameters": {
+            "text": [
+              "  size_t DIFFICULTY_WINDOW_V1;",
+              "  size_t DIFFICULTY_WINDOW_V2;",
+              "  size_t DIFFICULTY_CUT_V1;",
+              "  size_t DIFFICULTY_CUT_V2;",
+              "  size_t DIFFICULTY_LAG_V1;",
+              "  size_t DIFFICULTY_LAG_V2;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
+          "parameters": {
+            "text": [
+              "    KV_MEMBER(DIFFICULTY_WINDOW_V1)",
+              "    KV_MEMBER(DIFFICULTY_WINDOW_V2)",
+              "    KV_MEMBER(DIFFICULTY_CUT_V1)",
+              "    KV_MEMBER(DIFFICULTY_CUT_V2)",
+              "    KV_MEMBER(DIFFICULTY_LAG_V1)",
+              "    KV_MEMBER(DIFFICULTY_LAG_V2)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().difficultyWindowByBlockVersion(1) != m_core.getCurrency().difficultyWindowByBlockVersion(2) || m_core.getCurrency().difficultyWindowByBlockVersion(1) != m_core.getCurrency().difficultyWindowByBlockVersion(3) ||",
+              "    m_core.getCurrency().difficultyLagByBlockVersion(1) != m_core.getCurrency().difficultyLagByBlockVersion(2) || m_core.getCurrency().difficultyLagByBlockVersion(1) != m_core.getCurrency().difficultyLagByBlockVersion(3) ||",
+              "    m_core.getCurrency().difficultyCutByBlockVersion(1) != m_core.getCurrency().difficultyCutByBlockVersion(2) || m_core.getCurrency().difficultyCutByBlockVersion(1) != m_core.getCurrency().difficultyCutByBlockVersion(3)) {",
+              "    res.extensions.push_back(\"versionized-parameters.json\");",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+          "parameters": {
+            "text": [
+              "  res.core.DIFFICULTY_WINDOW_V1 = m_core.getCurrency().difficultyWindowV1();",
+              "  res.core.DIFFICULTY_WINDOW_V2 = m_core.getCurrency().difficultyWindowV2();",
+              "  res.core.DIFFICULTY_CUT_V1 = m_core.getCurrency().difficultyCutV1();",
+              "  res.core.DIFFICULTY_CUT_V2 = m_core.getCurrency().difficultyCutV2();",
+              "  res.core.DIFFICULTY_LAG_V1 = m_core.getCurrency().difficultyLagV1();",
+              "  res.core.DIFFICULTY_LAG_V1 = m_core.getCurrency().difficultyLagV2();"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

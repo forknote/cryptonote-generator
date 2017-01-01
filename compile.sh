@@ -86,11 +86,6 @@ if [[ $archive == "1" ]]; then
 	rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}
 	mkdir -p ${BUILD_PATH}/${ALL_BUILD_FILES}
 	cp -R ${NEW_COIN_PATH}/build/release/src/ ${BUILD_PATH}/${ALL_BUILD_FILES}/
-	if [[ " ${__CONFIG_extensions_text} " == *"multiply.json"* ]]; then
-		git clone https://github.com/forknote/configs.git ${BUILD_PATH}/${ALL_BUILD_FILES}/configs
-		rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}/configs/.git
-		rm -rf ${BUILD_PATH}/${ALL_BUILD_FILES}/configs/.gitignore
-	fi
 
 	rm -rf "${NEW_COIN_PATH}/build"
 fi

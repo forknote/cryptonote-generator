@@ -4,7 +4,8 @@
   "required": [
     "core/bytecoin.json",
     "genesis-block-reward.json",
-    "multiply.json"
+    "multiply.json",
+    "get-blockchain-settings.json"
   ],
   "files": [
     {
@@ -140,6 +141,57 @@
           "parameters": {
             "text": [
               "  currencyBuilder.genesisBlockReward(config.coinBaseConfig.GENESIS_BLOCK_REWARD);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::string BYTECOIN_NETWORK;",
+          "parameters": {
+            "text": [
+              "  std::string GENESIS_BLOCK_REWARD;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
+          "parameters": {
+            "text": [
+              "    KV_MEMBER(GENESIS_BLOCK_REWARD)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().genesisBlockReward() != 0) {",
+              "    res.extensions.push_back(\"genesis-block-reward.json\");",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+          "parameters": {
+            "text": [
+              "  res.core.GENESIS_BLOCK_REWARD = std::to_string(m_core.getCurrency().genesisBlockReward());"
             ]
           }
         }

@@ -2,7 +2,8 @@
   "extensions": [
     "core/bytecoin.json",
     "simplewallet-default-fee.json",
-    "max-transaction-size-limit.json"
+    "max-transaction-size-limit.json",
+    "bug-fixes.json"
   ],
   "base_coin": {
     "name": "bytecoin",

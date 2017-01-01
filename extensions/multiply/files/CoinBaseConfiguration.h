@@ -1,4 +1,4 @@
-// Copyright (c) 2012-2015, The Forknote developers
+// Copyright (c) 2015-2016, The Forknote developers
 //
 // This file is part of Forknote.
 //
@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Forknote.  If not, see <http://www.gnu.org/licenses/>.
 
-// Copyright (c) 2015, The Forknote developers
+// Copyright (c) 2016, The Forknote developers
 //
 // This file is part of Forknote.
 //
@@ -66,6 +66,7 @@ public:
   uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
   uint32_t UPGRADE_HEIGHT_V2;
   uint32_t UPGRADE_HEIGHT_V3;
+  size_t DIFFICULTY_WINDOW;
   size_t DIFFICULTY_CUT;
   size_t DIFFICULTY_LAG;
 };

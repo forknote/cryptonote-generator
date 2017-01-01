@@ -1,9 +1,9 @@
 {
-  "file": "multiply/tail-emission-reward.json",
-  "description": "Add tail emission in multiply",
+  "file": "multiply/zawy-difficulty-algorithm.json",
+  "description": "Add Zawy difficulty algorithm option in multiply (https://github.com/monero-project/research-lab/issues/3)",
   "required": [
     "core/bytecoin.json",
-    "tail-emission-reward.json",
+    "zawy-difficulty-algorithm.json",
     "multiply.json",
     "get-blockchain-settings.json"
   ],
@@ -16,7 +16,7 @@
           "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<uint64_t>    arg_TAIL_EMISSION_REWARD  = {\"TAIL_EMISSION_REWARD\", \"uint64_t\", 0};"
+              "  const command_line::arg_descriptor<bool>    arg_ZAWY_DIFFICULTY_V2  = {\"ZAWY_DIFFICULTY_V2\", \"bool\", 0};"
             ]
           }
         },
@@ -25,7 +25,7 @@
           "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
           "parameters": {
             "text": [
-              "    command_line::add_arg(desc_cmd_sett, arg_TAIL_EMISSION_REWARD);"
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_V2);"
             ]
           }
         },
@@ -34,7 +34,7 @@
           "marker": "currencyBuilder.testnet(testnet_mode);",
           "parameters": {
             "text": [
-              "    currencyBuilder.tailEmissionReward(command_line::get_arg(vm, arg_TAIL_EMISSION_REWARD));"
+              "    currencyBuilder.zawyDifficultyV2(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_V2));"
             ]
           }
         }
@@ -48,7 +48,7 @@
           "marker": "uint64_t MONEY_SUPPLY;",
           "parameters": {
             "text": [
-              "  uint64_t TAIL_EMISSION_REWARD;"
+              "  bool ZAWY_DIFFICULTY_V2;"
             ]
           }
         }
@@ -62,7 +62,7 @@
           "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
           "parameters": {
             "text": [
-              "    TAIL_EMISSION_REWARD=CryptoNote::parameters::TAIL_EMISSION_REWARD;"
+              "    ZAWY_DIFFICULTY_V2=CryptoNote::parameters::ZAWY_DIFFICULTY_V2;"
             ]
           }
         },
@@ -71,7 +71,7 @@
           "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
           "parameters": {
             "text": [
-              "    (\"TAIL_EMISSION_REWARD\", po::value<uint64_t>()->default_value(0), \"uint64_t\")"
+              "    (\"ZAWY_DIFFICULTY_V2\", po::value<bool>()->default_value(0), \"bool\")"
             ]
           }
         },
@@ -80,8 +80,8 @@
           "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
           "parameters": {
             "text": [
-              "  if (options.count(\"TAIL_EMISSION_REWARD\")) {",
-              "    TAIL_EMISSION_REWARD = options[\"TAIL_EMISSION_REWARD\"].as<uint64_t>();",
+              "  if (options.count(\"ZAWY_DIFFICULTY_V2\")) {",
+              "    ZAWY_DIFFICULTY_V2 = options[\"ZAWY_DIFFICULTY_V2\"].as<bool>();",
               "  }"
             ]
           }
@@ -96,7 +96,7 @@
           "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
           "parameters": {
             "text": [
-              "  currencyBuilder.tailEmissionReward(config.coinBaseConfig.TAIL_EMISSION_REWARD);"
+              "  currencyBuilder.zawyDifficultyV2(config.coinBaseConfig.ZAWY_DIFFICULTY_V2);"
             ]
           }
         }
@@ -112,7 +112,7 @@
           "marker": "std::string BYTECOIN_NETWORK;",
           "parameters": {
             "text": [
-              "  uint64_t TAIL_EMISSION_REWARD;"
+              "  bool ZAWY_DIFFICULTY_V2;"
             ]
           }
         },
@@ -121,7 +121,7 @@
           "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
           "parameters": {
             "text": [
-              "    KV_MEMBER(TAIL_EMISSION_REWARD)"
+              "    KV_MEMBER(ZAWY_DIFFICULTY_V2)"
             ]
           }
         }
@@ -136,8 +136,8 @@
           "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
           "parameters": {
             "text": [
-              "  if (m_core.getCurrency().tailEmissionReward() != 0) {",
-              "    res.extensions.push_back(\"tail-emission-reward.json\");",
+              "  if (m_core.getCurrency().zawyDifficultyV2() != 0) {",
+              "    res.extensions.push_back(\"zawy-difficulty-algorithm.json\");",
               "  }"
             ]
           }
@@ -147,7 +147,7 @@
           "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
           "parameters": {
             "text": [
-              "  res.core.TAIL_EMISSION_REWARD = m_core.getCurrency().tailEmissionReward();"
+              "  res.core.ZAWY_DIFFICULTY_V2 = m_core.getCurrency().zawyDifficultyV2();"
             ]
           }
         }

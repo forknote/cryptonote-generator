@@ -3,8 +3,9 @@
   "description": "Add the ability to premine in multiply",
   "required": [
     "core/bytecoin.json",
-    "genesis-block-reward.json",
-    "multiply.json"
+    "cryptonote-coin-clones-support.json",
+    "multiply.json",
+    "get-blockchain-settings.json"
   ],
   "files": [
     {
@@ -96,6 +97,57 @@
           "parameters": {
             "text": [
               "  currencyBuilder.cryptonoteCoinVersion(config.coinBaseConfig.CRYPTONOTE_COIN_VERSION);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::string BYTECOIN_NETWORK;",
+          "parameters": {
+            "text": [
+              "  uint8_t CRYPTONOTE_COIN_VERSION;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
+          "parameters": {
+            "text": [
+              "    KV_MEMBER(CRYPTONOTE_COIN_VERSION)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().cryptonoteCoinVersion() != 0) {",
+              "    res.extensions.push_back(\"cryptonote-coin-clones-support.json\");",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+          "parameters": {
+            "text": [
+              "  res.core.CRYPTONOTE_COIN_VERSION = m_core.getCurrency().cryptonoteCoinVersion();"
             ]
           }
         }

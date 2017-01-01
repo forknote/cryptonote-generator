@@ -262,7 +262,7 @@
               "    return 0;",
               "  }",
               "",
-              "  return (low + timeSpan - 1) / timeSpan;",
+              "  return (low + timeSpan - 1) / timeSpan;  // with version",
               "}",
               ""
             ]
@@ -290,6 +290,166 @@
           "parameters": {
             "text": [
               "  return currency.nextDifficulty(nextBlockMajorVersion, timestamps, difficulties);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#include \"IBlockchainCache.h\"",
+          "parameters": {
+            "text": [
+              "#include \"CryptoNoteCore/UpgradeManager.h\""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void fixChildrenParent(IBlockchainCache* p);",
+          "parameters": {
+            "text": [
+              "uint8_t getBlockMajorVersionForHeight(uint32_t height) const;"
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "b.majorVersion = getBlockMajorVersionForHeight(height);",
+          "parameters": {
+            "text": [
+              "  b.majorVersion = getBlockMajorVersionForHeight(height - 1);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/CryptoNoteCore/BlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void BlockchainCache::fixChildrenParent(IBlockchainCache* p) {",
+          "parameters": {
+            "text": [
+              "uint8_t BlockchainCache::getBlockMajorVersionForHeight(uint32_t height) const {",
+              "  UpgradeManager upgradeManager;",
+              "  upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_2, currency.upgradeHeight(BLOCK_MAJOR_VERSION_2));",
+              "  upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_3, currency.upgradeHeight(BLOCK_MAJOR_VERSION_3));",
+              "  return upgradeManager.getBlockMajorVersion(height);",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "auto timestamps = getLastTimestamps(currency.difficultyBlocksCount(), blockIndex, skipGenesisBlock);",
+          "parameters": {
+            "text": [
+              "  uint8_t nextBlockMajorVersion = getBlockMajorVersionForHeight(blockIndex+1);",
+              "  auto timestamps = getLastTimestamps(currency.difficultyBlocksCountByBlockVersion(nextBlockMajorVersion), blockIndex, skipGenesisBlock);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "getLastCumulativeDifficulties(currency.difficultyBlocksCount(), blockIndex, skipGenesisBlock);",
+          "parameters": {
+            "text": [
+              "      getLastCumulativeDifficulties(currency.difficultyBlocksCountByBlockVersion(nextBlockMajorVersion), blockIndex, skipGenesisBlock);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return currency.nextDifficulty(std::move(timestamps), std::move(commulativeDifficulties));",
+          "parameters": {
+            "text": [
+              "  return currency.nextDifficulty(nextBlockMajorVersion, std::move(timestamps), std::move(commulativeDifficulties));"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#include \"IBlockchainCache.h\"",
+          "parameters": {
+            "text": [
+              "#include \"CryptoNoteCore/UpgradeManager.h\""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "uint64_t getCachedTransactionsCount() const;",
+          "parameters": {
+            "text": [
+              "uint8_t getBlockMajorVersionForHeight(uint32_t height) const;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "uint64_t DatabaseBlockchainCache::getCachedTransactionsCount() const {",
+          "parameters": {
+            "text": [
+              "uint8_t DatabaseBlockchainCache::getBlockMajorVersionForHeight(uint32_t height) const {",
+              "  UpgradeManager upgradeManager;",
+              "  upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_2, currency.upgradeHeight(BLOCK_MAJOR_VERSION_2));",
+              "  upgradeManager.addMajorBlockVersion(BLOCK_MAJOR_VERSION_3, currency.upgradeHeight(BLOCK_MAJOR_VERSION_3));",
+              "  return upgradeManager.getBlockMajorVersion(height);",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "auto timestamps = getLastTimestamps(currency.difficultyBlocksCount(), blockIndex, UseGenesis{false});",
+          "parameters": {
+            "text": [
+              "  uint8_t nextBlockMajorVersion = getBlockMajorVersionForHeight(blockIndex+1);",
+              "  auto timestamps = getLastTimestamps(currency.difficultyBlocksCountByBlockVersion(nextBlockMajorVersion), blockIndex, UseGenesis{false});"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "getLastCumulativeDifficulties(currency.difficultyBlocksCount(), blockIndex, UseGenesis{false});",
+          "parameters": {
+            "text": [
+              "      getLastCumulativeDifficulties(currency.difficultyBlocksCountByBlockVersion(nextBlockMajorVersion), blockIndex, UseGenesis{false});"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return currency.nextDifficulty(std::move(timestamps), std::move(commulativeDifficulties));",
+          "parameters": {
+            "text": [
+              "  return currency.nextDifficulty(nextBlockMajorVersion, std::move(timestamps), std::move(commulativeDifficulties));"
             ]
           }
         }

@@ -91,6 +91,31 @@
               "  }"
             ]
           }
+        },
+        {
+          "action": "add_below",
+          "marker": "uint32_t toRead = blockIndex - readFrom + 1;",
+          "parameters": {
+            "text": [
+              "  if (toRead != 0) {",
+              "    toRead--;",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "return m_core.getTopBlockIndex() + 1;",
+          "parameters": {
+            "text": [
+              "return m_core.getTopBlockIndex();"
+            ]
+          }
         }
       ]
     },
@@ -99,10 +124,37 @@
       "changes": [
         {
           "action": "replace",
-          "marker": "if (m_core.getTopBlockIndex() + 1 < req.height) {",
+          "marker": "res.start_height = startIndex + 1;",
           "parameters": {
             "text": [
-              "  if (m_core.getTopBlockIndex() < req.height) {"
+              "  res.start_height = startIndex;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "res.current_height = currentIndex + 1;",
+          "parameters": {
+            "text": [
+              "  res.current_height = currentIndex;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "res.height = m_core.getTopBlockIndex() + 1;",
+          "parameters": {
+            "text": [
+              "  res.height = m_core.getTopBlockIndex();"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "newBlockMessage.current_blockchain_height = m_core.getTopBlockIndex() + 1;",
+          "parameters": {
+            "text": [
+              "  newBlockMessage.current_blockchain_height = m_core.getTopBlockIndex();"
             ]
           }
         },
@@ -121,6 +173,44 @@
           "parameters": {
             "text": [
               "  assert(cachedBlock.getBlockIndex() == req.height);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Daemon/DaemonCommandsHandler.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "auto hash = m_core.getBlockHashByIndex(height - 1);",
+          "parameters": {
+            "text": [
+              "  auto hash = m_core.getBlockHashByIndex(height);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "print_as_json(m_core.getBlockByIndex(height - 1));",
+          "parameters": {
+            "text": [
+              "  print_as_json(m_core.getBlockByIndex(height));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "cacheStart = 1;",
+          "parameters": {
+            "text": [
+              "  cacheStart = 0;"
             ]
           }
         }

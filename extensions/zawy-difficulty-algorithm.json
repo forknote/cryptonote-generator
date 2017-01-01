@@ -1,8 +1,9 @@
 {
-  "file": "tail-emission-reward.json",
-  "description": "Add tail emission",
+  "file": "zawy-difficulty-algorithm.json",
+  "description": "Add Zawy difficulty algorithm option (https://github.com/monero-project/research-lab/issues/3)",
   "required": [
-    "core/bytecoin.json"
+    "core/bytecoin.json",
+    "versionized-parameters.json"
   ],
   "files": [
     {
@@ -13,7 +14,7 @@
           "marker": "size_t m_blockGrantedFullRewardZone;",
           "parameters": {
             "text": [
-              "  uint64_t m_tailEmissionReward;"
+              "  bool m_zawyDifficultyV2;"
             ]
           }
         },
@@ -22,7 +23,7 @@
           "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
           "parameters": {
             "text": [
-              "  CurrencyBuilder& tailEmissionReward(uint64_t val) { m_currency.m_tailEmissionReward = val; return *this; }"
+              "  CurrencyBuilder& zawyDifficultyV2(bool val) { m_currency.m_zawyDifficultyV2 = val; return *this; }"
             ]
           }
         },
@@ -31,7 +32,7 @@
           "marker": "size_t blockGrantedFullRewardZone()",
           "parameters": {
             "text": [
-              "  uint64_t tailEmissionReward() const { return m_tailEmissionReward; }"
+              "  bool zawyDifficultyV2() const { return m_zawyDifficultyV2; }"
             ]
           }
         }
@@ -45,7 +46,7 @@
           "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
           "parameters": {
             "text": [
-              "tailEmissionReward(parameters::TAIL_EMISSION_REWARD);"
+              "zawyDifficultyV2(parameters::ZAWY_DIFFICULTY_V2);"
             ]
           }
         },
@@ -54,7 +55,7 @@
           "marker": "m_testnet(currency.m_testnet),",
           "parameters": {
             "text": [
-              "m_tailEmissionReward(currency.m_tailEmissionReward),"
+              "m_zawyDifficultyV2(currency.m_zawyDifficultyV2),"
             ]
           }
         }
@@ -68,32 +69,37 @@
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
-              "const uint64_t TAIL_EMISSION_REWARD                          = %s;"
+              "const bool ZAWY_DIFFICULTY_V2                          = %s;"
             ],
             "replace_text_alt": [
-              "const uint64_t TAIL_EMISSION_REWARD                          = 0;"
+              "const bool ZAWY_DIFFICULTY_V2                          = 0;"
             ],
-            "var": "TAIL_EMISSION_REWARD"
+            "var": "ZAWY_DIFFICULTY_V2"
           }
         }
       ]
     },
+
+
     {
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
         {
-          "action": "add_below",
-          "marker": "uint64_t baseReward = (m_moneySupply - alreadyGeneratedCoins) >> m_emissionSpeedFactor;",
+          "action": "add_above",
+          "marker": "return (low + timeSpan - 1) / timeSpan;  // with version",
           "parameters": {
             "text": [
-                "  if (baseReward < m_tailEmissionReward) {",
-                "    baseReward = m_tailEmissionReward;",
-                "  }",
+                "  if (version == 2 && m_zawyDifficultyV2) {",
+                "    if (high != 0) {",
+                "      return 0;",
+                "    }",
+                "    uint64_t nextDiffZ = low / timeSpan;",
+                "    if (nextDiffZ <= 100000) {",
+                "      nextDiffZ = 100000;",
+                "    }",
                 "",
-                "  if (alreadyGeneratedCoins + baseReward >= m_moneySupply) {",
-                "    baseReward = 0;",
-                "  }",
-                ""
+                "    return nextDiffZ;",
+                "  }"
             ]
           }
         }

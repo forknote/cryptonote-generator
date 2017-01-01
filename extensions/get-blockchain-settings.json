@@ -4,7 +4,6 @@
   "required": [
     "core/bytecoin.json",
     "print-genesis-tx.json",
-    "genesis-block-reward.json",
     "multiply.json"
   ],
   "files": [
@@ -32,7 +31,6 @@
               "  uint64_t DIFFICULTY_TARGET;",
               "  size_t CRYPTONOTE_DISPLAY_DECIMAL_POINT;",
               "  std::string MONEY_SUPPLY;",
-              "  std::string GENESIS_BLOCK_REWARD;",
               "  uint64_t DEFAULT_DUST_THRESHOLD;",
               "  uint64_t MINIMUM_FEE;",
               "  uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW;",
@@ -46,11 +44,9 @@
               "  uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;",
               "  uint32_t UPGRADE_HEIGHT_V2;",
               "  uint32_t UPGRADE_HEIGHT_V3;",
+              "  size_t DIFFICULTY_WINDOW;",
               "  size_t DIFFICULTY_CUT;",
               "  size_t DIFFICULTY_LAG;",
-              "  uint32_t KILL_HEIGHT;",
-              "  uint32_t MANDATORY_TRANSACTION;",
-              "  uint8_t CRYPTONOTE_COIN_VERSION;",
               "  std::string BYTECOIN_NETWORK;",
               "  std::string CRYPTONOTE_NAME;",
               "  std::string GENESIS_COINBASE_TX_HEX;",
@@ -62,7 +58,6 @@
               "    KV_MEMBER(DIFFICULTY_TARGET)",
               "    KV_MEMBER(CRYPTONOTE_DISPLAY_DECIMAL_POINT)",
               "    KV_MEMBER(MONEY_SUPPLY)",
-              "    KV_MEMBER(GENESIS_BLOCK_REWARD)",
               "    KV_MEMBER(DEFAULT_DUST_THRESHOLD)",
               "    KV_MEMBER(MINIMUM_FEE)",
               "    KV_MEMBER(CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW)",
@@ -76,11 +71,9 @@
               "    KV_MEMBER(EXPECTED_NUMBER_OF_BLOCKS_PER_DAY)",
               "    KV_MEMBER(UPGRADE_HEIGHT_V2)",
               "    KV_MEMBER(UPGRADE_HEIGHT_V3)",
+              "    KV_MEMBER(DIFFICULTY_WINDOW)",
               "    KV_MEMBER(DIFFICULTY_CUT)",
               "    KV_MEMBER(DIFFICULTY_LAG)",
-              "    KV_MEMBER(KILL_HEIGHT)",
-              "    KV_MEMBER(MANDATORY_TRANSACTION)",
-              "    KV_MEMBER(CRYPTONOTE_COIN_VERSION)",
               "    KV_MEMBER(BYTECOIN_NETWORK)",
               "    KV_MEMBER(CRYPTONOTE_NAME)",
               "    KV_MEMBER(GENESIS_COINBASE_TX_HEX)",
@@ -235,16 +228,7 @@
       "changes": [
         {
           "action": "add_below",
-          "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-          "parameters": {
-            "text": [
-              "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));"
-            ]
-          }
-        },
-        {
-          "action": "add_below",
-          "marker": "CryptoNote::CurrencyBuilder  currencyBuilder(logManager);",
+          "marker": "CryptoNote::CurrencyBuilder",
           "parameters": {
             "text": [
               "    currencyBuilder.cryptonoteName(command_line::get_arg(vm, arg_CRYPTONOTE_NAME));"
@@ -291,21 +275,6 @@
               "  // Hardcoded plugins, refactor this",
               "  res.extensions.push_back(\"core/bytecoin.json\");",
               "  res.extensions.push_back(\"print-genesis-tx.json\");",
-              "  if (m_core.getCurrency().genesisBlockReward() != 0) {",
-              "    res.extensions.push_back(\"genesis-block-reward.json\");",
-              "  }",
-              "  if (m_core.getCurrency().killHeight() != 0) {",
-              "    res.extensions.push_back(\"kill-height.json\");",
-              "  }",
-              "  if (m_core.getCurrency().tailEmissionReward() != 0) {",
-              "    res.extensions.push_back(\"tail-emission-reward.json\");",
-              "  }",
-              "  if (m_core.getCurrency().mandatoryTransaction() == 1) {",
-              "    res.extensions.push_back(\"mandatory-transaction-in-block.json\");",
-              "  }",
-              "  if (m_core.getCurrency().cryptonoteCoinVersion() != 0) {",
-              "    res.extensions.push_back(\"cryptonote-coin-clones-support.json\");",
-              "  }",
               "",
               "  res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
               "",
@@ -313,8 +282,7 @@
               "  res.core.DIFFICULTY_TARGET = m_core.getCurrency().difficultyTarget();",
               "  res.core.CRYPTONOTE_DISPLAY_DECIMAL_POINT = m_core.getCurrency().numberOfDecimalPlaces();",
               "  res.core.MONEY_SUPPLY = std::to_string(m_core.getCurrency().moneySupply());",
-              "  res.core.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY = m_core.getCurrency().difficultyWindow();",
-              "  res.core.GENESIS_BLOCK_REWARD = std::to_string(m_core.getCurrency().genesisBlockReward());",
+              "  res.core.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY = m_core.getCurrency().expectedNumberOfBlocksPerDay();",
               "  res.core.DEFAULT_DUST_THRESHOLD = m_core.getCurrency().defaultDustThreshold();",
               "  res.core.MINIMUM_FEE = m_core.getCurrency().minimumFee();",
               "  res.core.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = m_core.getCurrency().minedMoneyUnlockWindow();",
@@ -325,11 +293,9 @@
               "  res.core.MAX_BLOCK_SIZE_INITIAL = m_core.getCurrency().maxBlockSizeInitial();",
               "  res.core.UPGRADE_HEIGHT_V2 = m_core.getCurrency().upgradeHeight(2);",
               "  res.core.UPGRADE_HEIGHT_V3 = m_core.getCurrency().upgradeHeight(3);",
+              "  res.core.DIFFICULTY_WINDOW = m_core.getCurrency().difficultyWindow();",
               "  res.core.DIFFICULTY_CUT = m_core.getCurrency().difficultyCut();",
               "  res.core.DIFFICULTY_LAG = m_core.getCurrency().difficultyLag();",
-              "  res.core.KILL_HEIGHT = m_core.getCurrency().killHeight();",
-              "  res.core.MANDATORY_TRANSACTION = m_core.getCurrency().mandatoryTransaction();",
-              "  res.core.CRYPTONOTE_COIN_VERSION = m_core.getCurrency().cryptonoteCoinVersion();",
               "",
               "  res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
               "  // Not real. Change",

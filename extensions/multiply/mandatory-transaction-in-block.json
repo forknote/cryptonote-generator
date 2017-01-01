@@ -4,7 +4,8 @@
   "required": [
     "core/bytecoin.json",
     "mandatory-transaction-in-block.json",
-    "multiply.json"
+    "multiply.json",
+    "get-blockchain-settings.json"
   ],
   "files": [
     {
@@ -142,6 +143,57 @@
           "parameters": {
             "text": [
               "  currencyBuilder.mandatoryTransaction(config.coinBaseConfig.MANDATORY_TRANSACTION);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::string BYTECOIN_NETWORK;",
+          "parameters": {
+            "text": [
+              "  uint32_t MANDATORY_TRANSACTION;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
+          "parameters": {
+            "text": [
+              "    KV_MEMBER(MANDATORY_TRANSACTION)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().mandatoryTransaction() == 1) {",
+              "    res.extensions.push_back(\"mandatory-transaction-in-block.json\");",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+          "parameters": {
+            "text": [
+              "  res.core.MANDATORY_TRANSACTION = m_core.getCurrency().mandatoryTransaction();"
             ]
           }
         }

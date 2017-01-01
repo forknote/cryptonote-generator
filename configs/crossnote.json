@@ -3,7 +3,8 @@
     "core/bytecoin.json",
     "print-genesis-tx.json",
     "mandatory-transaction-in-block.json",
-    "genesis-block-reward.json"
+    "genesis-block-reward.json",
+    "bug-fixes.json"
   ],
   "base_coin": {
     "name": "bytecoin",
