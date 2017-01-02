@@ -7,7 +7,6 @@
   "files": [
     {
       "path": "/src/SimpleWallet/SimpleWallet.cpp",
-      "multiline": true,
       "changes": [
         {
           "action": "add_above",

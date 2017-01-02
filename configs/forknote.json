@@ -26,6 +26,7 @@
     "multiply/zawy-difficulty-algorithm.json",
     "daemon-getrandom_outs-json.json",
     "simplewallet-import-keys.json",
+    "simplewallet-export-keys.json",
     "walletd-extension.json",
     "bug-fixes.json"
   ],

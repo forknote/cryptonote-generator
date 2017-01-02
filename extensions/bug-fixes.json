@@ -178,7 +178,6 @@
         }
       ]
     },
-
     {
       "path": "/src/Daemon/DaemonCommandsHandler.cpp",
       "changes": [
@@ -211,6 +210,29 @@
           "parameters": {
             "text": [
               "  cacheStart = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "m_consoleHandler.setHandler(\"start_mining\", boost::bind(&simple_wallet::start_mining, this, _1), \"start_mining [<number_of_threads>] - Start mining in daemon\");",
+          "parameters": {
+            "text": [
+              "  //m_consoleHandler.setHandler(\"start_mining\", boost::bind(&simple_wallet::start_mining, this, _1), \"start_mining [<number_of_threads>] - Start mining in daemon\");"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "m_consoleHandler.setHandler(\"stop_mining\", boost::bind(&simple_wallet::stop_mining, this, _1), \"Stop mining in daemon\");",
+          "parameters": {
+            "text": [
+              "  //m_consoleHandler.setHandler(\"stop_mining\", boost::bind(&simple_wallet::stop_mining, this, _1), \"Stop mining in daemon\");"
             ]
           }
         }

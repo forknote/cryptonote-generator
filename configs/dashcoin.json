@@ -3,6 +3,7 @@
     "core/bytecoin.json",
     "simplewallet-default-fee.json",
     "max-transaction-size-limit.json",
+    "simplewallet-import-keys.json",
     "bug-fixes.json"
   ],
   "base_coin": {
@@ -39,7 +40,9 @@
       "298000:5b1f21234c911eb755abce6fa66358558b380526f606222d042eb8b7ce993ae8",
       "360000:d9426fcdaa95a8dd2f1d151c2088a0dac2143963b8088d0de02f9c08ec8429f5",
       "423000:7e2c45f1a546290a7f7f28cb83c1bdc21f531f410ad0e65a12a5c86b95e194b5",
-      "529000:b0bbedbd3e8d8051b273a8a7c8e875e1ad4184c37e6cedfb68d930e8235153dd"
+      "529000:b0bbedbd3e8d8051b273a8a7c8e875e1ad4184c37e6cedfb68d930e8235153dd",
+      "600000:1f265d7710dc8b28478c62d48ef533e462008068cd7a5912b861c350ce82fbae",
+      "636000:436f4ed7684698160120f25f1bad8aa92c38c93fbedd2b0c74671adf4d4fb191"
     ],
     "P2P_STAT_TRUSTED_PUB_KEY": "4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
     "GENESIS_COINBASE_TX_HEX": "010a01ff0001ffffffffffff0f029b2e4c0271c0b42e7c53291a94d1c0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
