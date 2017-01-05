@@ -79,8 +79,6 @@
         }
       ]
     },
-
-
     {
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
@@ -89,7 +87,7 @@
           "marker": "return (low + timeSpan - 1) / timeSpan;  // with version",
           "parameters": {
             "text": [
-                "  if (version == 2 && m_zawyDifficultyV2) {",
+                "  if (version >= 2 && m_zawyDifficultyV2) {",
                 "    if (high != 0) {",
                 "      return 0;",
                 "    }",

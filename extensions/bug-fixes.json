@@ -87,18 +87,6 @@
             "text": [
               "  if (offset == 0) {",
               "    ++offset;",
-              "    ++cacheStart;",
-              "  }"
-            ]
-          }
-        },
-        {
-          "action": "add_below",
-          "marker": "uint32_t toRead = blockIndex - readFrom + 1;",
-          "parameters": {
-            "text": [
-              "  if (toRead != 0) {",
-              "    toRead--;",
               "  }"
             ]
           }
@@ -114,6 +102,20 @@
           "parameters": {
             "text": [
               "return m_core.getTopBlockIndex();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "height = getTopBlockIndex() + 1;",
+          "parameters": {
+            "text": [
+              "  height = getTopBlockIndex();"
             ]
           }
         }
@@ -181,6 +183,24 @@
     {
       "path": "/src/Daemon/DaemonCommandsHandler.cpp",
       "changes": [
+        {
+          "action": "replace",
+          "marker": "if (height - 1 > m_core.getTopBlockIndex()) {",
+          "parameters": {
+            "text": [
+              "  if (height > m_core.getTopBlockIndex()) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "std::cout << \"block wasn't found. Current block chain height: \" << m_core.getTopBlockIndex() + 1 << \", requested: \" << height << std::endl;",
+          "parameters": {
+            "text": [
+              "std::cout << \"block wasn't found. Current block chain height: \" << m_core.getTopBlockIndex() << \", requested: \" << height << std::endl;"
+            ]
+          }
+        },
         {
           "action": "replace",
           "marker": "auto hash = m_core.getBlockHashByIndex(height - 1);",
