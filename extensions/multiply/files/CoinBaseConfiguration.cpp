@@ -80,7 +80,7 @@ void CoinBaseConfiguration::initOptions(boost::program_options::options_descript
     ("EXPECTED_NUMBER_OF_BLOCKS_PER_DAY", po::value<uint64_t>()->default_value(0), "uint64_t")
     ("UPGRADE_HEIGHT_V2", po::value<uint32_t>()->default_value(0), "uint32_t")
     ("UPGRADE_HEIGHT_V3", po::value<uint32_t>()->default_value(0), "uint32_t")
-    ("DIFFICULTY_WINDOW", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_WINDOW), "size_t")
+    ("DIFFICULTY_WINDOW", po::value<size_t>()->default_value(0), "size_t")
     ("DIFFICULTY_CUT", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT), "size_t")
     ("DIFFICULTY_LAG", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG), "size_t")
     ;

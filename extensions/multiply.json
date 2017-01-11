@@ -141,7 +141,7 @@
               "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
-              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", CryptoNote::parameters::DIFFICULTY_WINDOW};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
               "  const command_line::arg_descriptor<std::string> arg_CRYPTONOTE_NAME  = {\"CRYPTONOTE_NAME\", \"Cryptonote name. Used for storage directory\", \"\"};",
@@ -178,47 +178,58 @@
             ]
           }
         },
+
+        {
+          "action": "add_below",
+          "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
+          "parameters": {
+            "text": [
+              "    currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
+              "    currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
+              "    currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
+              "    currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
+              "    currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
+              "    currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
+              "    currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
+              "    currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
+              "    currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
+              "    currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
+              "    currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "    currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
+              "    currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
+              "    if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
+              "    {",
+              "      currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "      currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "      currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
+              "    } else {",
+              "      currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "    }",
+              "    currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
+              "    currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
+              "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
+              "    {",
+              "      currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
+              "    }",
+              "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
+              "    {",
+              "      currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
+              "    }",
+              "    if (command_line::has_arg(vm, arg_DIFFICULTY_WINDOW) && command_line::get_arg(vm, arg_DIFFICULTY_WINDOW) != 0)",
+              "    {",
+              "      currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
+              "    }",
+              "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
+              "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
+            ]
+          }
+        },
+
         {
           "action": "replace",
           "marker": "CryptoNote::Transaction tx = CryptoNote::CurrencyBuilder(logManager).generateGenesisTransaction();",
           "parameters": {
             "text": [
-              "  CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-              "  currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
-              "  currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
-              "  currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
-              "  currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
-              "  currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
-              "  currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
-              "  currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
-              "  currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
-              "  currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
-              "  currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
-              "  currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-              "  currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
-              "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
-              "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
-              "  {",
-              "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-              "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-              "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-              "  } else {",
-              "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-              "  }",
-              "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-              "  currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
-              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
-              "  {",
-              "    currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
-              "  }",
-              "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
-              "  {",
-              "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
-              "  }",
-              "  currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
-              "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-              "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
-              "",
               "  CryptoNote::Transaction tx = currencyBuilder.generateGenesisTransaction();"
             ]
           }
@@ -256,48 +267,6 @@
           "parameters": {
             "text": [
               "  std::cout << \"GENESIS_COINBASE_TX_HEX=\" << tx_hex << std::endl;"
-            ]
-          }
-        },
-        {
-          "action": "add_below",
-          "marker": "CryptoNote::CurrencyBuilder currencyBuilder(logManager);",
-          "parameters": {
-            "text": [
-              "    currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
-              "    currencyBuilder.publicAddressBase58Prefix(command_line::get_arg(vm, arg_CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX));",
-              "    currencyBuilder.moneySupply(command_line::get_arg(vm, arg_MONEY_SUPPLY));",
-              "    currencyBuilder.emissionSpeedFactor(command_line::get_arg(vm, arg_EMISSION_SPEED_FACTOR));",
-              "    currencyBuilder.blockGrantedFullRewardZone(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE));",
-              "    currencyBuilder.blockGrantedFullRewardZoneV1(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1));",
-              "    currencyBuilder.blockGrantedFullRewardZoneV2(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2));",
-              "    currencyBuilder.numberOfDecimalPlaces(command_line::get_arg(vm, arg_CRYPTONOTE_DISPLAY_DECIMAL_POINT));",
-              "    currencyBuilder.mininumFee(command_line::get_arg(vm, arg_MINIMUM_FEE));",
-              "    currencyBuilder.defaultDustThreshold(command_line::get_arg(vm, arg_DEFAULT_DUST_THRESHOLD));",
-              "    currencyBuilder.difficultyTarget(command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-              "    currencyBuilder.minedMoneyUnlockWindow(command_line::get_arg(vm, arg_CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW));",
-              "    currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
-              "    if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
-              "    {",
-              "      currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-              "      currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-              "      currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
-              "    } else {",
-              "      currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-              "    }",
-              "    currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
-              "    currencyBuilder.lockedTxAllowedDeltaSeconds(command_line::get_arg(vm, arg_DIFFICULTY_TARGET) * CryptoNote::parameters::CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS);  ",
-              "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V2) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2) != 0)",
-              "    {",
-              "      currencyBuilder.upgradeHeightV2(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V2));",
-              "    }",
-              "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
-              "    {",
-              "      currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
-              "    }",
-              "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
-              "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-              "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
             ]
           }
         },
@@ -451,7 +420,7 @@
               "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
-              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", CryptoNote::parameters::DIFFICULTY_WINDOW};",
+              "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
               "  const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {\"rpc-bind-port\", \"\", std::to_string(RPC_DEFAULT_PORT)};"
@@ -495,7 +464,10 @@
               "  {",
               "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
               "  }",
-              "  currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
+              "  if (command_line::has_arg(vm, arg_DIFFICULTY_WINDOW) && command_line::get_arg(vm, arg_DIFFICULTY_WINDOW) != 0)",
+              "  {",
+              "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
+              "  }",
               "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
               "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
             ]
@@ -934,7 +906,10 @@
               "  {",
               "    currencyBuilder.upgradeHeightV3(config.coinBaseConfig.UPGRADE_HEIGHT_V3);",
               "  }",
-              "  currencyBuilder.difficultyWindow(config.coinBaseConfig.DIFFICULTY_WINDOW);",
+              "  if (config.coinBaseConfig.DIFFICULTY_WINDOW && config.coinBaseConfig.DIFFICULTY_WINDOW != 0)",
+              "  {",
+              "    currencyBuilder.difficultyWindow(config.coinBaseConfig.DIFFICULTY_WINDOW);",
+              "  }",
               "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_LAG);",
               "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);"
             ]
