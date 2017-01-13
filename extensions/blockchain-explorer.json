@@ -181,7 +181,7 @@
               "};",
               "",
               "struct F_COMMAND_RPC_GET_POOL {",
-              "  typedef std::vector<std::string> request;",
+              "  typedef EMPTY_STRUCT request;",
               "",
               "  struct response {",
               "    std::vector<f_transaction_short_response> transactions; //transactions blobs as hex",
@@ -377,6 +377,7 @@
               "  return true;",
               "}",
               "",
+
               "bool RpcServer::f_on_transaction_json(const F_COMMAND_RPC_GET_TRANSACTION_DETAILS::request& req, F_COMMAND_RPC_GET_TRANSACTION_DETAILS::response& res) {",
               "  Hash hash;",
               "",
@@ -416,7 +417,7 @@
               "    }",
               "    blockHash = m_core.getBlockHashByIndex(blockHeight);",
               "    BlockTemplate blk = m_core.getBlockByHash(blockHash);",
-              "    BlockDetails blkDetails = m_core.getBlockDetails(hash);",
+              "    BlockDetails blkDetails = m_core.getBlockDetails(blockHash);",
               "",
               "    f_block_short_response block_short;",
               "",
@@ -465,6 +466,8 @@
               "    uint64_t amount_out = getOutputAmount(tx);",
               "",
               "    transaction_short.hash = Common::podToHex(getObjectHash(tx));",
+
+
               "    transaction_short.fee = amount_in - amount_out;",
               "    transaction_short.amount_out = amount_out;",
               "    transaction_short.size = getObjectBinarySize(tx);",

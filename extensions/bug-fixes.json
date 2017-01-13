@@ -36,34 +36,6 @@
       ]
     },
     {
-      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.cpp",
-      "changes": [
-        {
-          "action": "add_below",
-          "marker": "uint32_t offset = std::max(static_cast<uint32_t>(blockIndex + 1 - count), cacheStart) - cacheStart;",
-          "parameters": {
-            "text": [
-              "  if (offset == 0) {",
-              "//    ++offset;",
-              "//    ++cacheStart;",
-              "  }"
-            ]
-          }
-        },
-        {
-          "action": "add_below",
-          "marker": "uint32_t toRead = blockIndex - readFrom + 1;",
-          "parameters": {
-            "text": [
-              "  if (toRead != 0) {",
-              "//    toRead--;",
-              "  }"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp",
       "changes": [
         {
