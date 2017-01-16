@@ -33,9 +33,9 @@ if [[ "$OSTYPE" == "msys" ]]; then
 	cmake -G "Visual Studio 12 Win64" "..\.."
 	msbuild.exe Bytecoin.sln /property:Configuration=Release ${COMPILE_ARGS}
 else
-	cmake -D STATIC=ON -D ARCH="x86-64" -D CMAKE_BUILD_TYPE=Release ../..
+	cmake -D STATIC=ON -D ARCH="default" -D CMAKE_BUILD_TYPE=Release ../..
 	echo "make ${COMPILE_ARGS}"
-	make ${COMPILE_ARGS}
+	PORTABLE=1 make ${COMPILE_ARGS}
 fi
 
 if [[ $? == "0" ]]; then
