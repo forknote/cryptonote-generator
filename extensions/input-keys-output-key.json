@@ -1,0 +1,708 @@
+{
+  "file": "input-keys-output-key.json",
+  "description": "Add input keys by output key to the daemon's RPC",
+  "required": [],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/CryptoNoteBasic.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const Crypto::Hash NULL_HASH = boost::value_initialized<Crypto::Hash>();",
+          "parameters": {
+            "text": [
+              "  const Crypto::KeyImage NULL_KEY_IMAGE = boost::value_initialized<Crypto::KeyImage>();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DBUtils.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "const std::string KEY_OUTPUT_KEY_PREFIX = \"j\"",
+          "parameters": {
+            "text": [
+              "  const std::string INPUT_KEYS_BY_OUTPUT_KEY = \"input-keys-output-key\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainWriteBatch.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "BlockchainWriteBatch& insertPaymentId(const Crypto::Hash& transactionHash, const Crypto::Hash paymentId, uint32_t totalTxsCountForPaymentId);",
+          "parameters": {
+            "text": [
+              "  BlockchainWriteBatch& insertInputOutputKey(Crypto::KeyImage inputKey, Crypto::PublicKey outputKey, uint32_t totalInputsCountForOutputKey);"
+            ]
+          }
+        },
+
+        {
+          "action": "add_below",
+          "marker": "BlockchainWriteBatch& removePaymentId(const Crypto::Hash paymentId, uint32_t totalTxsCountForPaytmentId);",
+          "parameters": {
+            "text": [
+              "  BlockchainWriteBatch& removeInputOutputKey(const Crypto::PublicKey outputKey, uint32_t totalInputsCountForOutputKey);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainWriteBatch.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "BlockchainWriteBatch& BlockchainWriteBatch::insertPaymentId(const Crypto::Hash& transactionHash, const Crypto::Hash paymentId, uint32_t totalTxsCountForPaymentId) {",
+          "parameters": {
+            "text": [
+                "BlockchainWriteBatch& BlockchainWriteBatch::insertInputOutputKey(Crypto::KeyImage inputKey, Crypto::PublicKey outputKey, uint32_t totalInputsCountForOutputKey) {",
+                "  assert(totalInputsCountForOutputKey > 0);",
+                "  rawDataToInsert.emplace_back(DB::serialize(DB::INPUT_KEYS_BY_OUTPUT_KEY, outputKey, totalInputsCountForOutputKey));",
+                "  rawDataToInsert.emplace_back(DB::serialize(DB::INPUT_KEYS_BY_OUTPUT_KEY, std::make_pair(outputKey, totalInputsCountForOutputKey - 1), inputKey));",
+                "  return *this;",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "BlockchainWriteBatch& BlockchainWriteBatch::removePaymentId(const Crypto::Hash paymentId, uint32_t totalTxsCountForPaymentId) {",
+          "parameters": {
+            "text": [
+                "BlockchainWriteBatch& BlockchainWriteBatch::removeInputOutputKey(const Crypto::PublicKey outputKey, uint32_t totalInputsCountForOutputKey) {",
+                "  rawDataToInsert.emplace_back(DB::serialize(DB::INPUT_KEYS_BY_OUTPUT_KEY, outputKey, totalInputsCountForOutputKey));",
+                "  rawKeysToRemove.emplace_back(DB::serializeKey(DB::INPUT_KEYS_BY_OUTPUT_KEY, std::make_pair(outputKey, totalInputsCountForOutputKey)));",
+                "  return *this;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainReadBatch.h",
+      "changes": [
+
+        {
+          "action": "add_above",
+          "marker": "template <> struct hash<std::pair<Crypto::Hash, uint32_t>> {",
+          "parameters": {
+            "text": [
+                "template <> struct hash<std::pair<Crypto::PublicKey, uint32_t>> {",
+                "  using argment_type = std::pair<Crypto::PublicKey, uint32_t>;",
+                "  using result_type = size_t;",
+                "",
+                "  result_type operator() (const argment_type& arg) const {",
+                "    size_t hashValue = std::hash<Crypto::PublicKey>{}(arg.first);",
+                "    boost::hash_combine(hashValue, arg.second);",
+                "    return hashValue;",
+                "  }",
+                "};",
+                ""
+            ]
+          }
+        },
+
+        {
+          "action": "add_above",
+          "marker": "std::unordered_map<Crypto::Hash, uint32_t> transactionCountsByPaymentIds;",
+          "parameters": {
+            "text": [
+                "std::unordered_map<Crypto::PublicKey, uint32_t> inputCountByOutputKeys;",
+                "std::unordered_map<std::pair<Crypto::PublicKey, uint32_t>, Crypto::KeyImage> inputsByOutputKeys;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "const std::unordered_map<Crypto::Hash, uint32_t>& getTransactionCountByPaymentIds() const;",
+          "parameters": {
+            "text": [
+                "  const std::unordered_map<Crypto::PublicKey, uint32_t>& getInputCountByOutputKeys() const;",
+                "  const std::unordered_map<std::pair<Crypto::PublicKey, uint32_t>, Crypto::KeyImage>& getInputsByOutputKeys() const;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "BlockchainReadBatch& requestTransactionCountByPaymentId(const Crypto::Hash& paymentId);",
+          "parameters": {
+            "text": [
+                "  BlockchainReadBatch& requestInputCountByOutputKey(const Crypto::PublicKey& outputKey);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "BlockchainReadBatch& requestTransactionHashByPaymentId(const Crypto::Hash& paymentId, uint32_t transactionIndexWithinPaymentId);",
+          "parameters": {
+            "text": [
+                "  BlockchainReadBatch& requestInputByOutputKey(const Crypto::PublicKey& outputKey, uint32_t inputIndexWithinOutputKey);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainReadBatch.cpp",
+      "changes": [
+
+        {
+          "action": "add_above",
+          "marker": "DB::serializeKeys(rawKeys, DB::PAYMENT_ID_TO_TX_HASH_PREFIX, state.transactionCountsByPaymentIds);",
+          "parameters": {
+            "text": [
+                "  DB::serializeKeys(rawKeys, DB::INPUT_KEYS_BY_OUTPUT_KEY, state.inputCountByOutputKeys);",
+                "  DB::serializeKeys(rawKeys, DB::INPUT_KEYS_BY_OUTPUT_KEY, state.inputsByOutputKeys);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "DB::deserializeValues(state.transactionCountsByPaymentIds, iter, DB::PAYMENT_ID_TO_TX_HASH_PREFIX);",
+          "parameters": {
+            "text": [
+                "  DB::deserializeValues(state.inputCountByOutputKeys, iter, DB::INPUT_KEYS_BY_OUTPUT_KEY);",
+                "  DB::deserializeValues(state.inputsByOutputKeys, iter, DB::INPUT_KEYS_BY_OUTPUT_KEY);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "transactionCountsByPaymentIds(std::move(state.transactionCountsByPaymentIds)),",
+          "parameters": {
+            "text": [
+                "inputCountByOutputKeys(std::move(state.inputCountByOutputKeys)),",
+                "inputsByOutputKeys(std::move(state.inputsByOutputKeys)),"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "transactionCountsByPaymentIds.size() +",
+          "parameters": {
+            "text": [
+                "    inputCountByOutputKeys.size() +",
+                "    inputsByOutputKeys.size() +"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "BlockchainReadBatch& BlockchainReadBatch::requestTransactionCountByPaymentId(const Crypto::Hash& paymentId) {",
+          "parameters": {
+            "text": [
+                "BlockchainReadBatch& BlockchainReadBatch::requestInputCountByOutputKey(const Crypto::PublicKey& outputKey) {",
+                "  state.inputCountByOutputKeys.emplace(outputKey, 0);",
+                "  return *this;",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "const std::unordered_map<Crypto::Hash, uint32_t>& BlockchainReadResult::getTransactionCountByPaymentIds() const {",
+          "parameters": {
+            "text": [
+                "const std::unordered_map<Crypto::PublicKey, uint32_t>& BlockchainReadResult::getInputCountByOutputKeys() const {",
+                "  return state.inputCountByOutputKeys;",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "BlockchainReadBatch& BlockchainReadBatch::requestTransactionHashByPaymentId(const Crypto::Hash& paymentId, uint32_t transactionIndexWithinPaymentId) {",
+          "parameters": {
+            "text": [
+                "BlockchainReadBatch& BlockchainReadBatch::requestInputByOutputKey(const Crypto::PublicKey& outputKey, uint32_t inputIndexWithinOutputKey) {",
+                "  state.inputsByOutputKeys.emplace(std::make_pair(outputKey, inputIndexWithinOutputKey), NULL_KEY_IMAGE);",
+                "  return *this;",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "const std::unordered_map<std::pair<Crypto::Hash, uint32_t>, Crypto::Hash>& BlockchainReadResult::getTransactionHashesByPaymentIds() const {",
+          "parameters": {
+            "text": [
+                "const std::unordered_map<std::pair<Crypto::PublicKey, uint32_t>, Crypto::KeyImage>& BlockchainReadResult::getInputsByOutputKeys() const {",
+                "  return state.inputsByOutputKeys;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void insertPaymentId(BlockchainWriteBatch& batch, const Crypto::Hash& transactionHash, const Crypto::Hash& paymentId);",
+          "parameters": {
+            "text": [
+                "void insertInputOutputKey(BlockchainWriteBatch& batch, Crypto::KeyImage inputKey, Crypto::PublicKey outputKey);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void requestDeletePaymentIds(BlockchainWriteBatch& writeBatch, const std::vector<Crypto::Hash>& transactionHashes);",
+          "parameters": {
+            "text": [
+                "void requestDeleteOutputKeys(BlockchainWriteBatch& writeBatch, const std::vector<Crypto::Hash>& transactionHashes);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void requestDeletePaymentId(BlockchainWriteBatch& writeBatch, const Crypto::Hash& paymentId, size_t toDelete);",
+          "parameters": {
+            "text": [
+                "void requestDeleteOutputKey(BlockchainWriteBatch& writeBatch, const Crypto::PublicKey& outputKey, size_t toDelete);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const override;",
+          "parameters": {
+            "text": [
+                "virtual std::vector<Crypto::KeyImage> getInputsByOutputKey(const Crypto::PublicKey& outputKey) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "for (auto& output : tx.outputs) {",
+          "parameters": {
+            "text": [
+                "  for (const auto& input : tx.inputs) {",
+                "    if (input.type() == typeid(KeyInput)) {",
+                "      const KeyInput& in = boost::get<KeyInput>(input);",
+                "      std::vector<Crypto::PublicKey> outputKeys;",
+                "      assert(!in.outputIndexes.empty());",
+                "",
+                "      std::vector<uint32_t> globalIndexes(in.outputIndexes.size());",
+                "      globalIndexes[0] = in.outputIndexes[0];",
+                "      for (size_t i = 1; i < in.outputIndexes.size(); ++i) {",
+                "        globalIndexes[i] = globalIndexes[i - 1] + in.outputIndexes[i];",
+                "      }",
+                "",
+                "      auto result = extractKeyOutputKeys(in.amount, getTopBlockIndex(), {globalIndexes.data(), globalIndexes.size()}, outputKeys);",
+                "      for (const Crypto::PublicKey& outputKey : outputKeys) {",
+                "        insertInputOutputKey(batch, in.keyImage, outputKey);",
+                "      }",
+                "    }",
+                "  }",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void DatabaseBlockchainCache::insertPaymentId(BlockchainWriteBatch& batch, const Crypto::Hash& transactionHash, const Crypto::Hash& paymentId) {",
+          "parameters": {
+            "text": [
+                "void DatabaseBlockchainCache::insertInputOutputKey(BlockchainWriteBatch& batch, Crypto::KeyImage inputKey, Crypto::PublicKey outputKey) {",
+                "  BlockchainReadBatch readBatch;",
+                "  uint32_t count = 0;",
+                "",
+                "  auto readResult = readDatabase(readBatch.requestInputCountByOutputKey(outputKey));",
+                "  if (readResult.getInputCountByOutputKeys().count(outputKey) != 0) {",
+                "    count = readResult.getInputCountByOutputKeys().at(outputKey);",
+                "  }",
+                "",
+                "  count += 1;",
+                "",
+                "  batch.insertInputOutputKey(inputKey, outputKey, count);",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t requestPaymentIdTransactionsCount(IDataBase& database, const Crypto::Hash& paymentId) {",
+          "parameters": {
+            "text": [
+                "size_t requestOutputKeyInputsCount(IDataBase& database, const Crypto::PublicKey& outputKey) {",
+                "  auto batch = BlockchainReadBatch().requestInputCountByOutputKey(outputKey);",
+                "  auto error = database.read(batch);",
+                "  if (error) {",
+                "    throw std::system_error(error, \"Error while reading inputs count by output key\");",
+                "  }",
+                "",
+                "  auto result = batch.extractResult();",
+                "  if (result.getInputCountByOutputKeys().count(outputKey) == 0) {",
+                "    return 0;",
+                "  }",
+                "",
+                "  return result.getInputCountByOutputKeys().at(outputKey);",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "requestDeletePaymentIds(writeBatch, deletingTransactionHashes);",
+          "parameters": {
+            "text": [
+                "requestDeleteOutputKeys(writeBatch, deletingTransactionHashes);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void DatabaseBlockchainCache::requestDeletePaymentIds(BlockchainWriteBatch& writeBatch, const std::vector<Crypto::Hash>& transactionHashes) {",
+          "parameters": {
+            "text": [
+                "void DatabaseBlockchainCache::requestDeleteOutputKeys(BlockchainWriteBatch& writeBatch, const std::vector<Crypto::Hash>& transactionHashes) {",
+                "  std::unordered_map<Crypto::PublicKey, size_t> outputCounts;",
+                "",
+                "  std::vector<Crypto::Hash> tx_ids;",
+                "  tx_ids = std::move(transactionHashes);",
+                "",
+                "  std::vector<Crypto::Hash> missed_txs;",
+                "  std::vector<BinaryArray> txs;",
+                "  getRawTransactions(tx_ids, txs, missed_txs);",
+                "",
+                "  for (const auto& tx_raw: txs) {",
+                "    Transaction transaction;",
+                "    if (!fromBinaryArray(transaction, tx_raw)) {",
+                "      throw std::runtime_error(\"Couldn't deserialize transaction\");",
+                "    }",
+                "    for (const auto& input : transaction.inputs) {",
+                "      if (input.type() == typeid(KeyInput)) {",
+                "        const KeyInput& in = boost::get<KeyInput>(input);",
+                "        std::vector<Crypto::PublicKey> outputKeys;",
+                "        assert(!in.outputIndexes.empty());",
+                "",
+                "        std::vector<uint32_t> globalIndexes(in.outputIndexes.size());",
+                "        globalIndexes[0] = in.outputIndexes[0];",
+                "        for (size_t i = 1; i < in.outputIndexes.size(); ++i) {",
+                "          globalIndexes[i] = globalIndexes[i - 1] + in.outputIndexes[i];",
+                "        }",
+                "",
+                "        auto result = extractKeyOutputKeys(in.amount, getTopBlockIndex(), {globalIndexes.data(), globalIndexes.size()}, outputKeys);",
+                "        for (const Crypto::PublicKey& outputKey : outputKeys) {",
+                "          outputCounts[outputKey] += 1;",
+                "        }",
+                "      }",
+                "    }",
+                "  }",
+                "",
+                "  for (const auto& kv: outputCounts) {",
+                "    requestDeleteOutputKey(writeBatch, kv.first, kv.second);",
+                "  }",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void DatabaseBlockchainCache::requestDeletePaymentId(BlockchainWriteBatch& writeBatch, const Crypto::Hash& paymentId, size_t toDelete) {",
+          "parameters": {
+            "text": [
+                "void DatabaseBlockchainCache::requestDeleteOutputKey(BlockchainWriteBatch& writeBatch, const Crypto::PublicKey& outputKey, size_t toDelete) {",
+                "  size_t count = requestOutputKeyInputsCount(database, outputKey);",
+                "  assert(count > 0);",
+                "  assert(count >= toDelete);",
+                "",
+                "  logger(Logging::DEBUGGING) << \"Deleting last \" << toDelete << \" inputs of output key \" << outputKey;",
+                "  writeBatch.removeInputOutputKey(outputKey, static_cast<uint32_t>(count - toDelete));",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "std::vector<Crypto::Hash> DatabaseBlockchainCache::getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const {",
+          "parameters": {
+            "text": [
+                "std::vector<Crypto::KeyImage> DatabaseBlockchainCache::getInputsByOutputKey(const Crypto::PublicKey& outputKey) const {",
+                "  auto countBatch = BlockchainReadBatch().requestInputCountByOutputKey(outputKey);",
+                "  uint32_t inputCountByOutputKey = readDatabase(countBatch).getInputCountByOutputKeys().at(outputKey);",
+                "",
+                "  BlockchainReadBatch inputBatch;",
+                "  for (uint32_t i = 0; i < inputCountByOutputKey; ++i) {",
+                "    inputBatch.requestInputByOutputKey(outputKey, i);",
+                "  }",
+                "",
+                "  auto result = readDatabase(inputBatch);",
+                "  std::vector<Crypto::KeyImage> inputs;",
+                "  inputs.reserve(result.getInputsByOutputKeys().size());",
+                "  for(const auto& kv: result.getInputsByOutputKeys()) {",
+                "    inputs.emplace_back(kv.second);",
+                "  }",
+                "",
+                "  return inputs;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const override;",
+          "parameters": {
+            "text": [
+              "  virtual std::vector<Crypto::KeyImage> getInputsByOutputKey(const Crypto::PublicKey& outputKey) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::vector<Crypto::Hash> BlockchainCache::getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const {",
+          "parameters": {
+            "text": [
+                "std::vector<Crypto::KeyImage> BlockchainCache::getInputsByOutputKey(const Crypto::PublicKey& outputKey) const {",
+                "  std::vector<Crypto::KeyImage> inputs;",
+                "",
+                "  if (parent != nullptr) {",
+                "    auto inputs_tmp = parent->getInputsByOutputKey(outputKey);",
+                "    inputs.reserve(inputs_tmp.size());",
+                "    std::copy(inputs_tmp.begin(), inputs_tmp.end(), std::back_inserter(inputs));",
+                "  }",
+                "",
+                "  logger(Logging::DEBUGGING) << \"Found \" << inputs.size() << \" inputs with output key \" << outputKey;",
+                "  return inputs;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/IBlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const = 0;",
+          "parameters": {
+            "text": [
+              "  virtual std::vector<Crypto::KeyImage> getInputsByOutputKey(const Crypto::PublicKey& outputKey) const = 0;"
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "path": "/tests/UnitTests/ICoreStub.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const override { return {}; }",
+          "parameters": {
+            "text": [
+                "  virtual std::vector<Crypto::KeyImage> getInputsByOutputKey(const Crypto::PublicKey& outputKey) const override { return {}; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/ICore.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const = 0;",
+          "parameters": {
+            "text": [
+                "virtual std::vector<Crypto::KeyImage> getInputsByOutputKey(const Crypto::PublicKey& outputKey) const = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<Crypto::Hash> getTransactionHashesByPaymentId(const Crypto::Hash& paymentId) const override;",
+          "parameters": {
+            "text": [
+                "virtual std::vector<Crypto::KeyImage> getInputsByOutputKey(const Crypto::PublicKey& outputKey) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::vector<Crypto::Hash> Core::getTransactionHashesByPaymentId(const Hash& paymentId) const {",
+          "parameters": {
+            "text": [
+                "std::vector<Crypto::KeyImage> Core::getInputsByOutputKey(const Crypto::PublicKey& outputKey) const {",
+                "  throwIfNotInitialized();",
+                "",
+                "  logger(Logging::DEBUGGING) << \"getInputsByOutputKey request with outputKey \" << outputKey;",
+                "",
+                "  auto mainChain = chainsLeaves[0];",
+                "",
+                "  std::vector<Crypto::KeyImage> inputs = mainChain->getInputsByOutputKey(outputKey);",
+                "",
+                "  return inputs;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "struct COMMAND_RPC_GET_LAST_BLOCK_HEADER {",
+          "parameters": {
+            "text": [
+              "struct f_inputs_by_output_response {",
+              "  std::vector<std::string> inputs;",
+              "  std::string output;",
+              "",
+              "  void serialize(ISerializer &s) {",
+              "    KV_MEMBER(inputs)",
+              "    KV_MEMBER(output)",
+              "  }",
+              "};",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "struct COMMAND_RPC_QUERY_BLOCKS {",
+          "parameters": {
+            "text": [
+              "struct F_COMMAND_RPC_GET_INPUTS_BY_OUTPUTS {",
+              "  struct request {",
+              "    std::vector<std::string> outputs;",
+              "",
+              "    void serialize(ISerializer &s) {",
+              "      KV_MEMBER(outputs)",
+              "    }",
+              "  };",
+              "",
+              "  struct response {",
+              "    std::vector<f_inputs_by_output_response> inputs_by_outputs;",
+              "    std::string status;",
+              "",
+              "    void serialize(ISerializer &s) {",
+              "      KV_MEMBER(inputs_by_outputs)",
+              "      KV_MEMBER(status)",
+              "    }",
+              "  };",
+              "};"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "Logging::LoggerRef logger;",
+          "parameters": {
+            "text": [
+              "  bool f_on_inputs_by_outputs_json(const F_COMMAND_RPC_GET_INPUTS_BY_OUTPUTS::request& req, F_COMMAND_RPC_GET_INPUTS_BY_OUTPUTS::response& res);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "{ \"getblockcount\", { makeMemberMethod(&RpcServer::on_getblockcount), true } },",
+          "parameters": {
+            "text": [
+              "      { \"f_inputs_by_outputs_json\", { makeMemberMethod(&RpcServer::f_on_inputs_by_outputs_json), false } },"
+            ]
+          }
+        },
+
+        {
+          "action": "add_above",
+          "marker": "bool RpcServer::on_getblockcount(const COMMAND_RPC_GETBLOCKCOUNT::request& req, COMMAND_RPC_GETBLOCKCOUNT::response& res) {",
+          "parameters": {
+            "text": [
+              "bool RpcServer::f_on_inputs_by_outputs_json(const F_COMMAND_RPC_GET_INPUTS_BY_OUTPUTS::request& req, F_COMMAND_RPC_GET_INPUTS_BY_OUTPUTS::response& res) {",
+              "  for(const auto& output_str: req.outputs) {",
+              "    Hash hash;",
+              "",
+              "    if (!parse_hash256(output_str, hash)) {",
+              "      throw JsonRpc::JsonRpcError{",
+              "        CORE_RPC_ERROR_CODE_WRONG_PARAM,",
+              "        \"Failed to parse hex representation of output key. Hex = \" + output_str + '.' };",
+              "    }",
+              "    auto outputKey = *((PublicKey *) &hash);",
+              "",
+              "    auto inputs_by_outputKey = m_core.getInputsByOutputKey(outputKey);",
+              "",
+              "    f_inputs_by_output_response inputs_by_output_entity;",
+              "    inputs_by_output_entity.output = output_str;",
+              "    for(const auto& input: inputs_by_outputKey) {",
+              "      inputs_by_output_entity.inputs.push_back(Common::podToHex(input));",
+              "    }",
+              "    res.inputs_by_outputs.push_back(inputs_by_output_entity);",
+              "  }",
+              "",
+              "  res.status = CORE_RPC_STATUS_OK;",
+              "  return true;",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
