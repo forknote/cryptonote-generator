@@ -463,16 +463,6 @@
               "  bool added = transfers.addTransaction(trackingMode, blockInfo, tx, transfersList);"
             ]
           }
-        },
-        {
-          "action": "replace",
-          "marker": "SpentOutputDescriptor descriptor(&keyImage);",
-          "parameters": {
-            "text": [
-              "        SpentOutputDescriptor descriptor(&keyImage);",
-              "        SpentOutputDescriptor descriptor(input.amount, *j, trackingMode);"
-            ]
-          }
         }
       ]
     }
