@@ -330,7 +330,7 @@
               "  res.block.reward = block_header.reward;",
               "  res.block.sizeMedian = blkDetails.sizeMedian;",
               "  res.block.blockSize = blkDetails.blockSize;",
-              "  res.block.orphan_status = !(blkDetails.isAlternative);",
+              "  res.block.orphan_status = blkDetails.isAlternative;",
               "",
               "  uint64_t maxReward = 0;",
               "  uint64_t currentReward = 0;",

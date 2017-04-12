@@ -12,7 +12,7 @@
     "versionized-parameters.json",
     "zawy-difficulty-algorithm.json",
     "blockchain-explorer.json",
-    "input-keys-output-key.json",
+    "walletd-spent-transfers-tracking-mode.json",
     "enable-cors.json",
     "fee-address.json",
     "multiply.json",

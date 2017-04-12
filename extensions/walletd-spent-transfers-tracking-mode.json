@@ -1,0 +1,480 @@
+{
+  "file": "walletd-spent-transfers-tracking-mode.json",
+  "description": "Adds 'spent transfers' list in walletd in tracking mode",
+  "required": [
+  ],
+  "files": [
+    {
+      "path": "/src/Transfers/TransfersContainer.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "  > SpentTransfersMultiIndex;",
+          "parameters": {
+            "text": [
+                "  typedef boost::multi_index_container<",
+                "    SpentTransactionOutput,",
+                "    boost::multi_index::indexed_by<",
+                "      boost::multi_index::hashed_unique<",
+                "        boost::multi_index::tag<SpentOutputDescriptorIndex>,",
+                "        boost::multi_index::const_mem_fun<",
+                "          TransactionOutputInformationEx,",
+                "          SpentOutputDescriptor,",
+                "          &TransactionOutputInformationEx::getSpentOutputDescriptor>,",
+                "        SpentOutputDescriptorHasher",
+                "      >,",
+                "      boost::multi_index::hashed_non_unique<",
+                "        boost::multi_index::tag<ContainingTransactionIndex>,",
+                "        boost::multi_index::const_mem_fun<",
+                "          TransactionOutputInformationEx,",
+                "          const Crypto::Hash&,",
+                "          &SpentTransactionOutput::getTransactionHash>",
+                "      >,",
+                "      boost::multi_index::hashed_non_unique <",
+                "        boost::multi_index::tag<SpendingTransactionIndex>,",
+                "        boost::multi_index::const_mem_fun <",
+                "          SpentTransactionOutput,",
+                "          const Crypto::Hash&,",
+                "          &SpentTransactionOutput::getSpendingTransactionHash>",
+                "      >",
+                "    >",
+                "  > TrackingModeSpentTransfersMultiIndex;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "SpentOutputDescriptor(const TransactionOutputInformationIn& transactionInfo);",
+          "parameters": {
+            "text": [
+              "SpentOutputDescriptor(const TransactionOutputInformationIn& transactionInfo, bool trackingMode);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "SpentTransfersMultiIndex m_spentTransfers;",
+          "parameters": {
+            "text": [
+              "  TrackingModeSpentTransfersMultiIndex m_trackingModeSpentTransfers;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "  bool markTransactionConfirmed(const TransactionBlockInfo& block, const Crypto::Hash& transactionHash, const std::vector<uint32_t>& globalIndices);",
+          "parameters": {
+            "text": [
+              "  bool markTransactionConfirmed(const bool trackingMode, const TransactionBlockInfo& block, const Crypto::Hash& transactionHash, const std::vector<uint32_t>& globalIndices);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "  bool addTransaction(const TransactionBlockInfo& block, const ITransactionReader& tx, const std::vector<TransactionOutputInformationIn>& transfers);",
+          "parameters": {
+            "text": [
+              "  bool addTransaction(const bool trackingMode, const TransactionBlockInfo& block, const ITransactionReader& tx, const std::vector<TransactionOutputInformationIn>& transfers);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool addTransactionOutputs(const TransactionBlockInfo& block, const ITransactionReader& tx,",
+          "parameters": {
+            "text": [
+              "    bool addTransactionOutputs(const bool trackingMode, const TransactionBlockInfo& block, const ITransactionReader& tx,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "  bool deleteUnconfirmedTransaction(const Crypto::Hash& transactionHash);",
+          "parameters": {
+            "text": [
+              "  bool addTransactionTrackingModeInputs(const TransactionBlockInfo& block, const ITransactionReader& tx);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "TransactionTypes::OutputType m_type;",
+          "parameters": {
+            "text": [
+              "  bool m_trackingMode;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex);",
+          "parameters": {
+            "text": [
+              "  SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void assign(uint64_t amount, uint32_t globalOutputIndex);",
+          "parameters": {
+            "text": [
+              "  void assign(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "SpentOutputDescriptor getSpentOutputDescriptor() const { return SpentOutputDescriptor(*this); }",
+          "parameters": {
+            "text": [
+              "  SpentOutputDescriptor getSpentOutputDescriptor() const { return SpentOutputDescriptor(*this, trackingMode); }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void copyToSpent(const TransactionBlockInfo& block, const ITransactionReader& tx, size_t inputIndex, const TransactionOutputInformationEx& output);",
+          "parameters": {
+            "text": [
+              "  void trackingModeCopyToSpent(const TransactionBlockInfo& block, const ITransactionReader& tx, size_t inputIndex, const TransactionOutputInformationEx& output);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "uint64_t unlockTime;",
+          "parameters": {
+            "text": [
+              "  bool trackingMode;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Transfers/TransfersContainer.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "static_assert(sizeof(size_t) < sizeof(*m_keyImage), \"sizeof(size_t) < sizeof(*m_keyImage)\");",
+          "parameters": {
+            "text": [
+                "    if (m_trackingMode == 1) {",
+                "      size_t hashValue = boost::hash_value(m_amount);",
+                "      boost::hash_combine(hashValue, m_globalOutputIndex);",
+                "      return hashValue;",
+                "    } else {",
+                "      static_assert(sizeof(size_t) < sizeof(*m_keyImage), \"sizeof(size_t) < sizeof(*m_keyImage)\");"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return *reinterpret_cast<const size_t*>(m_keyImage->data);",
+          "parameters": {
+            "text": [
+                "      return *reinterpret_cast<const size_t*>(m_keyImage->data);",
+                "    }"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "m_keyImage = &transactionInfo.keyImage;",
+          "parameters": {
+            "text": [
+                "    if (m_trackingMode == 1) {",
+                "      m_amount = transactionInfo.amount;",
+                "      m_globalOutputIndex = transactionInfo.globalOutputIndex;",
+                "    } else {",
+                "      m_keyImage = &transactionInfo.keyImage;",
+                "    }"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return other.m_type == m_type && *other.m_keyImage == *m_keyImage;",
+          "parameters": {
+            "text": [
+                "    if (m_trackingMode == 1) {",
+                "      return other.m_type == m_type && other.m_amount == m_amount && other.m_globalOutputIndex == m_globalOutputIndex;",
+                "    } else {",
+                "      return other.m_type == m_type && *other.m_keyImage == *m_keyImage;",
+                "    }"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "SpentOutputDescriptor::SpentOutputDescriptor(const TransactionOutputInformationIn& transactionInfo) :",
+          "parameters": {
+            "text": [
+                "SpentOutputDescriptor::SpentOutputDescriptor(const TransactionOutputInformationIn& transactionInfo, bool trackingMode) :",
+                "    m_trackingMode(trackingMode),"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "void SpentOutputDescriptor::assign(const KeyImage* keyImage) {",
+          "parameters": {
+            "text": [
+                "  m_trackingMode = 0;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "SpentOutputDescriptor::SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex) {",
+          "parameters": {
+            "text": [
+                "SpentOutputDescriptor::SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode) {",
+                "  assign(amount, globalOutputIndex, trackingMode);",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void SpentOutputDescriptor::assign(uint64_t amount, uint32_t globalOutputIndex) {",
+          "parameters": {
+            "text": [
+                "void SpentOutputDescriptor::assign(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode) {",
+                "  m_trackingMode = trackingMode;",
+                "  if (m_trackingMode) {",
+                "    m_type = TransactionTypes::OutputType::Key;",
+                "  } else {",
+                "    m_type = TransactionTypes::OutputType::Multisignature;",
+                "  }",
+                "  m_amount = amount;",
+                "  m_globalOutputIndex = globalOutputIndex;",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool TransfersContainer::addTransactionOutputs(const TransactionBlockInfo& block, const ITransactionReader& tx,",
+          "parameters": {
+            "text": [
+              "bool TransfersContainer::addTransactionOutputs(bool trackingMode, const TransactionBlockInfo& block, const ITransactionReader& tx,"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "TransactionOutputInformationEx info;",
+          "parameters": {
+            "text": [
+              "    info.trackingMode = trackingMode;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool added = addTransactionOutputs(block, tx, transfers);",
+          "parameters": {
+            "text": [
+              "      bool added = addTransactionOutputs(trackingMode, block, tx, transfers);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "added |= addTransactionInputs(block, tx);",
+          "parameters": {
+            "text": [
+              "      if (trackingMode) {",
+              "// not sure if has to be 'added'",
+              "        added |= addTransactionTrackingModeInputs(block, tx);",
+              "      } else {",
+              "        added |= addTransactionInputs(block, tx);",
+              "      }"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "SpentOutputDescriptor descriptor(transfer);",
+          "parameters": {
+            "text": [
+              "    SpentOutputDescriptor descriptor(transfer, trackingMode);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "SpentTransfersMultiIndex spentTransfers;",
+          "parameters": {
+            "text": [
+              "  TrackingModeSpentTransfersMultiIndex trackingModeSpentTransfers;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "readSequence<SpentTransactionOutput>(std::inserter(spentTransfers, spentTransfers.end()), \"spentTransfers\", s);",
+          "parameters": {
+            "text": [
+              "  readSequence<SpentTransactionOutput>(std::inserter(trackingModeSpentTransfers, trackingModeSpentTransfers.end()), \"trackingModeSpentTransfers\", s);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "m_spentTransfers = std::move(spentTransfers);",
+          "parameters": {
+            "text": [
+              "  m_trackingModeSpentTransfers = std::move(trackingModeSpentTransfers);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool TransfersContainer::addTransaction(const TransactionBlockInfo& block, const ITransactionReader& tx,",
+          "parameters": {
+            "text": [
+              "bool TransfersContainer::addTransaction(const TransactionBlockInfo& block, const ITransactionReader& tx,",
+              "  const std::vector<TransactionOutputInformationIn>& transfers) {",
+              "  return addTransaction(0, block, tx, transfers);",
+              "}",
+              "",
+              "bool TransfersContainer::addTransaction(const bool trackingMode, const TransactionBlockInfo& block, const ITransactionReader& tx,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool TransfersContainer::markTransactionConfirmed(const TransactionBlockInfo& block, const Hash& transactionHash,",
+          "parameters": {
+            "text": [
+              "bool TransfersContainer::markTransactionConfirmed(const TransactionBlockInfo& block, const Hash& transactionHash,",
+              "                                                  const std::vector<uint32_t>& globalIndices) {",
+              "  return markTransactionConfirmed(0, block, transactionHash, globalIndices);",
+              "}",
+              "",
+              "bool TransfersContainer::markTransactionConfirmed(const bool trackingMode, const TransactionBlockInfo& block, const Hash& transactionHash,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "std::vector<Hash> TransfersContainer::detach(uint32_t height) {",
+          "parameters": {
+            "text": [
+                "void TransfersContainer::trackingModeCopyToSpent(const TransactionBlockInfo& block, const ITransactionReader& tx, size_t inputIndex,",
+                "                                     const TransactionOutputInformationEx& output) {",
+                "  assert(output.blockHeight != WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT);",
+                "  assert(output.globalOutputIndex != UNCONFIRMED_TRANSACTION_GLOBAL_OUTPUT_INDEX);",
+                "",
+                "  SpentTransactionOutput spentOutput;",
+                "  static_cast<TransactionOutputInformationEx&>(spentOutput) = output;",
+                "  spentOutput.spendingBlock = block;",
+                "  spentOutput.spendingTransactionHash = tx.getTransactionHash();",
+                "  spentOutput.inputInTransaction = static_cast<uint32_t>(inputIndex);",
+                "  auto result = m_trackingModeSpentTransfers.emplace(std::move(spentOutput));",
+                "  (void)result; // Disable unused warning",
+                "  assert(result.second);",
+                "}",
+                ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool TransfersContainer::deleteUnconfirmedTransaction(const Hash& transactionHash) {",
+          "parameters": {
+            "text": [
+                "bool TransfersContainer::addTransactionTrackingModeInputs(const TransactionBlockInfo& block, const ITransactionReader& tx) {",
+                "  bool trackingMode = 1;",
+                "  bool inputsAdded = false;",
+                "  for (size_t i = 0; i < tx.getInputCount(); ++i) {",
+                "    auto inputType = tx.getInputType(i);",
+                "",
+                "    if (inputType == TransactionTypes::InputType::Key) {",
+                "      KeyInput input;",
+                "      tx.getInput(i, input);",
+                "",
+
+                "      for (auto j = input.outputIndexes.begin(); j != input.outputIndexes.end(); ++j) {",
+                "        SpentOutputDescriptor descriptor(input.amount, *j, trackingMode);",
+                "        auto availableRange = m_availableTransfers.get<SpentOutputDescriptorIndex>().equal_range(descriptor);",
+                "        auto unconfirmedRange = m_unconfirmedTransfers.get<SpentOutputDescriptorIndex>().equal_range(descriptor);",
+                "        size_t availableCount = std::distance(availableRange.first, availableRange.second);",
+                "        size_t unconfirmedCount = std::distance(unconfirmedRange.first, unconfirmedRange.second);",
+                "",
+                "        if (availableCount == 0) {",
+                "          if (unconfirmedCount > 0) {",
+                "            auto message = \"Failed to add key input: spend output of unconfirmed transaction\";",
+                "            m_logger(ERROR, BRIGHT_RED) << message << \", key image \" << input.keyImage;",
+                "            throw std::runtime_error(message);",
+                "          } else {",
+                "            // This input doesn't spend any transfer from this container",
+                "            continue;",
+                "          }",
+                "        }",
+                "",
+                "        auto& outputDescriptorIndex = m_availableTransfers.get<SpentOutputDescriptorIndex>();",
+                "        auto availableOutputsRange = outputDescriptorIndex.equal_range(SpentOutputDescriptor(input.amount, *j, trackingMode));",
+                "",
+                "        auto iteratorList = createTransferIteratorList(availableOutputsRange);",
+                "        iteratorList.sort();",
+                "        auto spendingTransferIt = iteratorList.findFirstByAmount(input.amount);",
+                "",
+                "        if (spendingTransferIt == availableOutputsRange.second) {",
+                "          auto message = \"Failed to add key input: invalid amount\";",
+                "          m_logger(ERROR, BRIGHT_RED) << message << \", key image \" << input.keyImage << \", amount \" << m_currency.formatAmount(input.amount);",
+                "          throw std::runtime_error(message);",
+                "        }",
+                "",
+                "        assert(spendingTransferIt->keyImage == input.keyImage);",
+                "        trackingModeCopyToSpent(block, tx, i, *spendingTransferIt);",
+                "",
+                "        inputsAdded = true;",
+                "      }",
+                "    } else if (inputType == TransactionTypes::InputType::Multisignature) {",
+                "      MultisignatureInput input;",
+                "      tx.getInput(i, input);",
+                "    } else {",
+                "      assert(inputType == TransactionTypes::InputType::Generating);",
+                "    }",
+                "  }",
+                "",
+                "  return inputsAdded;",
+                "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Transfers/TransfersSubscription.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "bool added = transfers.addTransaction(blockInfo, tx, transfersList);",
+          "parameters": {
+            "text": [
+              "  bool trackingMode = subscription.keys.spendSecretKey == NULL_SECRET_KEY;",
+              "  bool added = transfers.addTransaction(trackingMode, blockInfo, tx, transfersList);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "SpentOutputDescriptor descriptor(&keyImage);",
+          "parameters": {
+            "text": [
+              "        SpentOutputDescriptor descriptor(&keyImage);",
+              "        SpentOutputDescriptor descriptor(input.amount, *j, trackingMode);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

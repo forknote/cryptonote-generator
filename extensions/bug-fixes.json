@@ -6,6 +6,20 @@
   ],
   "files": [
     {
+      "path": "/src/Platform/OSX/System/Context.c",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "#include \"context.h\"",
+          "parameters": {
+            "text": [
+              "#include \"Context.h\""
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/PaymentGate/WalletService.cpp",
       "changes": [
         {
@@ -195,6 +209,64 @@
           "parameters": {
             "text": [
               "  //m_consoleHandler.setHandler(\"stop_mining\", boost::bind(&simple_wallet::stop_mining, this, _1), \"Stop mining in daemon\");"
+            ]
+          }
+        }
+      ]
+    },
+    
+    {
+      "path": "/src/Wallet/WalletGreen.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint64_t m_upperTransactionSizeLimit;",
+          "parameters": {
+            "text": [
+              "  uint32_t m_totalBlockCount;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Wallet/WalletGreen.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "sub.syncStart.height = 0;",
+          "parameters": {
+            "text": [
+              "    sub.syncStart.height = m_totalBlockCount;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "void WalletGreen::onSynchronizationProgressUpdated(uint32_t processedBlockCount, uint32_t totalBlockCount) {",
+          "parameters": {
+            "text": [
+              "  m_totalBlockCount = totalBlockCount;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return doCreateAddress(spendPublicKey, spendSecretKey, 0);",
+          "parameters": {
+            "text": [
+              "  uint64_t creationTimestamp = static_cast<uint64_t>(time(nullptr));",
+              "  return doCreateAddress(spendPublicKey, spendSecretKey, creationTimestamp);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return doCreateAddress(spendPublicKey, NULL_SECRET_KEY, 0);",
+          "parameters": {
+            "text": [
+              "  uint64_t creationTimestamp = static_cast<uint64_t>(time(nullptr));",
+              "  return doCreateAddress(spendPublicKey, NULL_SECRET_KEY, creationTimestamp);"
             ]
           }
         }
