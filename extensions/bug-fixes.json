@@ -64,20 +64,6 @@
       ]
     },
     {
-      "path": "/src/CryptoNoteCore/Core.cpp",
-      "changes": [
-        {
-          "action": "replace",
-          "marker": "height = getTopBlockIndex() + 1;",
-          "parameters": {
-            "text": [
-              "  height = getTopBlockIndex() + 1; // remove +1"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/Rpc/RpcServer.cpp",
       "changes": [
         {
@@ -267,6 +253,111 @@
             "text": [
               "  uint64_t creationTimestamp = static_cast<uint64_t>(time(nullptr));",
               "  return doCreateAddress(spendPublicKey, NULL_SECRET_KEY, creationTimestamp);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/crypto.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "static void hash_data_to_ec(const uint8_t*, std::size_t, PublicKey&);",
+          "parameters": {
+            "text": [
+              "    static KeyImage scalarmultKey(const KeyImage & P, const KeyImage & a);",
+              "    friend KeyImage scalarmultKey(const KeyImage & P, const KeyImage & a);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "inline void hash_data_to_ec(const uint8_t* data, std::size_t len, PublicKey& key) {",
+          "parameters": {
+            "text": [
+              "  inline KeyImage scalarmultKey(const KeyImage & P, const KeyImage & a) {",
+              "    return crypto_ops::scalarmultKey(P, a);",
+              "  }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/crypto.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void crypto_ops::hash_data_to_ec(const uint8_t* data, std::size_t len, PublicKey& key) {",
+          "parameters": {
+            "text": [
+              "    KeyImage crypto_ops::scalarmultKey(const KeyImage & P, const KeyImage & a) {",
+              "        ge_p3 A;",
+              "        ge_p2 R;",
+              "// maybe use assert instead?",
+              "        ge_frombytes_vartime(&A, reinterpret_cast<const unsigned char*>(&P));",
+              "        ge_scalarmult(&R, reinterpret_cast<const unsigned char*>(&a), &A);",
+              "        KeyImage aP;",
+              "        ge_tobytes(reinterpret_cast<unsigned char*>(&aP), &R);",
+              "        return aP;",
+              "    }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/TransactionValidationErrors.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "INPUT_IDENTICAL_KEYIMAGES,",
+          "parameters": {
+            "text": [
+              "  INPUT_INVALID_DOMAIN_KEYIMAGES,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "case TransactionValidationError::INPUT_IDENTICAL_KEYIMAGES:",
+          "parameters": {
+            "text": [
+              "      case TransactionValidationError::INPUT_INVALID_DOMAIN_KEYIMAGES: return \"Transaction uses key image not in the valid domain\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "uint64_t summaryInputAmount = 0;",
+          "parameters": {
+            "text": [
+              "    // parameters used for the additional key_image check",
+              "    static const Crypto::KeyImage Z = { {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } };",
+              "    static const Crypto::KeyImage I = { {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } };",
+              "    static const Crypto::KeyImage L = { {0xed, 0xd3, 0xf5, 0x5c, 0x1a, 0x63, 0x12, 0x58, 0xd6, 0x9c, 0xf7, 0xa2, 0xde, 0xf9, 0xde, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10 } };",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (std::find(++std::begin(in.outputIndexes), std::end(in.outputIndexes), 0) != std::end(in.outputIndexes)) {",
+          "parameters": {
+            "text": [
+              "  // Fix discovered by Monero Lab and suggested by \"fluffypony\" (bitcointalk.org)",
+              "  if (!(scalarmultKey(in.keyImage, L) == I)) {",
+              "    return error::TransactionValidationError::INPUT_INVALID_DOMAIN_KEYIMAGES;",
+              "  }",
+              ""
             ]
           }
         }

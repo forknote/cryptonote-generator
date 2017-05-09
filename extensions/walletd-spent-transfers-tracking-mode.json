@@ -465,6 +465,33 @@
           }
         }
       ]
+    },
+
+
+    {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "struct TransferRpcInfo {",
+          "parameters": {
+            "text": [
+                "struct TransferRpcSpentOutput {",
+                "  uint64_t amount;",
+                "  std::string key_image;",
+                "  std::string tx_pub_key;",
+                "  uint64_t out_index;",
+                "  uint64_t mixin;",
+                "",
+                "  void serialize(CryptoNote::ISerializer& serializer);",
+                "};",
+                "",
+                "struct TransferRpcInfo {",
+                "  std::vector<TransferRpcSpentOutput> spentOutputs;"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

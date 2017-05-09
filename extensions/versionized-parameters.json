@@ -318,23 +318,6 @@
         }
       ]
     },
-
-
-    {
-      "path": "/src/CryptoNoteCore/Core.cpp",
-      "changes": [
-        {
-          "action": "add_below",
-          "marker": "b.majorVersion = getBlockMajorVersionForHeight(height);",
-          "parameters": {
-            "text": [
-              "  b.majorVersion = getBlockMajorVersionForHeight(height - 1);"
-            ]
-          }
-        }
-      ]
-    },
-
     {
       "path": "/src/CryptoNoteCore/BlockchainCache.cpp",
       "changes": [
