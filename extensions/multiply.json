@@ -30,8 +30,10 @@
           "marker": "size_t m_blockGrantedFullRewardZone;",
           "parameters": {
             "text": [
+              "  uint64_t m_expectedNumberOfBlocksPerDay;",
               "  size_t m_blockGrantedFullRewardZoneV1;",
-              "  size_t m_blockGrantedFullRewardZoneV2;"
+              "  size_t m_blockGrantedFullRewardZoneV2;",
+              "  size_t m_keyImageCheckingBlockIndex;"
             ]
           }
         },
@@ -40,8 +42,10 @@
           "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val) { m_currency.m_blockGrantedFullRewardZone = val; return *this; }",
           "parameters": {
             "text": [
+              "  CurrencyBuilder& expectedNumberOfBlocksPerDay(uint64_t val) { m_currency.m_expectedNumberOfBlocksPerDay = val; return *this; }",
               "  CurrencyBuilder& blockGrantedFullRewardZoneV1(size_t val) { m_currency.m_blockGrantedFullRewardZoneV1 = val; return *this; }",
-              "  CurrencyBuilder& blockGrantedFullRewardZoneV2(size_t val) { m_currency.m_blockGrantedFullRewardZoneV2 = val; return *this; }"
+              "  CurrencyBuilder& blockGrantedFullRewardZoneV2(size_t val) { m_currency.m_blockGrantedFullRewardZoneV2 = val; return *this; }",
+              "  CurrencyBuilder& keyImageCheckingBlockIndex(size_t val) { m_currency.m_keyImageCheckingBlockIndex = val; return *this; }"
             ]
           }
         },
@@ -50,8 +54,10 @@
           "marker": "size_t blockGrantedFullRewardZone()",
           "parameters": {
             "text": [
+              "  uint64_t expectedNumberOfBlocksPerDay() const { return m_expectedNumberOfBlocksPerDay; }",
               "  size_t blockGrantedFullRewardZoneV1() const { return m_blockGrantedFullRewardZoneV1; }",
-              "  size_t blockGrantedFullRewardZoneV2() const { return m_blockGrantedFullRewardZoneV2; }"
+              "  size_t blockGrantedFullRewardZoneV2() const { return m_blockGrantedFullRewardZoneV2; }",
+              "  size_t keyImageCheckingBlockIndex() const { return m_keyImageCheckingBlockIndex; }"
             ]
           }
         }
@@ -83,13 +89,32 @@
           "marker": "m_blockGrantedFullRewardZone(currency.m_blockGrantedFullRewardZone),",
           "parameters": {
             "text": [
+              "m_expectedNumberOfBlocksPerDay(currency.m_expectedNumberOfBlocksPerDay),",
               "m_blockGrantedFullRewardZoneV1(currency.m_blockGrantedFullRewardZoneV1),",
-              "m_blockGrantedFullRewardZoneV2(currency.m_blockGrantedFullRewardZoneV2),"
+              "m_blockGrantedFullRewardZoneV2(currency.m_blockGrantedFullRewardZoneV2),",
+              "m_keyImageCheckingBlockIndex(currency.m_keyImageCheckingBlockIndex),"
             ]
           }
         }
       ]
     },
+
+
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "blockIndex > parameters::KEY_IMAGE_CHECKING_BLOCK_INDEX)) {",
+          "parameters": {
+            "text": [
+              "                                          blockIndex > currency.keyImageCheckingBlockIndex())) {"
+            ]
+          }
+        }
+      ]
+    },
+
     {
       "path": "/src/Daemon/Daemon.cpp",
       "changes": [
@@ -141,6 +166,7 @@
               "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_KEY_IMAGE_CHECKING_BLOCK_INDEX  = {\"KEY_IMAGE_CHECKING_BLOCK_INDEX\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
@@ -170,6 +196,7 @@
               "    command_line::add_arg(desc_cmd_sett, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
               "    command_line::add_arg(desc_cmd_sett, arg_UPGRADE_HEIGHT_V2);",
               "    command_line::add_arg(desc_cmd_sett, arg_UPGRADE_HEIGHT_V3);",
+              "    command_line::add_arg(desc_cmd_sett, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX);",
               "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_WINDOW);",
               "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT);",
               "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG);",
@@ -199,10 +226,12 @@
               "    currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
               "    if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
               "    {",
+              "      currencyBuilder.expectedNumberOfBlocksPerDay(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "      currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "      currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "      currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "    } else {",
+              "      currencyBuilder.expectedNumberOfBlocksPerDay(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
               "      currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
               "    }",
               "    currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
@@ -214,6 +243,10 @@
               "    if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
               "    {",
               "      currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
+              "    }",
+              "    if (command_line::has_arg(vm, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX) && command_line::get_arg(vm, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX) != 0)",
+              "    {",
+              "      currencyBuilder.keyImageCheckingBlockIndex(command_line::get_arg(vm, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX));",
               "    }",
               "    if (command_line::has_arg(vm, arg_DIFFICULTY_WINDOW) && command_line::get_arg(vm, arg_DIFFICULTY_WINDOW) != 0)",
               "    {",
@@ -420,6 +453,7 @@
               "  const command_line::arg_descriptor<uint64_t>    arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY  = {\"EXPECTED_NUMBER_OF_BLOCKS_PER_DAY\", \"uint64_t\"};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V2  = {\"UPGRADE_HEIGHT_V2\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<uint32_t>    arg_UPGRADE_HEIGHT_V3  = {\"UPGRADE_HEIGHT_V3\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_KEY_IMAGE_CHECKING_BLOCK_INDEX  = {\"KEY_IMAGE_CHECKING_BLOCK_INDEX\", \"uint32_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
@@ -448,10 +482,12 @@
               "  currencyBuilder.maxBlockSizeInitial(command_line::get_arg(vm, arg_MAX_BLOCK_SIZE_INITIAL));",
               "  if (command_line::has_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) && command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY) != 0)",
               "  {",
+              "    currencyBuilder.expectedNumberOfBlocksPerDay(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "    currencyBuilder.upgradeVotingWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "    currencyBuilder.upgradeWindow(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));",
               "  } else {",
+              "    currencyBuilder.expectedNumberOfBlocksPerDay(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
               "    currencyBuilder.difficultyWindow(24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
               "  }",
               "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / command_line::get_arg(vm, arg_DIFFICULTY_TARGET));",
@@ -463,6 +499,10 @@
               "  if (command_line::has_arg(vm, arg_UPGRADE_HEIGHT_V3) && command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3) != 0)",
               "  {",
               "    currencyBuilder.upgradeHeightV3(command_line::get_arg(vm, arg_UPGRADE_HEIGHT_V3));",
+              "  }",
+              "  if (command_line::has_arg(vm, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX) && command_line::get_arg(vm, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX) != 0)",
+              "  {",
+              "    currencyBuilder.keyImageCheckingBlockIndex(command_line::get_arg(vm, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX));",
               "  }",
               "  if (command_line::has_arg(vm, arg_DIFFICULTY_WINDOW) && command_line::get_arg(vm, arg_DIFFICULTY_WINDOW) != 0)",
               "  {",
@@ -506,6 +546,7 @@
               "  command_line::add_arg(desc_params, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
               "  command_line::add_arg(desc_params, arg_UPGRADE_HEIGHT_V2);",
               "  command_line::add_arg(desc_params, arg_UPGRADE_HEIGHT_V3);",
+              "  command_line::add_arg(desc_params, arg_KEY_IMAGE_CHECKING_BLOCK_INDEX);",
               "  command_line::add_arg(desc_params, arg_DIFFICULTY_WINDOW);",
               "  command_line::add_arg(desc_params, arg_DIFFICULTY_CUT);",
               "  command_line::add_arg(desc_params, arg_DIFFICULTY_LAG);",
@@ -890,10 +931,12 @@
               "  currencyBuilder.maxBlockSizeInitial(config.coinBaseConfig.MAX_BLOCK_SIZE_INITIAL);",
               "  if (config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY && config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY != 0)",
               "  {",
+              "    currencyBuilder.expectedNumberOfBlocksPerDay(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
               "    currencyBuilder.difficultyWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
               "    currencyBuilder.upgradeVotingWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
               "    currencyBuilder.upgradeWindow(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);",
               "  } else {",
+              "    currencyBuilder.expectedNumberOfBlocksPerDay(24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
               "    currencyBuilder.difficultyWindow(24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
               "  }",
               "  currencyBuilder.maxBlockSizeGrowthSpeedDenominator(365 * 24 * 60 * 60 / config.coinBaseConfig.DIFFICULTY_TARGET);",
@@ -905,6 +948,10 @@
               "  if (config.coinBaseConfig.UPGRADE_HEIGHT_V3 && config.coinBaseConfig.UPGRADE_HEIGHT_V3 != 0)",
               "  {",
               "    currencyBuilder.upgradeHeightV3(config.coinBaseConfig.UPGRADE_HEIGHT_V3);",
+              "  }",
+              "  if (config.coinBaseConfig.KEY_IMAGE_CHECKING_BLOCK_INDEX && config.coinBaseConfig.KEY_IMAGE_CHECKING_BLOCK_INDEX != 0)",
+              "  {",
+              "    currencyBuilder.keyImageCheckingBlockIndex(config.coinBaseConfig.KEY_IMAGE_CHECKING_BLOCK_INDEX);",
               "  }",
               "  if (config.coinBaseConfig.DIFFICULTY_WINDOW && config.coinBaseConfig.DIFFICULTY_WINDOW != 0)",
               "  {",

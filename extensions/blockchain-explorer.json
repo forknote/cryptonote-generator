@@ -466,8 +466,6 @@
               "    uint64_t amount_out = getOutputAmount(tx);",
               "",
               "    transaction_short.hash = Common::podToHex(getObjectHash(tx));",
-
-
               "    transaction_short.fee = amount_in - amount_out;",
               "    transaction_short.amount_out = amount_out;",
               "    transaction_short.size = getObjectBinarySize(tx);",

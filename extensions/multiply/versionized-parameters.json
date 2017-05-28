@@ -21,8 +21,7 @@
               "  size_t m_difficultyLagV1;",
               "  size_t m_difficultyLagV2;",
               "  size_t m_difficultyCutV1;",
-              "  size_t m_difficultyCutV2;",
-              "  uint64_t m_expectedNumberOfBlocksPerDay;"
+              "  size_t m_difficultyCutV2;"
             ]
           }
         },
@@ -36,8 +35,7 @@
               "  CurrencyBuilder& difficultyLagV1(size_t val) { m_currency.m_difficultyLagV1 = val; return *this; }",
               "  CurrencyBuilder& difficultyLagV2(size_t val) { m_currency.m_difficultyLagV2 = val; return *this; }",
               "  CurrencyBuilder& difficultyCutV1(size_t val) { m_currency.m_difficultyCutV1 = val; return *this; }",
-              "  CurrencyBuilder& difficultyCutV2(size_t val) { m_currency.m_difficultyCutV2 = val; return *this; }",
-              "  CurrencyBuilder& expectedNumberOfBlocksPerDay(uint64_t val) { m_currency.m_expectedNumberOfBlocksPerDay = val; return *this; }"
+              "  CurrencyBuilder& difficultyCutV2(size_t val) { m_currency.m_difficultyCutV2 = val; return *this; }"
             ]
           }
         },
@@ -51,8 +49,7 @@
               "  size_t difficultyLagV1() const { return m_difficultyLagV1; }",
               "  size_t difficultyLagV2() const { return m_difficultyLagV2; }",
               "  size_t difficultyCutV1() const { return m_difficultyCutV1; }",
-              "  size_t difficultyCutV2() const { return m_difficultyCutV2; }",
-              "  uint64_t expectedNumberOfBlocksPerDay() const { return m_expectedNumberOfBlocksPerDay; }"
+              "  size_t difficultyCutV2() const { return m_difficultyCutV2; }"
             ]
           }
         }
@@ -125,8 +122,7 @@
               "m_difficultyLagV1(currency.m_difficultyLagV1),",
               "m_difficultyLagV2(currency.m_difficultyLagV2),",
               "m_difficultyCutV1(currency.m_difficultyCutV1),",
-              "m_difficultyCutV2(currency.m_difficultyCutV2),",
-              "m_expectedNumberOfBlocksPerDay(currency.m_expectedNumberOfBlocksPerDay),"
+              "m_difficultyCutV2(currency.m_difficultyCutV2),"
             ]
           }
         }
@@ -199,8 +195,7 @@
               "  currencyBuilder.difficultyLagV1(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V1));",
               "  currencyBuilder.difficultyLagV2(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V2));",
               "  currencyBuilder.difficultyCutV1(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V1));",
-              "  currencyBuilder.difficultyCutV2(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V2));",
-              "  currencyBuilder.expectedNumberOfBlocksPerDay(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));"
+              "  currencyBuilder.difficultyCutV2(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V2));"
             ]
           }
         }
@@ -253,8 +248,7 @@
               "  currencyBuilder.difficultyLagV1(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V1));",
               "  currencyBuilder.difficultyLagV2(command_line::get_arg(vm, arg_DIFFICULTY_LAG_V2));",
               "  currencyBuilder.difficultyCutV1(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V1));",
-              "  currencyBuilder.difficultyCutV2(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V2));",
-              "  currencyBuilder.expectedNumberOfBlocksPerDay(command_line::get_arg(vm, arg_EXPECTED_NUMBER_OF_BLOCKS_PER_DAY));"
+              "  currencyBuilder.difficultyCutV2(command_line::get_arg(vm, arg_DIFFICULTY_CUT_V2));"
             ]
           }
         },
@@ -313,8 +307,7 @@
               "  currencyBuilder.difficultyLagV1(config.coinBaseConfig.DIFFICULTY_LAG_V1);",
               "  currencyBuilder.difficultyLagV2(config.coinBaseConfig.DIFFICULTY_LAG_V2);",
               "  currencyBuilder.difficultyCutV1(config.coinBaseConfig.DIFFICULTY_CUT_V1);",
-              "  currencyBuilder.difficultyCutV2(config.coinBaseConfig.DIFFICULTY_CUT_V2);",
-              "  currencyBuilder.expectedNumberOfBlocksPerDay(config.coinBaseConfig.EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);"
+              "  currencyBuilder.difficultyCutV2(config.coinBaseConfig.DIFFICULTY_CUT_V2);"
             ]
           }
         }

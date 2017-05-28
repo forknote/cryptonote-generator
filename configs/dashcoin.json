@@ -4,6 +4,7 @@
     "simplewallet-default-fee.json",
     "max-transaction-size-limit.json",
     "simplewallet-import-keys.json",
+    "simplewallet-export-keys.json",
     "bug-fixes.json"
   ],
   "base_coin": {

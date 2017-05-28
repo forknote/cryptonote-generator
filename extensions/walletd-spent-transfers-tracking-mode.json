@@ -492,6 +492,97 @@
           }
         }
       ]
+    },
+    {
+      "path": "/src/PaymentGate/WalletService.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::vector<CryptoNote::TransactionsInBlockInfo> getTransactions(const Crypto::Hash& blockHash, size_t blockCount) const;",
+          "parameters": {
+            "text": [
+                "bool f_getMixin(const CryptoNote::TransactionDetails& transaction, uint64_t& mixin) const;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/WalletService.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#include \"CryptoNoteCore/TransactionExtra.h\"",
+          "parameters": {
+            "text": [
+              "#include \"CryptoNoteCore/CryptoNoteTools.h\""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "std::error_code WalletService::getTransactions(const std::vector<std::string>& addresses, const std::string& blockHashString,",
+          "parameters": {
+            "text": [
+              "bool WalletService::f_getMixin(const CryptoNote::TransactionDetails& transaction, uint64_t& mixin) {",
+              "  mixin = 0;",
+              "  for (const TransactionInput& txin : transaction.inputs) {",
+              "    if (txin.type() != typeid(CryptoNote::KeyInput)) {",
+              "      continue;",
+              "    }",
+              "    uint64_t currentMixin = boost::get<CryptoNote::KeyInput>(txin).outputIndexes.size();",
+              "    if (currentMixin > mixin) {",
+              "      mixin = currentMixin;",
+              "    }",
+              "  }",
+              "  return true;",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "transactionInfo.paymentId = getPaymentIdStringFromExtra(transactionWithTransfers.transaction.extra);",
+          "parameters": {
+            "text": [
+              "  std::vector<Crypto::Hash> tx_ids;",
+              "  tx_ids.push_back(transactionWithTransfers.transaction.hash);",
+              "  CryptoNote::TransactionDetails transaction;",
+              "",
+              "  std::vector<Crypto::Hash> missed_txs;",
+              "  std::vector<CryptoNote::BinaryArray> txs;",
+              "  node.getTransactions(tx_ids, txs, missed_txs);",
+              "",
+              "  if (1 == txs.size()) {",
+              "    if (!fromBinaryArray(transaction, txs.front())) {",
+              "      throw std::runtime_error(\"Couldn't deserialize transaction\");",
+              "    }",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "rpcTransfer.type = static_cast<uint8_t>(transfer.type);",
+          "parameters": {
+            "text": [
+                "    if (transfer.amount < 0) {",
+
+                "      ",
+                "      TransferRpcSpentOutput spentOutput;",
+
+                "      uint64_t mixin;",
+                "      if (!f_getMixin(transaction, mixin)) {",
+                "        return false;",
+                "      }",
+                "      spentOutput.mixin = mixin;",
+
+                "    }"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

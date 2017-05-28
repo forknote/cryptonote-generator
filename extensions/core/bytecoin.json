@@ -267,6 +267,19 @@
         },
         {
           "action": "replace",
+          "marker": "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX",
+          "parameters": {
+            "text": [
+              "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;"
+            ],
+            "var": "KEY_IMAGE_CHECKING_BLOCK_INDEX"
+          }
+        },
+        {
+          "action": "replace",
           "marker": "const CheckpointData CHECKPOINTS[] = {",
           "parameters": {
             "text": [
