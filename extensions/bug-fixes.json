@@ -244,6 +244,26 @@
         }
       ]
     },
+
+
+    {
+      "path": "/src/Transfers/TransfersConsumer.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "processTransaction(tx.blockInfo, *tx.tx, tx);",
+          "parameters": {
+            "text": [
+              "//std::cout << \"are we here: \" << std::endl;"
+            ]
+          }
+        }
+      ]
+    },
+    
+
+
+
     {
       "path": "/src/crypto/crypto.h",
       "changes": [
@@ -275,6 +295,15 @@
       "path": "/src/crypto/crypto.cpp",
       "changes": [
         {
+          "action": "replace",
+          "marker": "return sizeof(rs_comm) + pubs_count * sizeof(rs_comm().ab[0]);",
+          "parameters": {
+            "text": [
+              "     return sizeof(rs_comm) + pubs_count * sizeof(ec_point_pair);"
+            ]
+          }
+        },
+        {
           "action": "add_above",
           "marker": "void crypto_ops::hash_data_to_ec(const uint8_t* data, std::size_t len, PublicKey& key) {",
           "parameters": {
@@ -290,6 +319,29 @@
               "        return aP;",
               "    }",
               ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/crypto.cpp",
+      "multiline": true,
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "struct rs_comm {.*};",
+          "may_not_exist": true,
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "  struct ec_point_pair {",
+              "    EllipticCurvePoint a, b;",
+              "  };",
+              "  struct rs_comm {",
+              "    Hash h;",
+              "    struct ec_point_pair ab[];",
+              "  };"
             ]
           }
         }

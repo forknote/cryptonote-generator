@@ -494,20 +494,6 @@
       ]
     },
     {
-      "path": "/src/PaymentGate/WalletService.h",
-      "changes": [
-        {
-          "action": "add_above",
-          "marker": "std::vector<CryptoNote::TransactionsInBlockInfo> getTransactions(const Crypto::Hash& blockHash, size_t blockCount) const;",
-          "parameters": {
-            "text": [
-                "bool f_getMixin(const CryptoNote::TransactionDetails& transaction, uint64_t& mixin) const;"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/PaymentGate/WalletService.cpp",
       "changes": [
         {
@@ -520,24 +506,47 @@
           }
         },
         {
-          "action": "add_above",
-          "marker": "std::error_code WalletService::getTransactions(const std::vector<std::string>& addresses, const std::string& blockHashString,",
+          "action": "replace",
+          "marker": "std::vector<PaymentService::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(",
           "parameters": {
             "text": [
-              "bool WalletService::f_getMixin(const CryptoNote::TransactionDetails& transaction, uint64_t& mixin) {",
-              "  mixin = 0;",
-              "  for (const TransactionInput& txin : transaction.inputs) {",
-              "    if (txin.type() != typeid(CryptoNote::KeyInput)) {",
-              "      continue;",
-              "    }",
-              "    uint64_t currentMixin = boost::get<CryptoNote::KeyInput>(txin).outputIndexes.size();",
-              "    if (currentMixin > mixin) {",
-              "      mixin = currentMixin;",
-              "    }",
-              "  }",
-              "  return true;",
-              "}",
-              ""
+              "std::vector<PaymentService::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(CryptoNote::INode& node,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "PaymentService::TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(",
+          "parameters": {
+            "text": [
+              "PaymentService::TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(CryptoNote::INode& node,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(filteredTransactions);",
+          "parameters": {
+            "text": [
+              "  return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(node, filteredTransactions);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "PaymentService::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(transactionWithTransfers);",
+          "parameters": {
+            "text": [
+              "      PaymentService::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(node, transactionWithTransfers);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "transaction = convertTransactionWithTransfersToTransactionRpcInfo(transactionWithTransfers);",
+          "parameters": {
+            "text": [
+              "    transaction = convertTransactionWithTransfersToTransactionRpcInfo(node, transactionWithTransfers);"
             ]
           }
         },
@@ -548,17 +557,18 @@
             "text": [
               "  std::vector<Crypto::Hash> tx_ids;",
               "  tx_ids.push_back(transactionWithTransfers.transaction.hash);",
-              "  CryptoNote::TransactionDetails transaction;",
               "",
-              "  std::vector<Crypto::Hash> missed_txs;",
-              "  std::vector<CryptoNote::BinaryArray> txs;",
-              "  node.getTransactions(tx_ids, txs, missed_txs);",
+              "  std::vector<CryptoNote::TransactionDetails> txs;",
+              "  std::promise<std::error_code> prom;",
+              "  std::future<std::error_code> f = prom.get_future();",
               "",
-              "  if (1 == txs.size()) {",
-              "    if (!fromBinaryArray(transaction, txs.front())) {",
-              "      throw std::runtime_error(\"Couldn't deserialize transaction\");",
-              "    }",
-              "  }"
+              "  CryptoNote::INode::Callback cb = [&prom](std::error_code ec) { ",
+              "    std::promise<std::error_code> p(std::move(prom));",
+              "    p.set_value(ec);",
+              "  };",
+              "  node.getTransactions(tx_ids, txs, cb);",
+              "",
+              "  CryptoNote::TransactionDetails transaction = txs.front();"
             ]
           }
         },
@@ -568,16 +578,20 @@
           "parameters": {
             "text": [
                 "    if (transfer.amount < 0) {",
-
-                "      ",
-                "      TransferRpcSpentOutput spentOutput;",
-
-                "      uint64_t mixin;",
-                "      if (!f_getMixin(transaction, mixin)) {",
-                "        return false;",
+                "      for (const CryptoNote::TransactionInputDetails& txinput : transaction.inputs) {",
+                "// handle MultisignatureInput in future",
+                "        if (txinput.type() == typeid(CryptoNote::KeyInputDetails)) {",
+                "          auto txin = boost::get<CryptoNote::KeyInputDetails>(txinput);",
+                "// store the key_images into the wallet and check here if it's one of them, instead of bulk sending all key_images of a transaction",
+                "          TransferRpcSpentOutput spentOutput;",
+                "          spentOutput.amount = txin.input.amount;",
+                "          spentOutput.key_image = Common::podToHex(txin.input.keyImage);",
+                "          spentOutput.tx_pub_key = Common::podToHex(transaction.extra.publicKey);",
+                "          spentOutput.out_index = txin.output.number;",
+                "          spentOutput.mixin = txin.mixin;",
+                "          rpcTransfer.spentOutputs.push_back(spentOutput);",
+                "        }",
                 "      }",
-                "      spentOutput.mixin = mixin;",
-
                 "    }"
             ]
           }
