@@ -385,6 +385,25 @@
           }
         },
         {
+          "action": "add_below",
+          "marker": "void TransfersContainer::deleteTransactionTransfers(const Hash& transactionHash) {",
+          "parameters": {
+            "text": [
+                "  auto& trackingModeSpendingTransactionIndex = m_trackingModeSpentTransfers.get<SpendingTransactionIndex>();",
+                "  auto trackingModeSpentTransfersRange = trackingModeSpendingTransactionIndex.equal_range(transactionHash);",
+                "  for (auto it = trackingModeSpentTransfersRange.first; it != trackingModeSpentTransfersRange.second;) {",
+                "    assert(it->blockHeight != WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT);",
+                "    assert(it->globalOutputIndex != UNCONFIRMED_TRANSACTION_GLOBAL_OUTPUT_INDEX);",
+                "",
+                "    auto result = m_availableTransfers.emplace(static_cast<const TransactionOutputInformationEx&>(*it));",
+                "    assert(result.second);",
+                "    it = trackingModeSpendingTransactionIndex.erase(it);",
+                "  }",
+                ""
+            ]
+          }
+        },
+        {
           "action": "add_above",
           "marker": "bool TransfersContainer::deleteUnconfirmedTransaction(const Hash& transactionHash) {",
           "parameters": {
@@ -399,7 +418,6 @@
                 "      KeyInput input;",
                 "      tx.getInput(i, input);",
                 "",
-
                 "      for (auto j = input.outputIndexes.begin(); j != input.outputIndexes.end(); ++j) {",
                 "        SpentOutputDescriptor descriptor(input.amount, *j, trackingMode);",
                 "        auto availableRange = m_availableTransfers.get<SpentOutputDescriptorIndex>().equal_range(descriptor);",

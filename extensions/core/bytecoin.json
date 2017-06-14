@@ -320,6 +320,7 @@
       ]
     },
     {
+      "description": "Normalize checkpoints if added",
       "path": "/src/CryptoNoteConfig.h",
       "multiline": true,
       "changes": [
