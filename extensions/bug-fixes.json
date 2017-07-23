@@ -49,20 +49,23 @@
         }
       ]
     },
+
+
     {
-      "path": "/src/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp",
+      "path": "/src/CryptoNoteCore/BlockchainCache.cpp",
       "changes": [
         {
           "action": "replace",
-          "marker": "return m_core.getTopBlockIndex() + 1;",
+          "marker": "return startIndex + static_cast<uint32_t>(blockInfos.size()) - 1;",
           "parameters": {
             "text": [
-              "return m_core.getTopBlockIndex();"
+              "return startIndex + static_cast<uint32_t>(blockInfos.size());"
             ]
           }
         }
       ]
     },
+
     {
       "path": "/src/Rpc/RpcServer.cpp",
       "changes": [
@@ -86,28 +89,11 @@
         },
         {
           "action": "replace",
-          "marker": "res.height = m_core.getTopBlockIndex() + 1;",
-          "parameters": {
-            "text": [
-              "  res.height = m_core.getTopBlockIndex();"
-            ]
-          }
-        },
-        {
-          "action": "replace",
-          "marker": "newBlockMessage.current_blockchain_height = m_core.getTopBlockIndex() + 1;",
-          "parameters": {
-            "text": [
-              "  newBlockMessage.current_blockchain_height = m_core.getTopBlockIndex();"
-            ]
-          }
-        },
-        {
-          "action": "replace",
           "marker": "uint32_t index = static_cast<uint32_t>(req.height) - 1;",
           "parameters": {
             "text": [
-              "  uint32_t index = static_cast<uint32_t>(req.height);"
+              "  //uint32_t index = static_cast<uint32_t>(req.height);",
+                "  uint32_t index = static_cast<uint32_t>(req.height) - 1;"
             ]
           }
         },
@@ -116,7 +102,9 @@
           "marker": "assert(cachedBlock.getBlockIndex() == req.height - 1);",
           "parameters": {
             "text": [
-              "  assert(cachedBlock.getBlockIndex() == req.height);"
+              "  assert(cachedBlock.getBlockIndex() == req.height - 1);",
+              "std::cout << cachedBlock.getBlockIndex() << \":\" << req.height << std::endl;",
+              "//  assert(cachedBlock.getBlockIndex() == req.height);"
             ]
           }
         }
@@ -125,24 +113,6 @@
     {
       "path": "/src/Daemon/DaemonCommandsHandler.cpp",
       "changes": [
-        {
-          "action": "replace",
-          "marker": "if (height - 1 > m_core.getTopBlockIndex()) {",
-          "parameters": {
-            "text": [
-              "  if (height > m_core.getTopBlockIndex()) {"
-            ]
-          }
-        },
-        {
-          "action": "replace",
-          "marker": "std::cout << \"block wasn't found. Current block chain height: \" << m_core.getTopBlockIndex() + 1 << \", requested: \" << height << std::endl;",
-          "parameters": {
-            "text": [
-              "std::cout << \"block wasn't found. Current block chain height: \" << m_core.getTopBlockIndex() << \", requested: \" << height << std::endl;"
-            ]
-          }
-        },
         {
           "action": "replace",
           "marker": "auto hash = m_core.getBlockHashByIndex(height - 1);",
@@ -186,7 +156,7 @@
         }
       ]
     },
-    
+
     {
       "path": "/src/Wallet/WalletGreen.h",
       "changes": [
@@ -244,25 +214,6 @@
         }
       ]
     },
-
-
-    {
-      "path": "/src/Transfers/TransfersConsumer.cpp",
-      "changes": [
-        {
-          "action": "add_below",
-          "marker": "processTransaction(tx.blockInfo, *tx.tx, tx);",
-          "parameters": {
-            "text": [
-              "//std::cout << \"are we here: \" << std::endl;"
-            ]
-          }
-        }
-      ]
-    },
-    
-
-
 
     {
       "path": "/src/crypto/crypto.h",
@@ -361,10 +312,42 @@
         },
         {
           "action": "add_above",
+          "marker": "INPUT_IDENTICAL_KEYIMAGES,",
+          "parameters": {
+            "text": [
+              "  INVALID_TRANSACTION_VERSION,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
           "marker": "case TransactionValidationError::INPUT_IDENTICAL_KEYIMAGES:",
           "parameters": {
             "text": [
               "      case TransactionValidationError::INPUT_INVALID_DOMAIN_KEYIMAGES: return \"Transaction uses key image not in the valid domain\";"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "case TransactionValidationError::INPUT_IDENTICAL_KEYIMAGES:",
+          "parameters": {
+            "text": [
+              "      case TransactionValidationError::INVALID_TRANSACTION_VERSION: return \"Transaction version is invalid\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "std::error_code validateSemantic(const Transaction& transaction, uint64_t& fee);",
+          "parameters": {
+            "text": [
+              "  std::error_code validateSemantic(const Transaction& transaction, uint64_t& fee, uint32_t blockIndex);"
             ]
           }
         }
@@ -373,6 +356,24 @@
     {
       "path": "/src/CryptoNoteCore/Core.cpp",
       "changes": [
+        {
+          "action": "replace",
+          "marker": "auto error = validateSemantic(transaction, fee);",
+          "parameters": {
+            "text": [
+              "auto error = validateSemantic(transaction, fee, blockIndex);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "std::error_code Core::validateSemantic(const Transaction& transaction, uint64_t& fee) {",
+          "parameters": {
+            "text": [
+              "std::error_code Core::validateSemantic(const Transaction& transaction, uint64_t& fee, uint32_t blockIndex) {"
+            ]
+          }
+        },
         {
           "action": "add_above",
           "marker": "uint64_t summaryInputAmount = 0;",
@@ -392,8 +393,20 @@
           "parameters": {
             "text": [
               "  // Fix discovered by Monero Lab and suggested by \"fluffypony\" (bitcointalk.org)",
-              "  if (!(scalarmultKey(in.keyImage, L) == I)) {",
+              "  if (!(scalarmultKey(in.keyImage, L) == I) && blockIndex > parameters::KEY_IMAGE_CHECKING_BLOCK_INDEX) {",
               "    return error::TransactionValidationError::INPUT_INVALID_DOMAIN_KEYIMAGES;",
+              "  }",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t inputIndex = 0;",
+          "parameters": {
+            "text": [
+              "  if (transaction.version > CURRENT_TRANSACTION_VERSION) {",
+              "    return error::TransactionValidationError::INVALID_TRANSACTION_VERSION;",
               "  }",
               ""
             ]

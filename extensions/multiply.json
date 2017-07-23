@@ -98,8 +98,6 @@
         }
       ]
     },
-
-
     {
       "path": "/src/CryptoNoteCore/Core.cpp",
       "changes": [
@@ -111,10 +109,18 @@
               "                                          blockIndex > currency.keyImageCheckingBlockIndex())) {"
             ]
           }
+        },
+        {
+          "action": "replace",
+          "marker": "if (!(scalarmultKey(in.keyImage, L) == I) && blockIndex > parameters::KEY_IMAGE_CHECKING_BLOCK_INDEX) {",
+          "parameters": {
+            "text": [
+              "  if (!(scalarmultKey(in.keyImage, L) == I) && blockIndex > currency.keyImageCheckingBlockIndex()) {"
+            ]
+          }
         }
       ]
     },
-
     {
       "path": "/src/Daemon/Daemon.cpp",
       "changes": [

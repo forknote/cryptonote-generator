@@ -14,7 +14,9 @@
           "marker": "size_t m_blockGrantedFullRewardZone;",
           "parameters": {
             "text": [
-              "  bool m_zawyDifficultyV2;"
+              "  bool m_zawyDifficultyV2;",
+              "  bool m_zawyDifficultyV3;",
+              "  bool m_zawyDifficultyV4;"
             ]
           }
         },
@@ -23,7 +25,9 @@
           "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
           "parameters": {
             "text": [
-              "  CurrencyBuilder& zawyDifficultyV2(bool val) { m_currency.m_zawyDifficultyV2 = val; return *this; }"
+              "  CurrencyBuilder& zawyDifficultyV2(bool val) { m_currency.m_zawyDifficultyV2 = val; return *this; }",
+              "  CurrencyBuilder& zawyDifficultyV3(bool val) { m_currency.m_zawyDifficultyV3 = val; return *this; }",
+              "  CurrencyBuilder& zawyDifficultyV4(bool val) { m_currency.m_zawyDifficultyV4 = val; return *this; }"
             ]
           }
         },
@@ -32,7 +36,9 @@
           "marker": "size_t blockGrantedFullRewardZone()",
           "parameters": {
             "text": [
-              "  bool zawyDifficultyV2() const { return m_zawyDifficultyV2; }"
+              "  bool zawyDifficultyV2() const { return m_zawyDifficultyV2; }",
+              "  bool zawyDifficultyV3() const { return m_zawyDifficultyV3; }",
+              "  bool zawyDifficultyV4() const { return m_zawyDifficultyV4; }"
             ]
           }
         }
@@ -46,7 +52,9 @@
           "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
           "parameters": {
             "text": [
-              "zawyDifficultyV2(parameters::ZAWY_DIFFICULTY_V2);"
+              "zawyDifficultyV2(parameters::ZAWY_DIFFICULTY_V2);",
+              "zawyDifficultyV3(parameters::ZAWY_DIFFICULTY_V3);",
+              "zawyDifficultyV4(parameters::ZAWY_DIFFICULTY_V4);"
             ]
           }
         },
@@ -55,7 +63,9 @@
           "marker": "m_testnet(currency.m_testnet),",
           "parameters": {
             "text": [
-              "m_zawyDifficultyV2(currency.m_zawyDifficultyV2),"
+              "m_zawyDifficultyV2(currency.m_zawyDifficultyV2),",
+              "m_zawyDifficultyV3(currency.m_zawyDifficultyV3),",
+              "m_zawyDifficultyV4(currency.m_zawyDifficultyV4),"
             ]
           }
         }
@@ -80,6 +90,42 @@
       ]
     },
     {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const bool ZAWY_DIFFICULTY_V3                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const bool ZAWY_DIFFICULTY_V3                          = 0;"
+            ],
+            "var": "ZAWY_DIFFICULTY_V3"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const bool ZAWY_DIFFICULTY_V4                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const bool ZAWY_DIFFICULTY_V4                          = 0;"
+            ],
+            "var": "ZAWY_DIFFICULTY_V4"
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
         {
@@ -87,6 +133,30 @@
           "marker": "return (low + timeSpan - 1) / timeSpan;  // with version",
           "parameters": {
             "text": [
+                "  if (version >= 4 && m_zawyDifficultyV4) {",
+                "    if (high != 0) {",
+                "      return 0;",
+                "    }",
+                "    uint64_t nextDiffZ = low / timeSpan;",
+                "    if (nextDiffZ <= 100000) {",
+                "      nextDiffZ = 100000;",
+                "    }",
+                "",
+                "    return nextDiffZ;",
+                "  }",
+                "",
+                "  if (version >= 3 && m_zawyDifficultyV3) {",
+                "    if (high != 0) {",
+                "      return 0;",
+                "    }",
+                "    uint64_t nextDiffZ = low / timeSpan;",
+                "    if (nextDiffZ <= 100000) {",
+                "      nextDiffZ = 100000;",
+                "    }",
+                "",
+                "    return nextDiffZ;",
+                "  }",
+                "",
                 "  if (version >= 2 && m_zawyDifficultyV2) {",
                 "    if (high != 0) {",
                 "      return 0;",
@@ -97,7 +167,8 @@
                 "    }",
                 "",
                 "    return nextDiffZ;",
-                "  }"
+                "  }",
+                ""
             ]
           }
         }

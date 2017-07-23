@@ -1,6 +1,7 @@
 {
   "extensions": [
     "core/bytecoin.json",
+    "bug-fixes.json",
     "print-genesis-tx.json",
     "simplewallet-default-fee.json",
     "max-transaction-size-limit.json",
@@ -14,6 +15,7 @@
     "blockchain-explorer.json",
     "enable-cors.json",
     "fee-address.json",
+    "walletd-spent-transfers-tracking-mode.json",
     "multiply.json",
     "get-blockchain-settings.json",
     "multiply/max-transaction-size-limit.json",
@@ -27,8 +29,7 @@
     "daemon-getrandom_outs-json.json",
     "simplewallet-import-keys.json",
     "simplewallet-export-keys.json",
-    "walletd-extension.json",
-    "bug-fixes.json"
+    "walletd-extension.json"
   ],
   "base_coin": {
     "name": "bytecoin",

@@ -1,10 +1,10 @@
 {
   "extensions": [
     "core/bytecoin.json",
+    "bug-fixes.json",
     "print-genesis-tx.json",
     "mandatory-transaction-in-block.json",
-    "genesis-block-reward.json",
-    "bug-fixes.json"
+    "genesis-block-reward.json"
   ],
   "base_coin": {
     "name": "bytecoin",
