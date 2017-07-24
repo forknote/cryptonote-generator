@@ -92,7 +92,7 @@
           "marker": "uint32_t index = static_cast<uint32_t>(req.height) - 1;",
           "parameters": {
             "text": [
-              "  uint32_t index = static_cast<uint32_t>(req.height) - 1;"
+              "  uint32_t index = static_cast<uint32_t>(req.height);"
             ]
           }
         },
