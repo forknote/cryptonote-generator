@@ -92,8 +92,7 @@
           "marker": "uint32_t index = static_cast<uint32_t>(req.height) - 1;",
           "parameters": {
             "text": [
-              "  //uint32_t index = static_cast<uint32_t>(req.height);",
-                "  uint32_t index = static_cast<uint32_t>(req.height) - 1;"
+              "  uint32_t index = static_cast<uint32_t>(req.height) - 1;"
             ]
           }
         },
@@ -102,9 +101,7 @@
           "marker": "assert(cachedBlock.getBlockIndex() == req.height - 1);",
           "parameters": {
             "text": [
-              "  assert(cachedBlock.getBlockIndex() == req.height - 1);",
-              "std::cout << cachedBlock.getBlockIndex() << \":\" << req.height << std::endl;",
-              "//  assert(cachedBlock.getBlockIndex() == req.height);"
+              "  assert(cachedBlock.getBlockIndex() == req.height);"
             ]
           }
         }
