@@ -15,7 +15,6 @@
     "blockchain-explorer.json",
     "enable-cors.json",
     "fee-address.json",
-    "walletd-spent-transfers-tracking-mode.json",
     "multiply.json",
     "get-blockchain-settings.json",
     "multiply/max-transaction-size-limit.json",
