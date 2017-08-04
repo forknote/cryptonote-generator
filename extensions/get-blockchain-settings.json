@@ -274,6 +274,7 @@
               "",
               "  // Hardcoded plugins, refactor this",
               "  res.extensions.push_back(\"core/bytecoin.json\");",
+              "  res.extensions.push_back(\"bug-fixes.json\");",
               "  res.extensions.push_back(\"print-genesis-tx.json\");",
               "",
               "  res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
