@@ -356,8 +356,8 @@
             "text": [
                 "    (\"DIFFICULTY_WINDOW_V1\", po::value<size_t>()->default_value(0), \"size_t\")",
                 "    (\"DIFFICULTY_WINDOW_V2\", po::value<size_t>()->default_value(0), \"size_t\")",
-                "    (\"DIFFICULTY_CUT_V1\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT_V2), \"size_t\")",
-                "    (\"DIFFICULTY_CUT_V2\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT_V1), \"size_t\")",
+                "    (\"DIFFICULTY_CUT_V1\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT_V1), \"size_t\")",
+                "    (\"DIFFICULTY_CUT_V2\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT_V2), \"size_t\")",
                 "    (\"DIFFICULTY_LAG_V1\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG_V1), \"size_t\")",
                 "    (\"DIFFICULTY_LAG_V2\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG_V2), \"size_t\")"
             ]
@@ -453,7 +453,7 @@
               "  res.core.DIFFICULTY_CUT_V1 = m_core.getCurrency().difficultyCutV1();",
               "  res.core.DIFFICULTY_CUT_V2 = m_core.getCurrency().difficultyCutV2();",
               "  res.core.DIFFICULTY_LAG_V1 = m_core.getCurrency().difficultyLagV1();",
-              "  res.core.DIFFICULTY_LAG_V1 = m_core.getCurrency().difficultyLagV2();"
+              "  res.core.DIFFICULTY_LAG_V2 = m_core.getCurrency().difficultyLagV2();"
             ]
           }
         }

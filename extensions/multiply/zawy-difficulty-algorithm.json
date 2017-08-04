@@ -16,7 +16,10 @@
           "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<bool>    arg_ZAWY_DIFFICULTY_V2  = {\"ZAWY_DIFFICULTY_V2\", \"bool\", 0};"
+              "  const command_line::arg_descriptor<uint32_t>    arg_ZAWY_DIFFICULTY_BLOCK_INDEX  = {\"ZAWY_DIFFICULTY_BLOCK_INDEX\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<size_t>    arg_ZAWY_DIFFICULTY_V2  = {\"ZAWY_DIFFICULTY_V2\", \"size_t\", 0};",
+              "  const command_line::arg_descriptor<size_t>    arg_ZAWY_DIFFICULTY_V3  = {\"ZAWY_DIFFICULTY_V3\", \"size_t\", 0};",
+              "  const command_line::arg_descriptor<size_t>    arg_ZAWY_DIFFICULTY_V4  = {\"ZAWY_DIFFICULTY_V4\", \"size_t\", 0};"
             ]
           }
         },
@@ -25,7 +28,10 @@
           "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
           "parameters": {
             "text": [
-              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_V2);"
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_BLOCK_INDEX);",
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_V2);",
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_V3);",
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_V4);"
             ]
           }
         },
@@ -34,7 +40,10 @@
           "marker": "currencyBuilder.testnet(testnet_mode);",
           "parameters": {
             "text": [
-              "    currencyBuilder.zawyDifficultyV2(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_V2));"
+              "    currencyBuilder.zawyDifficultyBlockIndex(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_BLOCK_INDEX));",
+              "    currencyBuilder.zawyDifficultyV2(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_V2));",
+              "    currencyBuilder.zawyDifficultyV3(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_V3));",
+              "    currencyBuilder.zawyDifficultyV4(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_V4));"
             ]
           }
         }
@@ -48,7 +57,10 @@
           "marker": "uint64_t MONEY_SUPPLY;",
           "parameters": {
             "text": [
-              "  bool ZAWY_DIFFICULTY_V2;"
+              "  uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX;",
+              "  size_t ZAWY_DIFFICULTY_V2;",
+              "  size_t ZAWY_DIFFICULTY_V3;",
+              "  size_t ZAWY_DIFFICULTY_V4;"
             ]
           }
         }
@@ -62,7 +74,10 @@
           "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
           "parameters": {
             "text": [
-              "    ZAWY_DIFFICULTY_V2=CryptoNote::parameters::ZAWY_DIFFICULTY_V2;"
+              "    ZAWY_DIFFICULTY_BLOCK_INDEX=CryptoNote::parameters::ZAWY_DIFFICULTY_BLOCK_INDEX;",
+              "    ZAWY_DIFFICULTY_V2=CryptoNote::parameters::ZAWY_DIFFICULTY_V2;",
+              "    ZAWY_DIFFICULTY_V3=CryptoNote::parameters::ZAWY_DIFFICULTY_V3;",
+              "    ZAWY_DIFFICULTY_V4=CryptoNote::parameters::ZAWY_DIFFICULTY_V4;"
             ]
           }
         },
@@ -71,7 +86,10 @@
           "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
           "parameters": {
             "text": [
-              "    (\"ZAWY_DIFFICULTY_V2\", po::value<bool>()->default_value(0), \"bool\")"
+              "    (\"ZAWY_DIFFICULTY_BLOCK_INDEX\", po::value<uint32_t>()->default_value(0), \"uint32_t\")",
+              "    (\"ZAWY_DIFFICULTY_V2\", po::value<bool>()->default_value(0), \"size_t\")",
+              "    (\"ZAWY_DIFFICULTY_V3\", po::value<bool>()->default_value(0), \"size_t\")",
+              "    (\"ZAWY_DIFFICULTY_V4\", po::value<bool>()->default_value(0), \"size_t\")"
             ]
           }
         },
@@ -80,8 +98,17 @@
           "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
           "parameters": {
             "text": [
+              "  if (options.count(\"ZAWY_DIFFICULTY_BLOCK_INDEX\")) {",
+              "    ZAWY_DIFFICULTY_BLOCK_INDEX = options[\"ZAWY_DIFFICULTY_BLOCK_INDEX\"].as<uint32_t>();",
+              "  }",
               "  if (options.count(\"ZAWY_DIFFICULTY_V2\")) {",
-              "    ZAWY_DIFFICULTY_V2 = options[\"ZAWY_DIFFICULTY_V2\"].as<bool>();",
+              "    ZAWY_DIFFICULTY_V2 = options[\"ZAWY_DIFFICULTY_V2\"].as<size_t>();",
+              "  }",
+              "  if (options.count(\"ZAWY_DIFFICULTY_V3\")) {",
+              "    ZAWY_DIFFICULTY_V3 = options[\"ZAWY_DIFFICULTY_V3\"].as<size_t>();",
+              "  }",
+              "  if (options.count(\"ZAWY_DIFFICULTY_V4\")) {",
+              "    ZAWY_DIFFICULTY_V4 = options[\"ZAWY_DIFFICULTY_V4\"].as<size_t>();",
               "  }"
             ]
           }
@@ -96,7 +123,10 @@
           "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
           "parameters": {
             "text": [
-              "  currencyBuilder.zawyDifficultyV2(config.coinBaseConfig.ZAWY_DIFFICULTY_V2);"
+              "  currencyBuilder.zawyDifficultyBlockIndex(config.coinBaseConfig.ZAWY_DIFFICULTY_BLOCK_INDEX);",
+              "  currencyBuilder.zawyDifficultyV2(config.coinBaseConfig.ZAWY_DIFFICULTY_V2);",
+              "  currencyBuilder.zawyDifficultyV3(config.coinBaseConfig.ZAWY_DIFFICULTY_V3);",
+              "  currencyBuilder.zawyDifficultyV4(config.coinBaseConfig.ZAWY_DIFFICULTY_V4);"
             ]
           }
         }
@@ -112,7 +142,10 @@
           "marker": "std::string BYTECOIN_NETWORK;",
           "parameters": {
             "text": [
-              "  bool ZAWY_DIFFICULTY_V2;"
+              "  uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX;",
+              "  size_t ZAWY_DIFFICULTY_V2;",
+              "  size_t ZAWY_DIFFICULTY_V3;",
+              "  size_t ZAWY_DIFFICULTY_V4;"
             ]
           }
         },
@@ -121,7 +154,10 @@
           "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
           "parameters": {
             "text": [
-              "    KV_MEMBER(ZAWY_DIFFICULTY_V2)"
+              "    KV_MEMBER(ZAWY_DIFFICULTY_BLOCK_INDEX)",
+              "    KV_MEMBER(ZAWY_DIFFICULTY_V2)",
+              "    KV_MEMBER(ZAWY_DIFFICULTY_V3)",
+              "    KV_MEMBER(ZAWY_DIFFICULTY_V4)"
             ]
           }
         }
@@ -136,7 +172,8 @@
           "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
           "parameters": {
             "text": [
-              "  if (m_core.getCurrency().zawyDifficultyV2() != 0) {",
+              "  if (m_core.getCurrency().zawyDifficultyV2() != 0 || m_core.getCurrency().zawyDifficultyV3() != 0 ||",
+              "       m_core.getCurrency().zawyDifficultyV4() != 0 || m_core.getCurrency().zawyDifficultyBlockIndex() != 0 ) {",
               "    res.extensions.push_back(\"zawy-difficulty-algorithm.json\");",
               "  }"
             ]
@@ -147,7 +184,10 @@
           "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
           "parameters": {
             "text": [
-              "  res.core.ZAWY_DIFFICULTY_V2 = m_core.getCurrency().zawyDifficultyV2();"
+              "  res.core.ZAWY_DIFFICULTY_BLOCK_INDEX = m_core.getCurrency().zawyDifficultyBlockIndex();",
+              "  res.core.ZAWY_DIFFICULTY_V2 = m_core.getCurrency().zawyDifficultyV2();",
+              "  res.core.ZAWY_DIFFICULTY_V3 = m_core.getCurrency().zawyDifficultyV3();",
+              "  res.core.ZAWY_DIFFICULTY_V4 = m_core.getCurrency().zawyDifficultyV4();"
             ]
           }
         }

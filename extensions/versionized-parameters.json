@@ -135,13 +135,13 @@
           "marker": "Difficulty nextDifficulty(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;",
           "parameters": {
             "text": [
-              "Difficulty nextDifficulty(uint8_t version, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;"
+              "Difficulty nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;"
             ]
           }
         }
       ]
     },
-  
+
     {
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
@@ -216,7 +216,7 @@
           "marker": "bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const CachedBlock& block, Difficulty currentDifficulty) const {",
           "parameters": {
             "text": [
-              "Difficulty Currency::nextDifficulty(uint8_t version, std::vector<uint64_t> timestamps,",
+              "Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps,",
               "  std::vector<Difficulty> cumulativeDifficulties) const {",
               "",
               "  size_t c_difficultyWindow = difficultyWindowByBlockVersion(version);",
@@ -289,7 +289,7 @@
           "marker": "return currency.nextDifficulty(timestamps, difficulties);",
           "parameters": {
             "text": [
-              "  return currency.nextDifficulty(nextBlockMajorVersion, timestamps, difficulties);"
+              "  return currency.nextDifficulty(nextBlockMajorVersion, topBlockIndex, timestamps, difficulties);"
             ]
           }
         }
@@ -360,7 +360,7 @@
           "marker": "return currency.nextDifficulty(std::move(timestamps), std::move(commulativeDifficulties));",
           "parameters": {
             "text": [
-              "  return currency.nextDifficulty(nextBlockMajorVersion, std::move(timestamps), std::move(commulativeDifficulties));"
+              "  return currency.nextDifficulty(nextBlockMajorVersion, blockIndex, std::move(timestamps), std::move(commulativeDifficulties));"
             ]
           }
         }
@@ -432,7 +432,7 @@
           "marker": "return currency.nextDifficulty(std::move(timestamps), std::move(commulativeDifficulties));",
           "parameters": {
             "text": [
-              "  return currency.nextDifficulty(nextBlockMajorVersion, std::move(timestamps), std::move(commulativeDifficulties));"
+              "  return currency.nextDifficulty(nextBlockMajorVersion, blockIndex, std::move(timestamps), std::move(commulativeDifficulties));"
             ]
           }
         }

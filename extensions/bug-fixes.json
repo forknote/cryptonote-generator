@@ -172,28 +172,10 @@
         },
         {
           "action": "add_above",
-          "marker": "INPUT_IDENTICAL_KEYIMAGES,",
-          "parameters": {
-            "text": [
-              "  INVALID_TRANSACTION_VERSION,"
-            ]
-          }
-        },
-        {
-          "action": "add_above",
           "marker": "case TransactionValidationError::INPUT_IDENTICAL_KEYIMAGES:",
           "parameters": {
             "text": [
               "      case TransactionValidationError::INPUT_INVALID_DOMAIN_KEYIMAGES: return \"Transaction uses key image not in the valid domain\";"
-            ]
-          }
-        },
-        {
-          "action": "add_above",
-          "marker": "case TransactionValidationError::INPUT_IDENTICAL_KEYIMAGES:",
-          "parameters": {
-            "text": [
-              "      case TransactionValidationError::INVALID_TRANSACTION_VERSION: return \"Transaction version is invalid\";"
             ]
           }
         }
@@ -255,18 +237,6 @@
               "  // Fix discovered by Monero Lab and suggested by \"fluffypony\" (bitcointalk.org)",
               "  if (!(scalarmultKey(in.keyImage, L) == I) && blockIndex > parameters::KEY_IMAGE_CHECKING_BLOCK_INDEX) {",
               "    return error::TransactionValidationError::INPUT_INVALID_DOMAIN_KEYIMAGES;",
-              "  }",
-              ""
-            ]
-          }
-        },
-        {
-          "action": "add_above",
-          "marker": "size_t inputIndex = 0;",
-          "parameters": {
-            "text": [
-              "  if (transaction.version > CURRENT_TRANSACTION_VERSION) {",
-              "    return error::TransactionValidationError::INVALID_TRANSACTION_VERSION;",
               "  }",
               ""
             ]

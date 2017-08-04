@@ -14,9 +14,10 @@
           "marker": "size_t m_blockGrantedFullRewardZone;",
           "parameters": {
             "text": [
-              "  bool m_zawyDifficultyV2;",
-              "  bool m_zawyDifficultyV3;",
-              "  bool m_zawyDifficultyV4;"
+              "  uint32_t m_zawyDifficultyBlockIndex;",
+              "  size_t m_zawyDifficultyV2;",
+              "  size_t m_zawyDifficultyV3;",
+              "  size_t m_zawyDifficultyV4;"
             ]
           }
         },
@@ -25,9 +26,10 @@
           "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
           "parameters": {
             "text": [
-              "  CurrencyBuilder& zawyDifficultyV2(bool val) { m_currency.m_zawyDifficultyV2 = val; return *this; }",
-              "  CurrencyBuilder& zawyDifficultyV3(bool val) { m_currency.m_zawyDifficultyV3 = val; return *this; }",
-              "  CurrencyBuilder& zawyDifficultyV4(bool val) { m_currency.m_zawyDifficultyV4 = val; return *this; }"
+              "  CurrencyBuilder& zawyDifficultyBlockIndex(uint32_t val) { m_currency.m_zawyDifficultyBlockIndex = val; return *this; }",
+              "  CurrencyBuilder& zawyDifficultyV2(size_t val) { m_currency.m_zawyDifficultyV2 = val; return *this; }",
+              "  CurrencyBuilder& zawyDifficultyV3(size_t val) { m_currency.m_zawyDifficultyV3 = val; return *this; }",
+              "  CurrencyBuilder& zawyDifficultyV4(size_t val) { m_currency.m_zawyDifficultyV4 = val; return *this; }"
             ]
           }
         },
@@ -36,9 +38,10 @@
           "marker": "size_t blockGrantedFullRewardZone()",
           "parameters": {
             "text": [
-              "  bool zawyDifficultyV2() const { return m_zawyDifficultyV2; }",
-              "  bool zawyDifficultyV3() const { return m_zawyDifficultyV3; }",
-              "  bool zawyDifficultyV4() const { return m_zawyDifficultyV4; }"
+              "  uint32_t zawyDifficultyBlockIndex() const { return m_zawyDifficultyBlockIndex; }",
+              "  size_t zawyDifficultyV2() const { return m_zawyDifficultyV2; }",
+              "  size_t zawyDifficultyV3() const { return m_zawyDifficultyV3; }",
+              "  size_t zawyDifficultyV4() const { return m_zawyDifficultyV4; }"
             ]
           }
         }
@@ -52,6 +55,7 @@
           "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
           "parameters": {
             "text": [
+              "zawyDifficultyBlockIndex(parameters::ZAWY_DIFFICULTY_BLOCK_INDEX);",
               "zawyDifficultyV2(parameters::ZAWY_DIFFICULTY_V2);",
               "zawyDifficultyV3(parameters::ZAWY_DIFFICULTY_V3);",
               "zawyDifficultyV4(parameters::ZAWY_DIFFICULTY_V4);"
@@ -63,6 +67,7 @@
           "marker": "m_testnet(currency.m_testnet),",
           "parameters": {
             "text": [
+              "m_zawyDifficultyBlockIndex(currency.m_zawyDifficultyBlockIndex),",
               "m_zawyDifficultyV2(currency.m_zawyDifficultyV2),",
               "m_zawyDifficultyV3(currency.m_zawyDifficultyV3),",
               "m_zawyDifficultyV4(currency.m_zawyDifficultyV4),"
@@ -79,10 +84,28 @@
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
-              "const bool ZAWY_DIFFICULTY_V2                          = %s;"
+              "const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX                 = %s;"
             ],
             "replace_text_alt": [
-              "const bool ZAWY_DIFFICULTY_V2                          = 0;"
+              "const uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX                 = 0;"
+            ],
+            "var": "ZAWY_DIFFICULTY_BLOCK_INDEX"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const size_t ZAWY_DIFFICULTY_V2                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t ZAWY_DIFFICULTY_V2                          = 0;"
             ],
             "var": "ZAWY_DIFFICULTY_V2"
           }
@@ -97,10 +120,10 @@
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
-              "const bool ZAWY_DIFFICULTY_V3                          = %s;"
+              "const size_t ZAWY_DIFFICULTY_V3                          = %s;"
             ],
             "replace_text_alt": [
-              "const bool ZAWY_DIFFICULTY_V3                          = 0;"
+              "const size_t ZAWY_DIFFICULTY_V3                          = 0;"
             ],
             "var": "ZAWY_DIFFICULTY_V3"
           }
@@ -115,10 +138,10 @@
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
-              "const bool ZAWY_DIFFICULTY_V4                          = %s;"
+              "const size_t ZAWY_DIFFICULTY_V4                          = %s;"
             ],
             "replace_text_alt": [
-              "const bool ZAWY_DIFFICULTY_V4                          = 0;"
+              "const size_t ZAWY_DIFFICULTY_V4                          = 0;"
             ],
             "var": "ZAWY_DIFFICULTY_V4"
           }
@@ -161,6 +184,65 @@
                 "    if (high != 0) {",
                 "      return 0;",
                 "    }",
+                "    uint64_t nextDiffZ = low / timeSpan;",
+                "    if (nextDiffZ <= 100000) {",
+                "      nextDiffZ = 100000;",
+                "    }",
+                "",
+                "    return nextDiffZ;",
+                "  }",
+                "",
+                "  if (m_zawyDifficultyBlockIndex && m_zawyDifficultyBlockIndex <= blockIndex) {",
+                "    if (high != 0) {",
+                "      return 0;",
+                "    }",
+                "/*",
+                "Recalculating 'low' and 'timespan' with hardcoded values:",
+                "DIFFICULTY_CUT=0",
+                "DIFFICULTY_LAG=0",
+                "DIFFICULTY_WINDOW=17",
+                "*/",
+                "    c_difficultyWindow = 17;",
+                "    c_difficultyCut = 0;",
+                "",
+                "    assert(c_difficultyWindow >= 2);",
+                "",
+                "    if (timestamps.size() > c_difficultyWindow) {",
+                "      timestamps.resize(c_difficultyWindow);",
+                "      cumulativeDifficulties.resize(c_difficultyWindow);",
+                "    }",
+                "",
+                "    length = timestamps.size();",
+                "    assert(length == cumulativeDifficulties.size());",
+                "    assert(length <= c_difficultyWindow);",
+                "    if (length <= 1) {",
+                "      return 1;",
+                "    }",
+                "",
+                "    sort(timestamps.begin(), timestamps.end());",
+                "",
+                "    assert(2 * c_difficultyCut <= c_difficultyWindow - 2);",
+                "    if (length <= c_difficultyWindow - 2 * c_difficultyCut) {",
+                "      cutBegin = 0;",
+                "      cutEnd = length;",
+                "    } else {",
+                "      cutBegin = (length - (c_difficultyWindow - 2 * c_difficultyCut) + 1) / 2;",
+                "      cutEnd = cutBegin + (c_difficultyWindow - 2 * c_difficultyCut);",
+                "    }",
+                "    assert(/*cut_begin >= 0 &&*/ cutBegin + 2 <= cutEnd && cutEnd <= length);",
+                "    timeSpan = timestamps[cutEnd - 1] - timestamps[cutBegin];",
+                "    if (timeSpan == 0) {",
+                "      timeSpan = 1;",
+                "    }",
+                "",
+                "    totalWork = cumulativeDifficulties[cutEnd - 1] - cumulativeDifficulties[cutBegin];",
+                "    assert(totalWork > 0);",
+                "",
+                "    low = mul128(totalWork, m_difficultyTarget, &high);",
+                "    if (high != 0 || std::numeric_limits<uint64_t>::max() - low < (timeSpan - 1)) {",
+                "      return 0;",
+                "    }",
+
                 "    uint64_t nextDiffZ = low / timeSpan;",
                 "    if (nextDiffZ <= 100000) {",
                 "      nextDiffZ = 100000;",
