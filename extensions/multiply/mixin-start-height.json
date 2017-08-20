@@ -1,0 +1,11 @@
+{
+  "file": "multiply/mixin-start-height.json",
+  "description": "Ability to getting output keys for mixin after global index",
+  "required": [
+    "core/bytecoin.json",
+    "mixin-start-height.json",
+    "multiply.json"
+  ],
+  "files": [
+  ]
+}

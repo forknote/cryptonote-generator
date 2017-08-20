@@ -1,0 +1,24 @@
+{
+  "file": "mixin-start-height.json",
+  "description": "Ability to start getting output keys for mixin after global index",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "auto upperBlockLimit = getTopBlockIndex() - currency.minedMoneyUnlockWindow();",
+          "parameters": {
+            "text": [
+              "// Add bottomBlockLimit",
+              "std::cout << \"upperBlockLimit: \" << upperBlockLimit << std::endl;"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
