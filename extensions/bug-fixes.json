@@ -49,7 +49,51 @@
         }
       ]
     },
-
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+        {
+          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
+          "action": "replace",
+          "marker": "if (m_core.getTopBlockIndex() + 1 < req.height) {",
+          "parameters": {
+            "text": [
+              "  if (m_core.getTopBlockIndex() < req.height) {"
+            ]
+          }
+        },
+        {
+          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
+          "action": "replace",
+          "marker": "std::string(\"To big height: \") + std::to_string(req.height) + \", current blockchain height = \" + std::to_string(m_core.getTopBlockIndex() + 1) };",
+          "parameters": {
+            "text": [
+              "      std::string(\"To big height: \") + std::to_string(req.height) + \", current blockchain height = \" + std::to_string(m_core.getTopBlockIndex()) };"
+            ]
+          }
+        },
+        {
+          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
+          "action": "replace",
+          "marker": "uint32_t index = static_cast<uint32_t>(req.height) - 1;",
+          "parameters": {
+            "text": [
+              "uint32_t index = static_cast<uint32_t>(req.height);"
+            ]
+          }
+        },
+        {
+          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
+          "action": "replace",
+          "marker": "assert(cachedBlock.getBlockIndex() == req.height - 1);",
+          "parameters": {
+            "text": [
+              "assert(cachedBlock.getBlockIndex() == req.height);"
+            ]
+          }
+        }
+      ]
+    },
     {
       "path": "/src/SimpleWallet/SimpleWallet.cpp",
       "changes": [
