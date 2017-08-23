@@ -6,6 +6,79 @@
   ],
   "files": [
     {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  uint32_t m_mixinStartHeight;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& mixinStartHeight(uint32_t val) { m_currency.m_mixinStartHeight = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  uint32_t mixinStartHeight() const { return m_mixinStartHeight; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+          "parameters": {
+            "text": [
+              "mixinStartHeight(parameters::MIXIN_START_HEIGHT);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_mixinStartHeight(currency.m_mixinStartHeight),"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint32_t MIXIN_START_HEIGHT                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t MIXIN_START_HEIGHT                          = 0;"
+            ],
+            "var": "MIXIN_START_HEIGHT"
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/CryptoNoteCore/Core.cpp",
       "changes": [
         {
