@@ -87,6 +87,7 @@
           "parameters": {
             "text": [
               "// Add bottomBlockLimit",
+              "auto bottomBlockLimit = currency.mixinStartHeight();",
               "std::cout << \"upperBlockLimit: \" << upperBlockLimit << std::endl;"
             ]
           }

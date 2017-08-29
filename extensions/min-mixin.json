@@ -1,0 +1,232 @@
+{
+  "file": "min-mixin.json",
+  "description": "Adds MIN_MIXIN and MANDATORY_MIXIN options",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  size_t m_minMixin;",
+              "  uint8_t m_mandatoryMixinBlockVersion;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& minMixin(size_t val) { m_currency.m_minMixin = val; return *this; }",
+              "  CurrencyBuilder& mandatoryMixinBlockVersion(uint8_t val) { m_currency.m_mandatoryMixinBlockVersion = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  size_t minMixin() const { return m_minMixin; }",
+              "  uint8_t mandatoryMixinBlockVersion() const { return m_mandatoryMixinBlockVersion; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+          "parameters": {
+            "text": [
+              "minMixin(parameters::MIN_MIXIN);",
+              "mandatoryMixinBlockVersion(parameters::MANDATORY_MIXIN_BLOCK_VERSION);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_minMixin(currency.m_minMixin),",
+              "m_mandatoryMixinBlockVersion(currency.m_mandatoryMixinBlockVersion),"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const size_t MIN_MIXIN                          = %s;"
+            ],
+            "replace_text_alt": [
+              "const size_t MIN_MIXIN                          = 0;"
+            ],
+            "var": "MIN_MIXIN"
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint8_t MANDATORY_MIXIN_BLOCK_VERSION     = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint8_t MANDATORY_MIXIN_BLOCK_VERSION     = 0;"
+            ],
+            "var": "MANDATORY_MIXIN_BLOCK_VERSION"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockValidationErrors.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "PROOF_OF_WORK_TOO_WEAK,",
+          "parameters": {
+            "text": [
+              "MIXIN_BELOW_MINIMUM,"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "case BlockValidationError::PROOF_OF_WORK_TOO_WEAK: return \"Proof of work is too weak\";",
+          "parameters": {
+            "text": [
+              "case BlockValidationError::MIXIN_BELOW_MINIMUM: return \"Mixin is below the required minimum\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/TransactionValidationErrors.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "INPUT_IDENTICAL_KEYIMAGES,",
+          "parameters": {
+            "text": [
+              "  MIXIN_TOO_SMALL,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "case TransactionValidationError::INPUT_IDENTICAL_KEYIMAGES:",
+          "parameters": {
+            "text": [
+              "      case TransactionValidationError::MIXIN_TOO_SMALL: return \"Transaction has mixin below the required minimum\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::error_code validateSemantic(",
+          "parameters": {
+            "text": [
+              "bool f_getMixin(const Transaction& transaction, uint64_t& mixin);",
+              "std::error_code validateMixin(const Transaction& transaction, uint8_t majorBlockVersion);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+
+        {
+          "action": "add_above",
+          "marker": "std::error_code Core::validateSemantic",
+          "parameters": {
+            "text": [
+              "bool Core::f_getMixin(const Transaction& transaction, uint64_t& mixin) {",
+              "  mixin = 0;",
+              "  for (const TransactionInput& txin : transaction.inputs) {",
+              "    if (txin.type() != typeid(KeyInput)) {",
+              "      continue;",
+              "    }",
+              "    uint64_t currentMixin = boost::get<KeyInput>(txin).outputIndexes.size();",
+              "    if (currentMixin > mixin) {",
+              "      mixin = currentMixin;",
+              "    }",
+              "  }",
+              "  return true;",
+              "}",
+              "",
+              "std::error_code Core::validateMixin(const Transaction& transaction, uint8_t majorBlockVersion) {",
+              "  uint64_t mixin = 0;",
+              "  f_getMixin(transaction, mixin);",
+              "  if (currency.mandatoryMixinBlockVersion() >= majorBlockVersion && mixin < currency.minMixin()) {",
+              "    return error::TransactionValidationError::MIXIN_TOO_SMALL;",
+              "  }",
+              "  return error::TransactionValidationError::VALIDATION_SUCCESS;",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "auto error = validateSemantic",
+          "parameters": {
+            "text": [
+              "uint8_t blockMajorVersion = getBlockMajorVersionForHeight(blockIndex);",
+              "auto error_mixin = validateMixin(transaction, blockMajorVersion);",
+              "if (error_mixin != error::TransactionValidationError::VALIDATION_SUCCESS) {",
+              "  return error_mixin;",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "while (!ar.eof()) {",
+          "parameters": {
+            "text": [
+              "              if (fake_outs_count < m_currency.minMixin()) {",
+              "                logger(ERROR, BRIGHT_RED) << \"mixin should be bigger or equal to \" << m_currency.minMixin();",
+              "                return false;",
+              "              }",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -16,8 +16,7 @@
             "text": [
               "  uint32_t m_zawyDifficultyBlockIndex;",
               "  size_t m_zawyDifficultyV2;",
-              "  size_t m_zawyDifficultyV3;",
-              "  size_t m_zawyDifficultyV4;"
+              "  uint8_t m_zawyDifficultyBlockVersion;"
             ]
           }
         },
@@ -28,8 +27,7 @@
             "text": [
               "  CurrencyBuilder& zawyDifficultyBlockIndex(uint32_t val) { m_currency.m_zawyDifficultyBlockIndex = val; return *this; }",
               "  CurrencyBuilder& zawyDifficultyV2(size_t val) { m_currency.m_zawyDifficultyV2 = val; return *this; }",
-              "  CurrencyBuilder& zawyDifficultyV3(size_t val) { m_currency.m_zawyDifficultyV3 = val; return *this; }",
-              "  CurrencyBuilder& zawyDifficultyV4(size_t val) { m_currency.m_zawyDifficultyV4 = val; return *this; }"
+              "  CurrencyBuilder& zawyDifficultyBlockVersion(uint8_t val) { m_currency.m_zawyDifficultyBlockVersion = val; return *this; }"
             ]
           }
         },
@@ -40,8 +38,7 @@
             "text": [
               "  uint32_t zawyDifficultyBlockIndex() const { return m_zawyDifficultyBlockIndex; }",
               "  size_t zawyDifficultyV2() const { return m_zawyDifficultyV2; }",
-              "  size_t zawyDifficultyV3() const { return m_zawyDifficultyV3; }",
-              "  size_t zawyDifficultyV4() const { return m_zawyDifficultyV4; }"
+              "  uint8_t zawyDifficultyBlockVersion() const { return m_zawyDifficultyBlockVersion; }"
             ]
           }
         }
@@ -57,8 +54,7 @@
             "text": [
               "zawyDifficultyBlockIndex(parameters::ZAWY_DIFFICULTY_BLOCK_INDEX);",
               "zawyDifficultyV2(parameters::ZAWY_DIFFICULTY_V2);",
-              "zawyDifficultyV3(parameters::ZAWY_DIFFICULTY_V3);",
-              "zawyDifficultyV4(parameters::ZAWY_DIFFICULTY_V4);"
+              "zawyDifficultyBlockVersion(parameters::ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION);"
             ]
           }
         },
@@ -69,8 +65,7 @@
             "text": [
               "m_zawyDifficultyBlockIndex(currency.m_zawyDifficultyBlockIndex),",
               "m_zawyDifficultyV2(currency.m_zawyDifficultyV2),",
-              "m_zawyDifficultyV3(currency.m_zawyDifficultyV3),",
-              "m_zawyDifficultyV4(currency.m_zawyDifficultyV4),"
+              "m_zawyDifficultyBlockVersion(currency.m_zawyDifficultyBlockVersion),"
             ]
           }
         }
@@ -120,30 +115,12 @@
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
-              "const size_t ZAWY_DIFFICULTY_V3                          = %s;"
+              "const uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION   = %s;"
             ],
             "replace_text_alt": [
-              "const size_t ZAWY_DIFFICULTY_V3                          = 0;"
+              "const uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION   = 0;"
             ],
-            "var": "ZAWY_DIFFICULTY_V3"
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/CryptoNoteConfig.h",
-      "changes": [
-        {
-          "action": "add_above",
-          "marker": "const unsigned EMISSION_SPEED_FACTOR",
-          "parameters": {
-            "text": [
-              "const size_t ZAWY_DIFFICULTY_V4                          = %s;"
-            ],
-            "replace_text_alt": [
-              "const size_t ZAWY_DIFFICULTY_V4                          = 0;"
-            ],
-            "var": "ZAWY_DIFFICULTY_V4"
+            "var": "ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION"
           }
         }
       ]
@@ -156,24 +133,11 @@
           "marker": "return (low + timeSpan - 1) / timeSpan;  // with version",
           "parameters": {
             "text": [
-                "  if (version >= 4 && m_zawyDifficultyV4) {",
-                "    if (high != 0) {",
-                "      return 0;",
-                "    }",
-                "    uint64_t nextDiffZ = low / timeSpan;",
-                "    return nextDiffZ;",
+                "  uint8_t c_zawyDifficultyBlockVersion = m_zawyDifficultyBlockVersion;",
+                "  if (m_zawyDifficultyV2) {",
+                "    c_zawyDifficultyBlockVersion = 2;",
                 "  }",
-                "",
-                "  if (version >= 3 && m_zawyDifficultyV3) {",
-                "    if (high != 0) {",
-                "      return 0;",
-                "    }",
-                "    uint64_t nextDiffZ = low / timeSpan;",
-                "",
-                "    return nextDiffZ;",
-                "  }",
-                "",
-                "  if (version >= 2 && m_zawyDifficultyV2) {",
+                "  if (version >= c_zawyDifficultyBlockVersion && c_zawyDifficultyBlockVersion) {",
                 "    if (high != 0) {",
                 "      return 0;",
                 "    }",
