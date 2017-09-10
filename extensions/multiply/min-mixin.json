@@ -1,0 +1,236 @@
+{
+  "file": "multiply/min-mixin.json",
+  "description": "Adds --min-mixin and --mandatory-mixin options to forknoted and simplewallet",
+  "required": [
+    "core/bytecoin.json",
+    "min-mixin.json",
+    "multiply.json",
+    "get-blockchain-settings.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<uint16_t>    arg_MIN_MIXIN  = {\"MIN_MIXIN\", \"uint16_t\", CryptoNote::parameters::MIN_MIXIN};",
+              "  const command_line::arg_descriptor<uint8_t>    arg_MANDATORY_MIXIN_BLOCK_VERSION  = {\"MANDATORY_MIXIN_BLOCK_VERSION\", \"uint8_t\", CryptoNote::parameters::MANDATORY_MIXIN_BLOCK_VERSION};"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_MIN_MIXIN);",
+              "    command_line::add_arg(desc_cmd_sett, arg_MANDATORY_MIXIN_BLOCK_VERSION);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.genesisCoinbaseTxHex(command_line::get_arg(vm, arg_GENESIS_COINBASE_TX_HEX));",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.minMixin(command_line::get_arg(vm, arg_MIN_MIXIN));",
+              "//uint8_t recognized as char",
+              "  if (command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION) == 0) {",
+              "    currencyBuilder.mandatoryMixinBlockVersion(command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION));",
+              "  } else {",
+              "    currencyBuilder.mandatoryMixinBlockVersion(command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION) - '0');",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint16_t m_daemon_port;",
+          "parameters": {
+            "text": [
+              "uint16_t m_minMixin;",
+              "uint8_t m_mandatoryMixinBlockVersion;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "arg_testnet = { \"testnet\"",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<uint16_t> arg_MIN_MIXIN  = {\"MIN_MIXIN\", \"Minimum mixin count\", false};  ",
+              "  const command_line::arg_descriptor<uint8_t> arg_MANDATORY_MIXIN_BLOCK_VERSION  = {\"MANDATORY_MIXIN_BLOCK_VERSION\", \"Make mixin mandatory after block with major version X\", false};  "
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "Tools::wallet_rpc_server::init_options(desc_params);",
+          "parameters": {
+            "text": [
+              "  command_line::add_arg(desc_params, arg_MIN_MIXIN);",
+              "  command_line::add_arg(desc_params, arg_MANDATORY_MIXIN_BLOCK_VERSION);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));",
+          "parameters": {
+            "text": [
+              "currencyBuilder.minMixin(command_line::get_arg(vm, arg_MIN_MIXIN));",
+              "//uint8_t recognized as char",
+              "if (command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION) == 0) {",
+              "  currencyBuilder.mandatoryMixinBlockVersion(command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION));",
+              "} else {",
+              "  currencyBuilder.mandatoryMixinBlockVersion(command_line::get_arg(vm, arg_MANDATORY_MIXIN_BLOCK_VERSION) - '0');",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint64_t MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "  uint16_t MIN_MIXIN;",
+              "  uint8_t MANDATORY_MIXIN_BLOCK_VERSION;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "    MIN_MIXIN=CryptoNote::parameters::MIN_MIXIN;",
+              "    MANDATORY_MIXIN_BLOCK_VERSION=CryptoNote::parameters::MANDATORY_MIXIN_BLOCK_VERSION;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
+          "parameters": {
+            "text": [
+              "    (\"MIN_MIXIN\", po::value<uint16_t>()->default_value(0), \"uint16_t\")",
+              "    (\"MANDATORY_MIXIN_BLOCK_VERSION\", po::value<uint8_t>()->default_value(0), \"uint8_t\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"MIN_MIXIN\")) {",
+              "    MIN_MIXIN = options[\"MIN_MIXIN\"].as<uint16_t>();",
+              "  }",
+              "  if (options.count(\"MANDATORY_MIXIN_BLOCK_VERSION\")) {",
+              "    MANDATORY_MIXIN_BLOCK_VERSION = options[\"MANDATORY_MIXIN_BLOCK_VERSION\"].as<uint8_t>();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.minMixin(config.coinBaseConfig.MIN_MIXIN);",
+              "//uint8_t recognized as char",
+              "  if (config.coinBaseConfig.MANDATORY_MIXIN_BLOCK_VERSION == 0) {",
+              "    currencyBuilder.mandatoryMixinBlockVersion(config.coinBaseConfig.MANDATORY_MIXIN_BLOCK_VERSION);",
+              "  } else {",
+              "    currencyBuilder.mandatoryMixinBlockVersion(config.coinBaseConfig.MANDATORY_MIXIN_BLOCK_VERSION - '0');",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::string BYTECOIN_NETWORK;",
+          "parameters": {
+            "text": [
+              "  uint16_t MIN_MIXIN;",
+              "  uint8_t MANDATORY_MIXIN_BLOCK_VERSION;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
+          "parameters": {
+            "text": [
+              "    KV_MEMBER(MIN_MIXIN)",
+              "    KV_MEMBER(MANDATORY_MIXIN_BLOCK_VERSION)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().minMixin() != 0 || m_core.getCurrency().mandatoryMixinBlockVersion() != 0) {",
+              "    res.extensions.push_back(\"mix-mixin.json\");",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().minMixin() != 0 || m_core.getCurrency().mandatoryMixinBlockVersion() != 0) {",
+              "    res.core.MIN_MIXIN = m_core.getCurrency().minMixin();",
+              "    res.core.MANDATORY_MIXIN_BLOCK_VERSION = m_core.getCurrency().mandatoryMixinBlockVersion();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

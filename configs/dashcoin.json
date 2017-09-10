@@ -5,7 +5,9 @@
     "simplewallet-default-fee.json",
     "max-transaction-size-limit.json",
     "simplewallet-import-keys.json",
-    "simplewallet-export-keys.json"
+    "simplewallet-export-keys.json",
+    "min-mixin.json",
+    "mixin-start-height.json"
   ],
   "base_coin": {
     "name": "bytecoin",
@@ -53,6 +55,8 @@
     "UPGRADE_HEIGHT_V3": "static_cast<uint32_t>(-1)",
     "MAX_BLOCK_SIZE_INITIAL": "25 * 1024",
     "MAX_TRANSACTION_SIZE_LIMIT": 19400,
-    "DEFAULT_FEE": 1000000000
+    "DEFAULT_FEE": 1000000000,
+    "MIN_MIXIN": 1,
+    "MIXIN_START_HEIGHT": 748555
   }
 }

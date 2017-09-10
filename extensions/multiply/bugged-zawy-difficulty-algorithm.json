@@ -1,10 +1,11 @@
 {
-  "file": "multiply/mixin-start-height.json",
-  "description": "Ability to getting output keys for mixin after global index in multiply (MIXIN_START_HEIGHT)",
+  "file": "multiply/bugged-zawy-difficulty-algorithm.json",
+  "description": "Add Zawy difficulty algorithm option in multiply (https://github.com/monero-project/research-lab/issues/3)",
   "required": [
     "core/bytecoin.json",
-    "mixin-start-height.json",
+    "bugged-zawy-difficulty-algorithm.json",
     "multiply.json",
+    "multiply/zawy-difficulty-algorithm.json",
     "get-blockchain-settings.json"
   ],
   "files": [
@@ -16,7 +17,7 @@
           "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<uint32_t>    arg_MIXIN_START_HEIGHT  = {\"MIXIN_START_HEIGHT\", \"uint32_t\", 0};"
+              "  const command_line::arg_descriptor<uint32_t>    arg_BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX  = {\"BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX\", \"uint32_t\", 0};"
             ]
           }
         },
@@ -25,7 +26,7 @@
           "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
           "parameters": {
             "text": [
-              "    command_line::add_arg(desc_cmd_sett, arg_MIXIN_START_HEIGHT);"
+              "    command_line::add_arg(desc_cmd_sett, arg_BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX);"
             ]
           }
         },
@@ -34,7 +35,7 @@
           "marker": "currencyBuilder.testnet(testnet_mode);",
           "parameters": {
             "text": [
-              "    currencyBuilder.mixinStartHeight(command_line::get_arg(vm, arg_MIXIN_START_HEIGHT));"
+              "    currencyBuilder.buggedZawyDifficultyBlockIndex(command_line::get_arg(vm, arg_BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX));"
             ]
           }
         }
@@ -48,7 +49,7 @@
           "marker": "uint64_t MONEY_SUPPLY;",
           "parameters": {
             "text": [
-              "  uint32_t MIXIN_START_HEIGHT;"
+              "  uint32_t BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX;"
             ]
           }
         }
@@ -62,7 +63,7 @@
           "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
           "parameters": {
             "text": [
-              "    MIXIN_START_HEIGHT=CryptoNote::parameters::MIXIN_START_HEIGHT;"
+              "    BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX=CryptoNote::parameters::BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX;"
             ]
           }
         },
@@ -71,7 +72,7 @@
           "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
           "parameters": {
             "text": [
-              "    (\"MIXIN_START_HEIGHT\", po::value<uint32_t>()->default_value(0), \"uint32_t\")"
+              "    (\"BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX\", po::value<uint32_t>()->default_value(0), \"uint32_t\")"
             ]
           }
         },
@@ -80,8 +81,8 @@
           "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
           "parameters": {
             "text": [
-              "  if (options.count(\"MIXIN_START_HEIGHT\")) {",
-              "    MIXIN_START_HEIGHT = options[\"MIXIN_START_HEIGHT\"].as<uint32_t>();",
+              "  if (options.count(\"BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX\")) {",
+              "    BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX = options[\"BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX\"].as<uint32_t>();",
               "  }"
             ]
           }
@@ -96,7 +97,7 @@
           "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
           "parameters": {
             "text": [
-              "  currencyBuilder.mixinStartHeight(config.coinBaseConfig.MIXIN_START_HEIGHT);"
+              "  currencyBuilder.buggedZawyDifficultyBlockIndex(config.coinBaseConfig.BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX);"
             ]
           }
         }
@@ -112,7 +113,7 @@
           "marker": "std::string BYTECOIN_NETWORK;",
           "parameters": {
             "text": [
-              "  uint32_t MIXIN_START_HEIGHT;"
+              "  uint32_t BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX;"
             ]
           }
         },
@@ -121,7 +122,7 @@
           "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
           "parameters": {
             "text": [
-              "    KV_MEMBER(MIXIN_START_HEIGHT)"
+              "    KV_MEMBER(BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX)"
             ]
           }
         }
@@ -136,8 +137,8 @@
           "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
           "parameters": {
             "text": [
-              "  if (m_core.getCurrency().mixinStartHeight() != 0) {",
-              "    res.extensions.push_back(\"mixin-start-height.json\");",
+              "  if (m_core.getCurrency().buggedZawyDifficultyBlockIndex() != 0 ) {",
+              "    res.extensions.push_back(\"bugged-zawy-difficulty-algorithm.json\");",
               "  }"
             ]
           }
@@ -147,9 +148,7 @@
           "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
           "parameters": {
             "text": [
-              "  if (m_core.getCurrency().mixinStartHeight() != 0) {",
-              "    res.core.MIXIN_START_HEIGHT = m_core.getCurrency().mixinStartHeight();",
-              "  }"
+              "  res.core.BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX = m_core.getCurrency().buggedZawyDifficultyBlockIndex();"
             ]
           }
         }

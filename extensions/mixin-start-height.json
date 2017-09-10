@@ -87,8 +87,143 @@
           "parameters": {
             "text": [
               "// Add bottomBlockLimit",
-              "auto bottomBlockLimit = currency.mixinStartHeight();",
-              "std::cout << \"upperBlockLimit: \" << upperBlockLimit << std::endl;"
+              "auto bottomBlockLimit = currency.mixinStartHeight();"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "globalIndexes = chainsLeaves[0]->getRandomOutsByAmount(amount, count, getTopBlockIndex());",
+          "parameters": {
+            "text": [
+              " globalIndexes = chainsLeaves[0]->getRandomOutsByAmount(amount, count, getTopBlockIndex(), bottomBlockLimit);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/IBlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex) const = 0;",
+          "parameters": {
+            "text": [
+              "virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex, uint32_t startBlockIndex) const = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex) const override;",
+          "parameters": {
+            "text": [
+              "  virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex, uint32_t startBlockIndex) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/BlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "std::vector<uint32_t> BlockchainCache::getRandomOutsByAmount(Amount amount, size_t count, uint32_t blockIndex) const {",
+          "parameters": {
+            "text": [
+              "std::vector<uint32_t> BlockchainCache::getRandomOutsByAmount(Amount amount, size_t count, uint32_t blockIndex) const {",
+              "  return getRandomOutsByAmount(amount, count, blockIndex, 0);",
+              "}",
+              "",
+              "std::vector<uint32_t> BlockchainCache::getRandomOutsByAmount(Amount amount, size_t count, uint32_t blockIndex, uint32_t startBlockIndex) const {"
+
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "auto transactionIterator = transactions.get<TransactionInBlockTag>().find(",
+          "parameters": {
+            "text": [
+              "if (outIndex.blockIndex >= startBlockIndex) {"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "offs.push_back(it->second.startIndex + offset);",
+          "parameters": {
+            "text": [
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count,",
+          "parameters": {
+            "text": [
+              "  virtual std::vector<uint32_t> getRandomOutsByAmount(uint64_t amount, size_t count, uint32_t blockIndex, uint32_t startBlockIndex) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "                                                                     uint32_t blockIndex) const {",
+          "parameters": {
+            "text": [
+              "                                                                     uint32_t blockIndex) const {",
+              "  return getRandomOutsByAmount(amount, count, blockIndex, 0);",
+              "}",
+              "",
+              "std::vector<uint32_t> DatabaseBlockchainCache::getRandomOutsByAmount(uint64_t amount, size_t count,",
+              "                                             uint32_t blockIndex, uint32_t startBlockIndex) const {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "for (uint32_t i = 0; i < outputsToPick; ++i, globalIndexes.push_back(generator())) { }",
+          "parameters": {
+            "text": [
+              "      for (uint32_t i = 0, j = 0; i < outputsToPick; )  {",
+              "        globalIndexes.push_back(generator());",
+              "        std::vector<uint32_t> lastIndexVector;",
+              "        lastIndexVector.push_back(globalIndexes.back());",
+              "        std::vector<PackedOutIndex> outputs;",
+              "        if (extractKeyOtputIndexes(amount, Common::ArrayView<uint32_t>(lastIndexVector.data(), lastIndexVector.size()), outputs) != ExtractOutputKeysResult::SUCCESS) {",
+              "        logger(Logging::DEBUGGING) << \"getRandomOutsByAmount: failed to extract key output indexes\";",
+              "          throw std::runtime_error(\"Invalid output index\"); //TODO: make error code",
+              "        }",
+              "",
+              "        std::vector<ExtendedTransactionInfo> transactions;",
+              "        if (!requestExtendedTransactionInfos(outputs, database, transactions)) {",
+              "          logger(Logging::TRACE) << \"getRandomOutsByAmount: requestExtendedTransactionInfos failed\";",
+              "          throw std::runtime_error(\"Error while requesting transactions\"); //TODO: make error code",
+              "        }",
+              "        if (startBlockIndex >= transactions[0].blockIndex) {",
+              "          globalIndexes.pop_back();",
+              "        } else {",
+              "          ++i;",
+              "        }",
+              "      }"
             ]
           }
         }

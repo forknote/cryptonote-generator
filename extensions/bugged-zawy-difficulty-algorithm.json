@@ -1,0 +1,155 @@
+{
+  "file": "bugged-zawy-difficulty-algorithm.json",
+  "description": "Used only by coins, addopted early version of ZAWY_DIFFICULTY_BLOCK_INDEX. Major bug in this implementation. Affected coins: Dinastycoin",
+  "required": [
+    "core/bytecoin.json",
+    "versionized-parameters.json",
+    "zawy-difficulty-algorithm.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  uint32_t m_buggedZawyDifficultyBlockIndex;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& buggedZawyDifficultyBlockIndex(uint32_t val) { m_currency.m_buggedZawyDifficultyBlockIndex = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  uint32_t buggedZawyDifficultyBlockIndex() const { return m_buggedZawyDifficultyBlockIndex; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+          "parameters": {
+            "text": [
+              "buggedZawyDifficultyBlockIndex(parameters::BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_buggedZawyDifficultyBlockIndex(currency.m_buggedZawyDifficultyBlockIndex),"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint32_t BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX                 = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX                 = 0;"
+            ],
+            "var": "BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "return (low + timeSpan - 1) / timeSpan;  // with version",
+          "parameters": {
+            "text": [
+                "",
+                "  if (m_buggedZawyDifficultyBlockIndex && m_buggedZawyDifficultyBlockIndex <= blockIndex) {",
+                "std::cout << \"m_buggedZawyDifficultyBlockIndex\" << std::endl;",
+                "    if (high != 0) {",
+                "      return 0;",
+                "    }",
+                "/*",
+                "  Recalculating 'low' and 'timespan' with hardcoded values:",
+                "  DIFFICULTY_CUT=0",
+                "  DIFFICULTY_LAG=0",
+                "  DIFFICULTY_WINDOW=17",
+                "*/",
+                "    c_difficultyWindow = 17;",
+                "    c_difficultyCut = 0;",
+                "",
+                "    assert(c_difficultyWindow >= 2);",
+                "",
+                "    if (timestamps.size() > c_difficultyWindow) {",
+                "      timestamps.resize(c_difficultyWindow);",
+                "      cumulativeDifficulties.resize(c_difficultyWindow);",
+                "    }",
+                "",
+                "    length = timestamps.size();",
+                "    assert(length == cumulativeDifficulties.size());",
+                "    assert(length <= c_difficultyWindow);",
+                "    if (length <= 1) {",
+                "      return 1;",
+                "    }",
+                "",
+                "    sort(timestamps.begin(), timestamps.end());",
+                "",
+                "    assert(2 * c_difficultyCut <= c_difficultyWindow - 2);",
+                "    if (length <= c_difficultyWindow - 2 * c_difficultyCut) {",
+                "      cutBegin = 0;",
+                "      cutEnd = length;",
+                "    } else {",
+                "      cutBegin = (length - (c_difficultyWindow - 2 * c_difficultyCut) + 1) / 2;",
+                "      cutEnd = cutBegin + (c_difficultyWindow - 2 * c_difficultyCut);",
+                "    }",
+                "    assert(/*cut_begin >= 0 &&*/ cutBegin + 2 <= cutEnd && cutEnd <= length);",
+                "    timeSpan = timestamps[cutEnd - 1] - timestamps[cutBegin];",
+                "    if (timeSpan == 0) {",
+                "      timeSpan = 1;",
+                "    }",
+                "",
+                "    totalWork = cumulativeDifficulties[cutEnd - 1] - cumulativeDifficulties[cutBegin];",
+                "    assert(totalWork > 0);",
+                "",
+                "    low = mul128(totalWork, m_difficultyTarget, &high);",
+                "    if (high != 0 || std::numeric_limits<uint64_t>::max() - low < (timeSpan - 1)) {",
+                "      return 0;",
+                "    }",
+
+                "    uint64_t nextDiffZ = low / timeSpan;",
+                "",
+                "    return nextDiffZ;",
+                "  }",
+                ""
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

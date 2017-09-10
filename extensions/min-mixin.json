@@ -97,29 +97,6 @@
       ]
     },
     {
-      "path": "/src/CryptoNoteCore/BlockValidationErrors.h",
-      "changes": [
-        {
-          "action": "add_below",
-          "marker": "PROOF_OF_WORK_TOO_WEAK,",
-          "parameters": {
-            "text": [
-              "MIXIN_BELOW_MINIMUM,"
-            ]
-          }
-        },
-        {
-          "action": "add_below",
-          "marker": "case BlockValidationError::PROOF_OF_WORK_TOO_WEAK: return \"Proof of work is too weak\";",
-          "parameters": {
-            "text": [
-              "case BlockValidationError::MIXIN_BELOW_MINIMUM: return \"Mixin is below the required minimum\";"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/CryptoNoteCore/TransactionValidationErrors.h",
       "changes": [
         {
@@ -127,7 +104,7 @@
           "marker": "INPUT_IDENTICAL_KEYIMAGES,",
           "parameters": {
             "text": [
-              "  MIXIN_TOO_SMALL,"
+              "  MIXIN_COUNT_TOO_SMALL,"
             ]
           }
         },
@@ -136,7 +113,7 @@
           "marker": "case TransactionValidationError::INPUT_IDENTICAL_KEYIMAGES:",
           "parameters": {
             "text": [
-              "      case TransactionValidationError::MIXIN_TOO_SMALL: return \"Transaction has mixin below the required minimum\";"
+              "      case TransactionValidationError::MIXIN_COUNT_TOO_SMALL: return \"MixIn count is below the required minimum\";"
             ]
           }
         }
@@ -184,7 +161,7 @@
               "  uint64_t mixin = 0;",
               "  f_getMixin(transaction, mixin);",
               "  if (currency.mandatoryMixinBlockVersion() >= majorBlockVersion && mixin < currency.minMixin()) {",
-              "    return error::TransactionValidationError::MIXIN_TOO_SMALL;",
+              "    return error::TransactionValidationError::MIXIN_COUNT_TOO_SMALL;",
               "  }",
               "  return error::TransactionValidationError::VALIDATION_SUCCESS;",
               "}",
@@ -208,8 +185,6 @@
         }
       ]
     },
-
-
     {
       "path": "/src/SimpleWallet/SimpleWallet.cpp",
       "changes": [
@@ -219,9 +194,61 @@
           "parameters": {
             "text": [
               "              if (fake_outs_count < m_currency.minMixin()) {",
-              "                logger(ERROR, BRIGHT_RED) << \"mixin should be bigger or equal to \" << m_currency.minMixin();",
+              "                logger(ERROR, BRIGHT_RED) << \"mixin should be equal or bigger to \" << m_currency.minMixin();",
               "                return false;",
               "              }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Wallet/WalletErrors.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "MIXIN_COUNT_TOO_BIG,",
+          "parameters": {
+            "text": [
+              "MIXIN_COUNT_TOO_SMALL,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "case MIXIN_COUNT_TOO_BIG:           return \"MixIn count is too big\";",
+          "parameters": {
+            "text": [
+              "  case MIXIN_COUNT_TOO_SMALL:           return \"MixIn count is below the required minimum\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/WalletService.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "CryptoNote::TransactionParameters sendParams;",
+          "parameters": {
+            "text": [
+              "validateMixin(request.anonymity, currency, logger);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void validateAddresses(const std::vector<std::string>& addresses,",
+          "parameters": {
+            "text": [
+              "void validateMixin(const uint16_t& mixin, const CryptoNote::Currency& currency, Logging::LoggerRef logger) {",
+              "  if (mixin < currency.minMixin()) {",
+              "    logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << \"Mixin must be equal or bigger to \" << currency.minMixin();",
+              "    throw std::system_error(make_error_code(CryptoNote::error::MIXIN_COUNT_TOO_SMALL));",
+              "  }",
+              "}",
               ""
             ]
           }
