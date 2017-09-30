@@ -6,6 +6,20 @@
   ],
   "files": [
     {
+      "path": "/src/Platform/OSX/System/Context.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "makecontext(uctx*, void(*)(), intptr_t);",
+          "parameters": {
+            "text": [
+              "extern void makecontext(uctx*, void(*)(void), intptr_t);"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/Platform/OSX/System/Context.c",
       "changes": [
         {
@@ -117,8 +131,38 @@
         }
       ]
     },
-
-
+    {
+      "path": "/src/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp",
+      "changes": [
+        {
+          "description": "Fix getinfo incorrect last_known_block_index when malicious is in place",
+          "action": "add_below",
+          "marker": "m_observedHeight = std::max(peerHeight, m_core.getTopBlockIndex() + 1);",
+          "parameters": {
+            "text": [
+              "    if (context.m_state == CryptoNoteConnectionContext::state_normal) {",
+              "      m_observedHeight = m_core.getTopBlockIndex();",
+              "    }"
+            ]
+          }
+        },
+        {
+          "description": "Fix getinfo incorrect last_known_block_index when malicious is in place",
+          "action": "replace",
+          "marker": "if (peerHeight > context.m_remote_blockchain_height) {",
+          "parameters": {
+            "text": [
+              "    if (context.m_last_response_height <= context.m_remote_blockchain_height - 1) {",
+              "      m_observedHeight = context.m_remote_blockchain_height - 1;",
+              "      if (m_observedHeight != height) {",
+              "        updated = true;",
+              "      }",
+              "    } else if (peerHeight > context.m_remote_blockchain_height) {"
+            ]
+          }
+        }
+      ]
+    },
     {
       "path": "/src/crypto/crypto.h",
       "changes": [
@@ -179,29 +223,30 @@
         }
       ]
     },
+
     {
       "path": "/src/crypto/crypto.cpp",
+      "description": "NOT WORKING",
       "multiline": true,
       "changes": [
         {
           "action": "replace",
-          "marker": "struct rs_comm {.*};",
-          "may_not_exist": true,
+          "marker": "\\s+struct\\s+rs_comm\\s+{[^}]+}\\s+ab\\[\\];",
           "parameters": {
-            "mandatory": false,
             "text": [
+              "",
               "  struct ec_point_pair {",
               "    EllipticCurvePoint a, b;",
               "  };",
               "  struct rs_comm {",
               "    Hash h;",
-              "    struct ec_point_pair ab[];",
-              "  };"
+              "    struct ec_point_pair ab[];"
             ]
           }
         }
       ]
     },
+
     {
       "path": "/src/CryptoNoteCore/TransactionValidationErrors.h",
       "changes": [
