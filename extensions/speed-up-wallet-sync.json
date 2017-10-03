@@ -37,7 +37,6 @@
           "marker": "sub.syncStart.timestamp = std::max(creationTimestamp, ACCOUNT_CREATE_TIME_ACCURACY) - ACCOUNT_CREATE_TIME_ACCURACY;",
           "parameters": {
             "text": [
-              "    std::cout << \"addWallet\" << std::endl;",
               "    sub.syncStart.height = m_totalBlockCount;"
             ]
           }
@@ -47,7 +46,6 @@
           "marker": "sub.syncStart.timestamp = std::max(static_cast<uint64_t>(wallet.creationTimestamp), ACCOUNT_CREATE_TIME_ACCURACY) - ACCOUNT_CREATE_TIME_ACCURACY;",
           "parameters": {
             "text": [
-              "    std::cout << \"subscribeWallets\" << std::endl;",
               "    sub.syncStart.height = 0;"
             ]
           }

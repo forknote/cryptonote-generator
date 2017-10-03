@@ -1,6 +1,7 @@
 {
+  "todo": "probably not working correctly with orphan blocks. 'visible' is always 1 on m_trackingModeSpentTransfers",
   "file": "walletd-spent-transfers-tracking-mode.json",
-  "description": "Adds 'spent transfers' list in walletd in tracking mode",
+  "description": "Adds 'spent transfers' list in walletd in tracking mode.",
   "required": [
   ],
   "files": [
