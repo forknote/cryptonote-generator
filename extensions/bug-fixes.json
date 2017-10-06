@@ -152,7 +152,7 @@
           "marker": "if (peerHeight > context.m_remote_blockchain_height) {",
           "parameters": {
             "text": [
-              "    if (context.m_last_response_height <= context.m_remote_blockchain_height - 1) {",
+              "    if (context.m_remote_blockchain_height != 0 && context.m_last_response_height <= context.m_remote_blockchain_height - 1) {",
               "      m_observedHeight = context.m_remote_blockchain_height - 1;",
               "      if (m_observedHeight != height) {",
               "        updated = true;",
