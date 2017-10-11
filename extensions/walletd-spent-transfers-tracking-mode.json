@@ -108,7 +108,7 @@
         },
         {
           "action": "add_above",
-          "marker": "SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex);",
+          "marker": "SpentOutputDescriptor(const Crypto::KeyImage* keyImage);",
           "parameters": {
             "text": [
               "  SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode);"
@@ -117,7 +117,7 @@
         },
         {
           "action": "add_above",
-          "marker": "void assign(uint64_t amount, uint32_t globalOutputIndex);",
+          "marker": "void assign(const Crypto::KeyImage* keyImage);",
           "parameters": {
             "text": [
               "  void assign(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode);"
@@ -228,7 +228,7 @@
         },
         {
           "action": "add_above",
-          "marker": "SpentOutputDescriptor::SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex) {",
+          "marker": "SpentOutputDescriptor::SpentOutputDescriptor(const KeyImage* keyImage) {",
           "parameters": {
             "text": [
                 "SpentOutputDescriptor::SpentOutputDescriptor(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode) {",
@@ -240,7 +240,7 @@
         },
         {
           "action": "add_above",
-          "marker": "void SpentOutputDescriptor::assign(uint64_t amount, uint32_t globalOutputIndex) {",
+          "marker": "void SpentOutputDescriptor::assign(const KeyImage* keyImage) {",
           "parameters": {
             "text": [
                 "void SpentOutputDescriptor::assign(uint64_t amount, uint32_t globalOutputIndex, bool trackingMode) {",

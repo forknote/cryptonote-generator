@@ -67,7 +67,7 @@
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
         {
-          "action": "replace",
+          "action": "add_above",
           "marker": "upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);",
           "parameters": {
             "text": [
