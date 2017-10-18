@@ -456,22 +456,6 @@
           }
         }
       ]
-    },
-    {
-      "path": "/src/Transfers/SynchronizationState.cpp",
-      "changes": [
-        {
-          "action": "add_above",
-          "marker": "assert( size == height);",
-          "parameters": {
-            "text": [
-              "  // Dummy fix for walletd",
-              "  if (height == 0)",
-              "    height = 1;"
-            ]
-          }
-        }
-      ]
     }
   ]
 }

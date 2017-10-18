@@ -158,6 +158,17 @@
       "changes": [
         {
           "action": "replace",
+          "marker": "updateTransfersVisibility(info.keyImage);",
+          "parameters": {
+            "text": [
+              "if (trackingMode == 0) {",
+              "  updateTransfersVisibility(info.keyImage);",
+              "}"
+            ]
+          }
+        },
+        {
+          "action": "replace",
           "marker": "static_assert(sizeof(size_t) < sizeof(*m_keyImage), \"sizeof(size_t) < sizeof(*m_keyImage)\");",
           "parameters": {
             "text": [
@@ -436,7 +447,7 @@
                 "        }",
                 "",
                 "        auto& outputDescriptorIndex = m_availableTransfers.get<SpentOutputDescriptorIndex>();",
-                "        auto availableOutputsRange = outputDescriptorIndex.equal_range(SpentOutputDescriptor(input.amount, *j, trackingMode));",
+                "        auto availableOutputsRange = outputDescriptorIndex.equal_range(descriptor);",
                 "",
                 "        auto iteratorList = createTransferIteratorList(availableOutputsRange);",
                 "        iteratorList.sort();",
@@ -448,7 +459,7 @@
                 "          throw std::runtime_error(message);",
                 "        }",
                 "",
-                "        assert(spendingTransferIt->keyImage == input.keyImage);",
+                "//        assert(spendingTransferIt->keyImage == input.keyImage);",
                 "        trackingModeCopyToSpent(block, tx, i, *spendingTransferIt);",
                 "",
                 "        inputsAdded = true;",
@@ -515,7 +526,8 @@
           "marker": "#include \"CryptoNoteCore/TransactionExtra.h\"",
           "parameters": {
             "text": [
-              "#include \"CryptoNoteCore/CryptoNoteTools.h\""
+              "#include \"CryptoNoteCore/CryptoNoteTools.h\"",
+              "#include \"BlockchainExplorer/BlockchainExplorer.cpp\""
             ]
           }
         },
@@ -573,14 +585,13 @@
               "  tx_ids.push_back(transactionWithTransfers.transaction.hash);",
               "",
               "  std::vector<CryptoNote::TransactionDetails> txs;",
-              "  std::promise<std::error_code> prom;",
-              "  std::future<std::error_code> f = prom.get_future();",
-              "",
-              "  CryptoNote::INode::Callback cb = [&prom](std::error_code ec) { ",
-              "    std::promise<std::error_code> p(std::move(prom));",
-              "    p.set_value(ec);",
-              "  };",
-              "  node.getTransactions(tx_ids, txs, cb);",
+              "  CryptoNote::NodeRequest request(",
+              "      [&](const CryptoNote::INode::Callback& cb) { return node.getTransactions(tx_ids, txs, cb); });",
+              "  std::error_code ec = request.performBlocking();",
+              "  if (ec) {",
+              "//    logger(Logging::ERROR) << \"Can't get transactions by hash: \" << ec.message();",
+              "    throw std::system_error(ec);",
+              "  }",
               "",
               "  CryptoNote::TransactionDetails transaction = txs.front();"
             ]

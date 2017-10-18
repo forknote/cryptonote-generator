@@ -64,6 +64,22 @@
       ]
     },
     {
+      "path": "/src/Transfers/SynchronizationState.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "assert( size == height);",
+          "parameters": {
+            "text": [
+              "  // Dummy fix for simplewallet or walletd when sync",
+              "  if (height == 0)",
+              "    height = 1;"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/Rpc/RpcServer.cpp",
       "changes": [
         {
