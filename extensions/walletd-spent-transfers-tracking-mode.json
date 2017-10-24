@@ -519,6 +519,30 @@
       ]
     },
     {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.cpp",
+      "changes": [
+
+        {
+          "action": "replace",
+          "marker": "void TransferRpcInfo::serialize(CryptoNote::ISerializer& serializer) {",
+          "parameters": {
+            "text": [
+              "void TransferRpcSpentOutput::serialize(CryptoNote::ISerializer& serializer) {",
+              "  serializer(amount, \"amount\");",
+              "  serializer(key_image, \"key_image\");",
+              "  serializer(tx_pub_key, \"tx_pub_key\");",
+              "  serializer(out_index, \"out_index\");",
+              "  serializer(mixin, \"mixin\");",
+              "}",
+              "",
+              "void TransferRpcInfo::serialize(CryptoNote::ISerializer& serializer) {",
+              "  serializer(spentOutputs, \"spentOutputs\");"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/PaymentGate/WalletService.cpp",
       "changes": [
         {
