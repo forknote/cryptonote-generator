@@ -1,27 +1,47 @@
 {
-	"extensions": [ "core/bytecoin.json", "print-genesis-tx.json" ],
-	"base_coin":{
-		"name":"bytecoin",
-		"git":"https://github.com/amjuarez/bytecoin.git"
-	},
-	"core":{
-		"CRYPTONOTE_NAME":"examplecoin",
-		"CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX":72,
-		"P2P_DEFAULT_PORT":29090,
-		"RPC_DEFAULT_PORT":29091,
-		"SEED_NODES":["127.0.0.1:29090"],
-        "CHECKPOINTS":[],
-		"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
-		"GENESIS_COINBASE_TX_HEX":"010a01ff0001ffffffffffff0f029b2e4c0271c0b42e7c53291a94d1c0cbff8883f8024f5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a",
-		"BYTECOIN_NETWORK":"12345678-1100-0101-1011-001210110110",
-		"MONEY_SUPPLY":"18446744073709551615",
-		"EMISSION_SPEED_FACTOR":18,
-		"DIFFICULTY_TARGET":120,
-		"MINIMUM_FEE":1000000,
-		"DEFAULT_DUST_THRESHOLD":1000000,
-		"CRYPTONOTE_DISPLAY_DECIMAL_POINT":12,
-		"CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW":10,
-		"CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE":20000,
-		"UPGRADE_HEIGHT":1
-	}
+    "base_coin": {
+        "name": "bytecoin",
+        "git": "https://github.com/amjuarez/bytecoin.git"
+    },
+    "core": {
+        "SEED_NODES": [
+            "35.200.156.123:31818",
+            "35.200.185.240:31818"
+        ],
+        "EMISSION_SPEED_FACTOR": 22,
+        "DIFFICULTY_TARGET": 30,
+        "CRYPTONOTE_DISPLAY_DECIMAL_POINT": 10,
+        "MONEY_SUPPLY": "8500000000000000000",
+        "GENESIS_BLOCK_REWARD": "0",
+        "DEFAULT_DUST_THRESHOLD": 100000,
+        "MINIMUM_FEE": 100000,
+        "CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW": 40,
+        "CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE": 100000,
+        "MAX_TRANSACTION_SIZE_LIMIT": 100000,
+        "CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX": 82,
+        "DIFFICULTY_CUT_V1": 60,
+        "DIFFICULTY_CUT_V2": 60,
+        "DIFFICULTY_CUT": 0,
+        "DIFFICULTY_LAG_V1": 15,
+        "DIFFICULTY_LAG_V2": 15,
+        "DIFFICULTY_LAG": 0,
+        "DIFFICULTY_WINDOW_V1": 2880,
+        "DIFFICULTY_WINDOW_V2": 2880,
+        "DIFFICULTY_WINDOW": 17,
+        "ZAWY_DIFFICULTY_V3": 1,
+        "ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION": 3,
+        "P2P_DEFAULT_PORT": 31818,
+        "RPC_DEFAULT_PORT": 31819,
+        "BYTECOIN_NETWORK": "52834521-e258-4e65-d90d-e13f790f7c7e",
+        "CRYPTONOTE_NAME": "positrion",
+        "DAEMON_NAME": "positriond",
+        "GENESIS_COINBASE_TX_HEX": "012801ff0001bbb88fc2fd3a029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101018a3895296f7cf0a01e2307efcef44b8a4d10ae15062e340429c3b2f26a2054",
+        "CHECKPOINTS": "",
+        "MAX_BLOCK_SIZE_INITIAL": 100000
+    },
+    "extensions": [
+        "core/bytecoin.json",
+        "print-genesis-tx.json",
+        "genesis-block-reward.json"
+    ]
 }
