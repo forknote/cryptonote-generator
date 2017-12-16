@@ -1,0 +1,393 @@
+{
+  "file": "transaction-extra-message-tag.json",
+  "description": "Adding message field in the tx extra. Still incompatible with Bytecoin clones",
+  "required": [
+    "core/bytecoin.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/TransactionExtra.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#define TX_EXTRA_MERGE_MINING_TAG           0x03",
+          "parameters": {
+            "text": [
+              "#define TX_EXTRA_MESSAGE_TAG                0xF1",
+              "#define TX_EXTRA_TTL                        0xF2"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "struct TransactionExtraMergeMiningTag {",
+          "parameters": {
+            "text": [
+              "struct tx_extra_message {",
+              "  std::string data;",
+              "",
+              "  bool encrypt(std::size_t index, const std::string &message, const AccountPublicAddress* recipient, const KeyPair &txkey);",
+              "  bool decrypt(std::size_t index, const Crypto::PublicKey &txkey, const Crypto::SecretKey *recepient_secret_key, std::string &message) const;",
+              "",
+              "  bool serialize(ISerializer& serializer);",
+              "};",
+              "",
+              "struct TransactionExtraTTL {",
+              "  uint64_t ttl;",
+              "};"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "typedef boost::variant<TransactionExtraPadding, TransactionExtraPublicKey, TransactionExtraNonce, TransactionExtraMergeMiningTag> TransactionExtraField;",
+          "parameters": {
+            "text": [
+              "typedef boost::variant<TransactionExtraPadding, TransactionExtraPublicKey, TransactionExtraNonce, TransactionExtraMergeMiningTag, tx_extra_message, TransactionExtraTTL> TransactionExtraField;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "bool getMergeMiningTagFromExtra(const std::vector<uint8_t>& tx_extra, TransactionExtraMergeMiningTag& mm_tag);",
+          "parameters": {
+            "text": [
+              "bool append_message_to_extra(std::vector<uint8_t>& tx_extra, const tx_extra_message& message);",
+              "std::vector<std::string> get_messages_from_extra(const std::vector<uint8_t>& extra, const Crypto::PublicKey &txkey, const Crypto::SecretKey *recepient_secret_key);",
+              "void appendTTLToExtra(std::vector<uint8_t>& tx_extra, uint64_t ttl);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/TransactionExtra.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "case TX_EXTRA_MERGE_MINING_TAG: {",
+          "parameters": {
+            "text": [
+              "              case TX_EXTRA_MESSAGE_TAG: {",
+              "                tx_extra_message message;",
+              "                ar(message.data, \"message\");",
+              "                transactionExtraFields.push_back(message);",
+              "                break;",
+              "              }",
+              "",
+              "              case TX_EXTRA_TTL: {",
+              "                uint8_t size;",
+              "                readVarint(iss, size);",
+              "                TransactionExtraTTL ttl;",
+              "                readVarint(iss, ttl.ttl);",
+              "                transactionExtraFields.push_back(ttl);",
+              "                break;",
+              "              }",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool operator()(const TransactionExtraMergeMiningTag& t) {",
+          "parameters": {
+            "text": [
+              "                  bool operator()(const tx_extra_message& t) {",
+              "                    return append_message_to_extra(extra, t);",
+              "                  }",
+              "",
+              "                  bool operator()(const TransactionExtraTTL& t) {",
+              "                    appendTTLToExtra(extra, t.ttl);",
+              "                    return true;",
+              "                  }",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void setPaymentIdToTransactionExtraNonce(std::vector<uint8_t>& extra_nonce, const Hash& payment_id) {",
+          "parameters": {
+            "text": [
+              "",
+              "bool append_message_to_extra(std::vector<uint8_t>& tx_extra, const tx_extra_message& message) {",
+              "  BinaryArray blob;",
+              "  if (!toBinaryArray(message, blob)) {",
+              "    return false;",
+              "  }",
+              "",
+              "  tx_extra.reserve(tx_extra.size() + 1 + blob.size());",
+              "  tx_extra.push_back(TX_EXTRA_MESSAGE_TAG);",
+              "  std::copy(reinterpret_cast<const uint8_t*>(blob.data()), reinterpret_cast<const uint8_t*>(blob.data() + blob.size()), std::back_inserter(tx_extra));",
+              "",
+              "  return true;",
+              "}",
+              "",
+              "std::vector<std::string> get_messages_from_extra(const std::vector<uint8_t> &extra, const Crypto::PublicKey &txkey, const Crypto::SecretKey *recepient_secret_key) {",
+              "  std::vector<TransactionExtraField> tx_extra_fields;",
+              "  std::vector<std::string> result;",
+              "  if (!parseTransactionExtra(extra, tx_extra_fields)) {",
+              "    return result;",
+              "  }",
+              "  size_t i = 0;",
+              "  for (const auto& f : tx_extra_fields) {",
+              "    if (f.type() != typeid(tx_extra_message)) {",
+              "      continue;",
+              "    }",
+              "    std::string res;",
+              "    if (boost::get<tx_extra_message>(f).decrypt(i, txkey, recepient_secret_key, res)) {",
+              "      result.push_back(res);",
+              "    }",
+              "    ++i;",
+              "  }",
+              "  return result;",
+              "}",
+              "",
+              "void appendTTLToExtra(std::vector<uint8_t>& tx_extra, uint64_t ttl) {",
+              "  std::string ttlData = Tools::get_varint_data(ttl);",
+              "  std::string extraFieldSize = Tools::get_varint_data(ttlData.size());",
+              "",
+              "  tx_extra.reserve(tx_extra.size() + 1 + extraFieldSize.size() + ttlData.size());",
+              "  tx_extra.push_back(TX_EXTRA_TTL);",
+              "  std::copy(extraFieldSize.begin(), extraFieldSize.end(), std::back_inserter(tx_extra));",
+              "  std::copy(ttlData.begin(), ttlData.end(), std::back_inserter(tx_extra));",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool getPaymentIdFromTxExtra(const std::vector<uint8_t>& extra, Hash& paymentId) {",
+          "parameters": {
+            "text": [
+              "",
+              "#define TX_EXTRA_MESSAGE_CHECKSUM_SIZE 4",
+              "",
+              "#pragma pack(push, 1)",
+              "struct message_key_data {",
+              "  KeyDerivation derivation;",
+              "  uint8_t magic1, magic2;",
+              "};",
+              "#pragma pack(pop)",
+              "static_assert(sizeof(message_key_data) == 34, \"Invalid structure size\");",
+              "",
+              "bool tx_extra_message::encrypt(size_t index, const std::string &message, const AccountPublicAddress *recipient, const KeyPair &txkey) {",
+              "  size_t mlen = message.size();",
+              "  std::unique_ptr<char[]> buf(new char[mlen + TX_EXTRA_MESSAGE_CHECKSUM_SIZE]);",
+              "  memcpy(buf.get(), message.data(), mlen);",
+              "  memset(buf.get() + mlen, 0, TX_EXTRA_MESSAGE_CHECKSUM_SIZE);",
+              "  mlen += TX_EXTRA_MESSAGE_CHECKSUM_SIZE;",
+              "  if (recipient) {",
+              "    message_key_data key_data;",
+              "    if (!generate_key_derivation(recipient->spendPublicKey, txkey.secretKey, key_data.derivation)) {",
+              "      return false;",
+              "    }",
+              "    key_data.magic1 = 0x80;",
+              "    key_data.magic2 = 0;",
+              "    Hash h = cn_fast_hash(&key_data, sizeof(message_key_data));",
+              "    uint64_t nonce = SWAP64LE(index);",
+              "    chacha(10, buf.get(), mlen, reinterpret_cast<uint8_t *>(&h), reinterpret_cast<uint8_t *>(&nonce), buf.get());",
+              "  }",
+              "  data.assign(buf.get(), mlen);",
+              "  return true;",
+              "}",
+              "",
+              "bool tx_extra_message::decrypt(size_t index, const Crypto::PublicKey &txkey, const Crypto::SecretKey *recepient_secret_key, std::string &message) const {",
+              "  size_t mlen = data.size();",
+              "  if (mlen < TX_EXTRA_MESSAGE_CHECKSUM_SIZE) {",
+              "    return false;",
+              "  }",
+              "  const char *buf;",
+              "  std::unique_ptr<char[]> ptr;",
+              "  if (recepient_secret_key != nullptr) {",
+              "    ptr.reset(new char[mlen]);",
+              "    assert(ptr);",
+              "    message_key_data key_data;",
+              "    if (!generate_key_derivation(txkey, *recepient_secret_key, key_data.derivation)) {",
+              "      return false;",
+              "    }",
+              "    key_data.magic1 = 0x80;",
+              "    key_data.magic2 = 0;",
+              "    Hash h = cn_fast_hash(&key_data, sizeof(message_key_data));",
+              "    uint64_t nonce = SWAP64LE(index);",
+              "    chacha(10, data.data(), mlen, reinterpret_cast<uint8_t *>(&h), reinterpret_cast<uint8_t *>(&nonce), ptr.get());",
+              "    buf = ptr.get();",
+              "  } else {",
+              "    buf = data.data();",
+              "  }",
+              "  mlen -= TX_EXTRA_MESSAGE_CHECKSUM_SIZE;",
+              "  for (size_t i = 0; i < TX_EXTRA_MESSAGE_CHECKSUM_SIZE; i++) {",
+              "    if (buf[mlen + i] != 0) {",
+              "      return false;",
+              "    }",
+              "  }",
+              "  message.assign(buf, mlen);",
+              "  return true;",
+              "}",
+              "",
+              "bool tx_extra_message::serialize(ISerializer& s) {",
+              "  s(data, \"data\");",
+              "  return true;",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/CryptoNoteFormatUtils.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const std::vector<TransactionDestinationEntry>& destinations,",
+          "parameters": {
+            "text": [
+              "const std::vector<tx_message_entry>& messages,",
+              "uint64_t ttl,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "//generate ring signatures",
+          "parameters": {
+            "text": [
+              "  for (size_t i = 0; i < messages.size(); i++) {",
+              "    const tx_message_entry &msg = messages[i];",
+              "    tx_extra_message tag;",
+              "    if (!tag.encrypt(i, msg.message, msg.encrypt ? &msg.addr : NULL, txkey)) {",
+              "      return false;",
+              "    }",
+              "",
+              "    if (!append_message_to_extra(tx.extra, tag)) {",
+              "      return false;",
+              "    }",
+              "  }",
+              "",
+              "  if (ttl != 0) {",
+              "    appendTTLToExtra(tx.extra, ttl);",
+              "  }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/CryptoNoteFormatUtils.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "bool constructTransaction(",
+          "parameters": {
+            "text": [
+              "struct tx_message_entry",
+              "{",
+              "  std::string message;",
+              "  bool encrypt;",
+              "  AccountPublicAddress addr;",
+              "};"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "std::vector<uint8_t> extra, Transaction& transaction, uint64_t unlock_time, Logging::ILogger& log);",
+          "parameters": {
+            "text": [
+              "  const std::vector<tx_message_entry>& messages,",
+              "  uint64_t ttl, std::vector<uint8_t> extra, Transaction& transaction, uint64_t unlock_time, Logging::ILogger& log);",
+              "",
+              "inline bool constructTransaction(",
+              "  const AccountKeys& sender_account_keys,",
+              "  const std::vector<TransactionSourceEntry>& sources,",
+              "  const std::vector<TransactionDestinationEntry>& destinations,",
+              "  std::vector<uint8_t> extra, Transaction& tx, uint64_t unlock_time, Logging::ILogger& log) {",
+              "",
+              "  return constructTransaction(sender_account_keys, sources, destinations, std::vector<tx_message_entry>(), 0, extra, tx, unlock_time, log);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/WalletLegacy/WalletTransactionSender.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "constructTx(m_keys, sources, splittedDests, transaction.extra, transaction.unlockTime, m_upperTransactionSizeLimit, tx);",
+          "parameters": {
+            "text": [
+              "    constructTx(m_keys, sources, splittedDests, transaction.extra, transaction.unlockTime, m_upperTransactionSizeLimit, tx, context->messages, context->ttl);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool r = constructTransaction(keys, sources, splittedDests, extraVec, tx, unlockTimestamp, nullLog);",
+          "parameters": {
+            "text": [
+              "  bool r = constructTransaction(keys, sources, splittedDests, messages, ttl, extraVec, tx, unlockTimestamp, nullLog);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const std::string& extra, uint64_t unlockTimestamp, uint64_t sizeLimit, Transaction& tx) {",
+          "parameters": {
+            "text": [
+              "    const std::string& extra, uint64_t unlockTimestamp, uint64_t sizeLimit, Transaction& tx, const std::vector<tx_message_entry>& messages, uint64_t ttl) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/WalletLegacy/WalletSendTransactionContext.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint64_t mixIn;",
+          "parameters": {
+            "text": [
+              "  std::vector<tx_message_entry> messages;",
+              "  uint64_t ttl;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "} else if (arg == \"-f\") {",
+          "parameters": {
+            "text": [
+                "              } else if (arg == \"-m\") {",
+                "                messages.emplace_back(value);",
+                "              } else if (arg == \"-ttl\") {",
+                "                ttlFound = true;",
+                "",
+                "                if (feeFound) {",
+                "                  logger(ERROR, BRIGHT_RED) << \"Transaction with fee can not have TTL\";",
+                "                  return false;",
+                "                } else {",
+                "                  fee = 0;",
+                "                }",
+                "",
+                "                if (!Common::fromString(value, ttl) || ttl < 1 || ttl * 60 > m_currency.mempoolTxLiveTime()) {",
+                "                  logger(ERROR, BRIGHT_RED) << \"TTL has invalid format: \\\"\" << value << \"\\\", \" <<",
+                "                    \"enter time from 1 to \" << (m_currency.mempoolTxLiveTime() / 60) << \" minutes\";",
+                "                  return false;"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

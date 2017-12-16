@@ -15,6 +15,7 @@
     "versionized-parameters.json",
     "zawy-difficulty-algorithm.json",
     "bugged-zawy-difficulty-algorithm.json",
+    "transaction-extra-message-tag.json",
     "blockchain-explorer.json",
     "enable-cors.json",
     "fee-address.json",
@@ -33,7 +34,8 @@
     "multiply/bugged-zawy-difficulty-algorithm.json",
     "daemon-getrandom_outs-json.json",
     "simplewallet-import-keys.json",
-    "simplewallet-export-keys.json"
+    "simplewallet-export-keys.json",
+    "walletd-extension.json"
   ],
   "base_coin": {
     "name": "bytecoin",
