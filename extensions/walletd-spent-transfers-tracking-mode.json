@@ -1,6 +1,5 @@
 {
   "todo1": "probably not working correctly with orphan blocks. 'visible' is always 1 on m_trackingModeSpentTransfers",
-  "todo2": "transfers with only <UNKNOWN> are not returned when search is only with address. Huge optimization will be to know which <UNKNOWN> belongs to which address",
   "file": "walletd-spent-transfers-tracking-mode.json",
   "description": "Adds 'spent transfers' list in walletd in tracking mode.",
   "required": [
@@ -157,18 +156,30 @@
     {
       "path": "/src/Transfers/TransfersContainer.cpp",
       "changes": [
-                {
-                  "action": "replace",
-                  "marker": "updateTransfersVisibility(info.keyImage);",
-                  "parameters": {
-                    "text": [
-                      "if (trackingMode == 0) {",
-                      "  updateTransfersVisibility(info.keyImage);",
-                      "}"
-                    ]
-                  }
-                },
+        {
+          "action": "replace",
+          "marker": "updateTransfersVisibility(transfer.keyImage);",
+          "parameters": {
+            "text": [
+                "    if (trackingMode == 0) {",
+                "      updateTransfersVisibility(transfer.keyImage);",
+                "    }"
+            ]
+          }
+        },
 
+
+        {
+          "action": "replace",
+          "marker": "updateTransfersVisibility(info.keyImage);",
+          "parameters": {
+            "text": [
+              "if (trackingMode == 0) {",
+              "  updateTransfersVisibility(info.keyImage);",
+              "}"
+            ]
+          }
+        },
         {
           "action": "replace",
           "marker": "static_assert(sizeof(size_t) < sizeof(*m_keyImage), \"sizeof(size_t) < sizeof(*m_keyImage)\");",
@@ -212,6 +223,7 @@
           "marker": "return other.m_type == m_type && *other.m_keyImage == *m_keyImage;",
           "parameters": {
             "text": [
+
                 "    if (m_trackingMode == 1) {",
                 "      return other.m_type == m_type && other.m_amount == m_amount && other.m_globalOutputIndex == m_globalOutputIndex;",
                 "    } else {",
@@ -489,6 +501,16 @@
             "text": [
               "  bool trackingMode = subscription.keys.spendSecretKey == NULL_SECRET_KEY;",
               "  bool added = transfers.addTransaction(trackingMode, blockInfo, tx, transfersList);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "transfers.markTransactionConfirmed(block, transactionHash, globalIndices);",
+          "parameters": {
+            "text": [
+              "  bool trackingMode = subscription.keys.spendSecretKey == NULL_SECRET_KEY;",
+              "  transfers.markTransactionConfirmed(trackingMode, block, transactionHash, globalIndices);;"
             ]
           }
         }
