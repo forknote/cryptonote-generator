@@ -697,6 +697,33 @@
             ]
           }
         },
+
+
+        {
+          "action": "add_below",
+          "marker": "std::vector<PaymentService::TransactionsInBlockRpcInfo> rpcBlocks;",
+          "parameters": {
+            "text": [
+              "  std::cout << \"here\" << std::endl;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "std::vector<CryptoNote::TransactionsInBlockInfo> allTransactions = getTransactions(firstBlockIndex, blockCount);",
+          "parameters": {
+            "text": [
+              "// include unconfirmed transactions",
+              "  std::vector<CryptoNote::WalletTransactionWithTransfers> unconfirmedTransactions = wallet.getUnconfirmedTransactions();",
+              "  for (const auto& unconfirmedTransaction: unconfirmedTransactions) {",
+              "    CryptoNote::TransactionsInBlockInfo transaction;",
+              "    Common::podFromHex(\"0000000000000000000000000000000000000000000000000000000000000000\", transaction.blockHash);",
+              "    transaction.transactions = unconfirmedTransactions;",
+              "    allTransactions.emplace_back(transaction);",
+              "  }"
+            ]
+          }
+        },
         {
           "action": "replace",
           "marker": "transaction = convertTransactionWithTransfersToTransactionRpcInfo(transactionWithTransfers);",
