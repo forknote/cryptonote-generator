@@ -123,7 +123,7 @@ if [[ "${CONFIG_FILE}" != /* ]]; then
 fi
 
 if [ ! -f ${CONFIG_FILE} ]; then
-	echo "ERROR: config file does not exits"	
+	echo "ERROR: config file does not exist"	
 	exit
 fi
 
