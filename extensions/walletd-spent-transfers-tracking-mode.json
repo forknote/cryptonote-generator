@@ -856,6 +856,7 @@
                   "            spentOutputs.push_back(spentOutput);",
                   "",
                   "            isTransferSpent = true;",
+                  "            break;",
                   "          }",
                   "        }",
                   "        if (isTransferSpent == false) {",
