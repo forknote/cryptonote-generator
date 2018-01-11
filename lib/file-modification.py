@@ -1,8 +1,10 @@
 import argparse
 import fileinput
+import fnmatch
 import itertools
 import json
 import os
+from stat import *
 import re
 import shutil
 import sys
@@ -18,6 +20,8 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 def reverse_enumerate(iterable):
     """
@@ -25,6 +29,18 @@ def reverse_enumerate(iterable):
     """
     return itertools.izip(reversed(xrange(len(iterable))), reversed(iterable))
 
+def findReplace(directory, find, replace, filePattern):
+    for path, dirs, files in os.walk(os.path.abspath(directory)):
+        for filename in fnmatch.filter(files, filePattern):
+            filepath = os.path.join(path, filename)
+            stats = os.stat(filepath)
+            if ".git" in filepath:
+                continue
+            with open(filepath) as f:
+                s = f.read()
+            s = s.decode('utf-8', errors='ignore').encode('utf-8').replace(find, replace)
+            with open(filepath, "w") as f:
+                f.write(s)
 
 def text_creator(change):
     replace_text = ''
@@ -51,7 +67,7 @@ def text_creator(change):
             sys.__stdout__.write(bcolors.FAIL + "ERROR: variable is not in the config file - " + change['parameters']['var']+ bcolors.ENDC + "\n")
             sys.exit(2)
     else:
-        replace_text = '\n'.join(change['parameters']['text']) + "\n" 
+        replace_text = '\n'.join(change['parameters']['text']) + "\n"
 
     # sys.__stdout__.write("Replace text: " + replace_text + "\n")
     return replace_text
@@ -107,6 +123,17 @@ if not (set(required_extensions) <= set(loaded_extensions)):
 
 
 for file in extension['files']:
+    # Bulk replace text
+
+    if 'action' in file.keys() and file['action'] == 'bulk_replace':
+        if 'find' in file.keys() and 'replace' in file.keys() and 'file_pattern' in file.keys():
+            sys.__stdout__.write("- Bulk replacing " + file['find'] + " with " + file['replace'] + "\n")
+            findReplace(args.source, file['find'], file['replace'], file['file_pattern'])
+        else:
+            sys.__stdout__.write(bcolors.FAIL + "ERROR: find, replace and file_pattern are mandatory with bulk_replace" + bcolors.ENDC + "\n")
+            exit(4)
+        continue
+
     # Add new file to output source
     if 'action' in file.keys() and 'source' in file.keys() and file['action'] == 'add':
         source_path = os.path.dirname(os.path.realpath(args.extension_file)) + file['source']
@@ -117,6 +144,18 @@ for file in extension['files']:
             sys.__stdout__.write(bcolors.FAIL + "ERROR: file does not exists - " + source_path + bcolors.ENDC + "\n")
             exit(4)
         continue
+
+    # Remove file from base repository
+    if 'action' in file.keys() and 'path' in file.keys() and file['action'] == 'remove':
+        path = args.source + file['path']
+        if (os.path.isfile(path)):
+            sys.__stdout__.write("- Removing file " + path + "\n")
+            os.remove(path)
+        else:
+            sys.__stdout__.write(bcolors.FAIL + "ERROR: file does not exists - " + path + bcolors.ENDC + "\n")
+            exit(4)
+        continue
+
 
     # If multiline, get the whole file
     if 'multiline' in file.keys() and file['multiline'] == True:
@@ -207,9 +246,9 @@ for file in extension['files']:
                         sys.__stdout__.write("  + Added text after marker: " + change['marker'] + "\n")
                         replace_text = text_creator(change)
                         if replace_text is not None:
-                            add_after_line = replace_text 
+                            add_after_line = replace_text
 
             if delete_line != True:
-                sys.stdout.write(line)                
+                sys.stdout.write(line)
             if add_after_line != "":
                 sys.stdout.write(add_after_line)
