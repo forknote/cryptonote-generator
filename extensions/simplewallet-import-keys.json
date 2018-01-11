@@ -1,6 +1,6 @@
 {
   "file": "simplewallet-import-keys.json",
-  "description": "Adds import keys functionality to simlpewallet",
+  "description": "Adds import keys functionality to simplewallet",
   "required": [
     "core/bytecoin.json"
   ],

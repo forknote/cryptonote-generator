@@ -17,7 +17,7 @@
             ],
             "replace_text_alt": [
               "// Use 0 for default max transaction size limit",
-              "const uint64_t MAX_TRANSACTION_SIZE_LIMIT                          = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 125 / 100 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;"
+              "const uint64_t MAX_TRANSACTION_SIZE_LIMIT                          = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 110 / 100 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;"
             ],
             "var": "MAX_TRANSACTION_SIZE_LIMIT"
           }

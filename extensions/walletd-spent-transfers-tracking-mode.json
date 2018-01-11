@@ -1,5 +1,5 @@
 {
-  "todo": "probably not working correctly with orphan blocks. 'visible' is always 1 on m_trackingModeSpentTransfers",
+  "todo1": "probably not working correctly with orphan blocks. 'visible' is always 1 on m_trackingModeSpentTransfers",
   "file": "walletd-spent-transfers-tracking-mode.json",
   "description": "Adds 'spent transfers' list in walletd in tracking mode.",
   "required": [
@@ -16,7 +16,7 @@
                 "  typedef boost::multi_index_container<",
                 "    SpentTransactionOutput,",
                 "    boost::multi_index::indexed_by<",
-                "      boost::multi_index::hashed_unique<",
+                "      boost::multi_index::hashed_non_unique<",
                 "        boost::multi_index::tag<SpentOutputDescriptorIndex>,",
                 "        boost::multi_index::const_mem_fun<",
                 "          TransactionOutputInformationEx,",
@@ -158,6 +158,19 @@
       "changes": [
         {
           "action": "replace",
+          "marker": "updateTransfersVisibility(transfer.keyImage);",
+          "parameters": {
+            "text": [
+                "    if (trackingMode == 0) {",
+                "      updateTransfersVisibility(transfer.keyImage);",
+                "    }"
+            ]
+          }
+        },
+
+
+        {
+          "action": "replace",
           "marker": "updateTransfersVisibility(info.keyImage);",
           "parameters": {
             "text": [
@@ -210,6 +223,7 @@
           "marker": "return other.m_type == m_type && *other.m_keyImage == *m_keyImage;",
           "parameters": {
             "text": [
+
                 "    if (m_trackingMode == 1) {",
                 "      return other.m_type == m_type && other.m_amount == m_amount && other.m_globalOutputIndex == m_globalOutputIndex;",
                 "    } else {",
@@ -467,6 +481,7 @@
                 "    } else {",
                 "      assert(inputType == TransactionTypes::InputType::Generating);",
                 "    }",
+
                 "  }",
                 "",
                 "  return inputsAdded;",
@@ -488,14 +503,79 @@
               "  bool added = transfers.addTransaction(trackingMode, blockInfo, tx, transfersList);"
             ]
           }
+        },
+        {
+          "action": "replace",
+          "marker": "transfers.markTransactionConfirmed(block, transactionHash, globalIndices);",
+          "parameters": {
+            "text": [
+              "  bool trackingMode = subscription.keys.spendSecretKey == NULL_SECRET_KEY;",
+              "  transfers.markTransactionConfirmed(trackingMode, block, transactionHash, globalIndices);;"
+            ]
+          }
         }
       ]
     },
 
 
     {
+      "path": "/src/Wallet/WalletGreen.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "assert(it->second.amount != 0);",
+          "parameters": {
+            "text": [
+              "// assert(it->second.amount != 0);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "assert(it->second.amount > 0);",
+          "parameters": {
+            "text": [
+              "assert(it->second.amount >= 0);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if (knownAmount != targetAmount) {",
+          "parameters": {
+            "text": [
+              "if (knownAmount != targetAmount || !address.empty()) {"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (containerAmount.amounts.input != 0) {",
+          "parameters": {
+            "text": [
+              "    bool isTrackingMode;",
+              "    isTrackingMode = getWalletRecord(containerAmount.container).spendSecretKey == NULL_SECRET_KEY;",
+              "    if (isTrackingMode == 1 && containerAmount.amounts.input == 0 && containerAmount.amounts.output == 0) {",
+              "      myInputAddresses.emplace(addressString);",
+              "    }"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
       "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.h",
       "changes": [
+        {
+          "action": "add_below",
+          "marker": "bool isBase;",
+          "parameters": {
+            "text": [
+              "  uint64_t mixin;"
+            ]
+          }
+        },
         {
           "action": "replace",
           "marker": "struct TransferRpcInfo {",
@@ -521,37 +601,54 @@
     {
       "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.cpp",
       "changes": [
-
+        {
+          "action": "add_below",
+          "marker": "serializer(isBase, \"isBase\");",
+          "parameters": {
+            "text": [
+                "  serializer(mixin, \"mixin\");"
+            ]
+          }
+        },
         {
           "action": "replace",
           "marker": "void TransferRpcInfo::serialize(CryptoNote::ISerializer& serializer) {",
           "parameters": {
             "text": [
-              "void TransferRpcSpentOutput::serialize(CryptoNote::ISerializer& serializer) {",
-              "  serializer(amount, \"amount\");",
-              "  serializer(key_image, \"key_image\");",
-              "  serializer(tx_pub_key, \"tx_pub_key\");",
-              "  serializer(out_index, \"out_index\");",
-              "  serializer(mixin, \"mixin\");",
-              "}",
-              "",
-              "void TransferRpcInfo::serialize(CryptoNote::ISerializer& serializer) {",
-              "  serializer(spentOutputs, \"spentOutputs\");"
+                "void TransferRpcSpentOutput::serialize(CryptoNote::ISerializer& serializer) {",
+                "  serializer(amount, \"amount\");",
+                "  serializer(key_image, \"key_image\");",
+                "  serializer(tx_pub_key, \"tx_pub_key\");",
+                "  serializer(out_index, \"out_index\");",
+                "  serializer(mixin, \"mixin\");",
+                "}",
+                "",
+                "void TransferRpcInfo::serialize(CryptoNote::ISerializer& serializer) {",
+                "  serializer(spentOutputs, \"spentOutputs\");"
             ]
           }
         }
       ]
     },
+
     {
       "path": "/src/PaymentGate/WalletService.cpp",
       "changes": [
+        {
+          "action": "add_above",
+          "marker": "#include \"NodeFactory.h\"",
+          "parameters": {
+            "text": [
+              "#include \"BlockchainExplorer/BlockchainExplorer.cpp\""
+            ]
+          }
+        },
         {
           "action": "add_below",
           "marker": "#include \"CryptoNoteCore/TransactionExtra.h\"",
           "parameters": {
             "text": [
-              "#include \"CryptoNoteCore/CryptoNoteTools.h\"",
-              "#include \"BlockchainExplorer/BlockchainExplorer.cpp\""
+              "#include \"CryptoNoteCore/CryptoNoteTools.h\""
             ]
           }
         },
@@ -560,7 +657,7 @@
           "marker": "std::vector<PaymentService::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(",
           "parameters": {
             "text": [
-              "std::vector<PaymentService::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(CryptoNote::INode& node,"
+              "std::vector<PaymentService::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(CryptoNote::INode& node, const std::unordered_set<std::string> addresses,"
             ]
           }
         },
@@ -569,7 +666,16 @@
           "marker": "PaymentService::TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(",
           "parameters": {
             "text": [
-              "PaymentService::TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(CryptoNote::INode& node,"
+              "PaymentService::TransactionRpcInfo convertTransactionWithTransfersToTransactionRpcInfo(CryptoNote::INode& node, const std::unordered_set<std::string> addresses,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const CryptoNote::WalletTransactionWithTransfers& transactionWithTransfers) {",
+          "parameters": {
+            "text": [
+              "    const CryptoNote::WalletTransactionWithTransfers& transactionWithTransfers, std::vector<Crypto::PublicKey>& known_outputs_keys) {"
             ]
           }
         },
@@ -578,7 +684,7 @@
           "marker": "return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(filteredTransactions);",
           "parameters": {
             "text": [
-              "  return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(node, filteredTransactions);"
+              "  return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(node, filter.addresses, filteredTransactions);"
             ]
           }
         },
@@ -587,7 +693,34 @@
           "marker": "PaymentService::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(transactionWithTransfers);",
           "parameters": {
             "text": [
-              "      PaymentService::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(node, transactionWithTransfers);"
+              "      PaymentService::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(node, addresses, transactionWithTransfers, known_outputs_keys);"
+            ]
+          }
+        },
+
+
+        {
+          "action": "add_below",
+          "marker": "std::vector<PaymentService::TransactionsInBlockRpcInfo> rpcBlocks;",
+          "parameters": {
+            "text": [
+              "  std::cout << \"here\" << std::endl;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "std::vector<CryptoNote::TransactionsInBlockInfo> allTransactions = getTransactions(firstBlockIndex, blockCount);",
+          "parameters": {
+            "text": [
+              "// include unconfirmed transactions",
+              "  std::vector<CryptoNote::WalletTransactionWithTransfers> unconfirmedTransactions = wallet.getUnconfirmedTransactions();",
+              "  for (const auto& unconfirmedTransaction: unconfirmedTransactions) {",
+              "    CryptoNote::TransactionsInBlockInfo transaction;",
+              "    Common::podFromHex(\"0000000000000000000000000000000000000000000000000000000000000000\", transaction.blockHash);",
+              "    transaction.transactions = unconfirmedTransactions;",
+              "    allTransactions.emplace_back(transaction);",
+              "  }"
             ]
           }
         },
@@ -596,7 +729,9 @@
           "marker": "transaction = convertTransactionWithTransfersToTransactionRpcInfo(transactionWithTransfers);",
           "parameters": {
             "text": [
-              "    transaction = convertTransactionWithTransfersToTransactionRpcInfo(node, transactionWithTransfers);"
+              "    std::vector<Crypto::PublicKey> known_outputs_keys;",
+              "    std::unordered_set<std::string> addresses = {};",
+              "    transaction = convertTransactionWithTransfersToTransactionRpcInfo(node, addresses, transactionWithTransfers, known_outputs_keys);"
             ]
           }
         },
@@ -609,6 +744,7 @@
               "  tx_ids.push_back(transactionWithTransfers.transaction.hash);",
               "",
               "  std::vector<CryptoNote::TransactionDetails> txs;",
+
               "  CryptoNote::NodeRequest request(",
               "      [&](const CryptoNote::INode::Callback& cb) { return node.getTransactions(tx_ids, txs, cb); });",
               "  std::error_code ec = request.performBlocking();",
@@ -616,8 +752,30 @@
               "//    logger(Logging::ERROR) << \"Can't get transactions by hash: \" << ec.message();",
               "    throw std::system_error(ec);",
               "  }",
-              "",
               "  CryptoNote::TransactionDetails transaction = txs.front();"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "rpcBlocks.reserve(blocks.size());",
+          "parameters": {
+            "text": [
+              "std::vector<Crypto::PublicKey> known_outputs_keys;",
+              ""
+            ]
+          }
+        },
+
+
+        {
+          "action": "add_above",
+          "marker": "  for (const CryptoNote::WalletTransfer& transfer: transactionWithTransfers.transfers) {",
+          "parameters": {
+            "text": [
+              "  // indicates whether we found any matching mixin in the current input",
+              "  bool isTransferSpent {false};",
+              "  std::vector<TransferRpcSpentOutput> spentOutputs;"
             ]
           }
         },
@@ -625,22 +783,648 @@
           "action": "add_below",
           "marker": "rpcTransfer.type = static_cast<uint8_t>(transfer.type);",
           "parameters": {
+              "text": [
+                  "    if (transfer.amount > 0) {",
+                  "      std::unordered_set<std::string>::const_iterator got = addresses.find (transfer.address);",
+                  "      if (got != addresses.end()) {",
+                  "//      if (!transfer.address.empty()) {",
+                  "        // Populate known_outputs_keys",
+                  "        known_outputs_keys.push_back(transaction.extra.publicKey);",
+                  "        for (const CryptoNote::TransactionInputDetails& txinput : transaction.inputs) {",
+                  "          if (txinput.type() == typeid(CryptoNote::KeyInputDetails)) {",
+                  "            auto txin = boost::get<CryptoNote::KeyInputDetails>(txinput);",
+                  "            // Populate mixin",
+                  "            transactionInfo.mixin = txin.mixin - 1;",
+                  "            break;",
+                  "          }",
+                  "        }",
+                  "      }",
+                  "    }",
+                  "    if (transfer.amount < 0) {",
+                  "      for (const CryptoNote::TransactionInputDetails& txinput : transaction.inputs) {",
+                  "        if (txinput.type() == typeid(CryptoNote::KeyInputDetails)) {",
+                  "          auto txin = boost::get<CryptoNote::KeyInputDetails>(txinput);",
+                  "          // Populate mixin",
+                  "          transactionInfo.mixin = txin.mixin - 1;",
+                  "// store the key_images into the wallet and check here if it's one of them, instead of bulk sending all key_images of a transaction",
+
+
+                  "// Code before refactoring is from https://github.com/moneroexamples/openmonero",
+                  "          // get absolute offsets of mixins",
+                  "          std::vector<uint32_t> absolute_offsets",
+                  "              = CryptoNote::relativeOutputOffsetsToAbsolute(txin.input.outputIndexes);",
+                  "",
+                  "          // get public keys of outputs used in the mixins that match to the offests",
+                  "          std::vector<Crypto::PublicKey> mixin_outputs;",
+                  "",
+                  "",
+                  "          CryptoNote::NodeRequest request(",
+                  "             [&](const CryptoNote::INode::Callback& cb) { return node.extractKeyOutputKeys(txin.input.amount, absolute_offsets, mixin_outputs, cb); });",
+                  "          std::error_code ec = request.performBlocking();",
+                  "          if (ec) {",
+                  "       //    logger(Logging::ERROR) << \"Can't get mixins key images: \" << ec.message();",
+                  "             throw std::system_error(ec);",
+                  "          }",
+                  "          if (mixin_outputs.empty())",
+                  "          {",
+                  "//          logger(Logging::ERROR) << \"Mixins key images not found\" << endl;",
+                  "            continue;",
+                  "          }",
+                  "",
+                  "",
+                  "          // mixin counter",
+                  "          size_t count = 0;",
+                  "",
+                  "",
+                  "          // for each found output public key check if its ours or not",
+                  "          for (const uint32_t& abs_offset: absolute_offsets)",
+                  "          {",
+                  "            // get basic information about mixn's output",
+                  "            Crypto::PublicKey output_publicKey = mixin_outputs.at(count);",
+                  "            // check here for known keys",
+                  "            if (!(std::find(known_outputs_keys.begin(), known_outputs_keys.end(), output_publicKey) != known_outputs_keys.end())) {",
+                    "// TODO: this slow is down for some reason",
+                  "              ++count;",
+                  "              continue;",
+                  "            }",
+                  "            TransferRpcSpentOutput spentOutput;",
+                  "            spentOutput.amount = txin.input.amount;",
+                  "            spentOutput.key_image = Common::podToHex(txin.input.keyImage);",
+                  "            spentOutput.tx_pub_key = Common::podToHex(output_publicKey);",
+                  "            spentOutput.out_index = txin.output.number;",
+                  "            spentOutput.mixin = txin.mixin - 1;",
+                  "            spentOutputs.push_back(spentOutput);",
+                  "",
+                  "            isTransferSpent = true;",
+                  "            break;",
+                  "          }",
+                  "        }",
+                  "        if (isTransferSpent == false) {",
+                  "          // if we didnt find any match, break of the look.",
+                  "          // there is no reason to check remaining key images",
+                  "          // as when we spent something, our outputs should be",
+                  "          // in all inputs in a given txs. Thus, if a single input",
+                  "          // is without our output, we can assume this tx does",
+                  "          // not contain any of our spendings.",
+                  "          break;",
+                  "        }",
+                  "      }",
+                  "    }",
+                  "",
+                  "    if (isTransferSpent == true)",
+                  "      rpcTransfer.spentOutputs.insert(rpcTransfer.spentOutputs.end(), spentOutputs.begin(), spentOutputs.end());",
+                  ""
+            ]
+          }
+        }
+      ]
+    },
+
+
+
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/include/INode.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<TransactionDetails>& transactions, const Callback& callback) = 0;",
+          "parameters": {
             "text": [
-                "    if (transfer.amount < 0) {",
-                "      for (const CryptoNote::TransactionInputDetails& txinput : transaction.inputs) {",
-                "        if (txinput.type() == typeid(CryptoNote::KeyInputDetails)) {",
-                "          auto txin = boost::get<CryptoNote::KeyInputDetails>(txinput);",
-                "// store the key_images into the wallet and check here if it's one of them, instead of bulk sending all key_images of a transaction",
-                "          TransferRpcSpentOutput spentOutput;",
-                "          spentOutput.amount = txin.input.amount;",
-                "          spentOutput.key_image = Common::podToHex(txin.input.keyImage);",
-                "          spentOutput.tx_pub_key = Common::podToHex(transaction.extra.publicKey);",
-                "          spentOutput.out_index = txin.output.number;",
-                "          spentOutput.mixin = txin.mixin;",
-                "          rpcTransfer.spentOutputs.push_back(spentOutput);",
-                "        }",
-                "      }",
-                "    }"
+                "virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/InProcessNode/InProcessNode.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<TransactionDetails>& transactions, const Callback& callback) override;",
+          "parameters": {
+            "text": [
+                "virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) override;",
+                "std::error_code doExtractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/InProcessNode/InProcessNode.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void InProcessNode::getTransactions(const std::vector<Crypto::Hash>& transactionHashes,",
+          "parameters": {
+            "text": [
+              "void InProcessNode::extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets,",
+              "                                    std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) {",
+              "  std::unique_lock<std::mutex> lock(mutex);",
+              "  if (state != INITIALIZED) {",
+              "    lock.unlock();",
+              "    callback(make_error_code(CryptoNote::error::NOT_INITIALIZED));",
+              "    return;",
+              "  }",
+              "",
+              "  executeInDispatcherThread([=, &mixin_outputs] () {",
+              "    auto ec = doExtractKeyOutputKeys(amount, absolute_offsets, mixin_outputs);",
+              "    executeInRemoteThread([callback, ec] () { callback(ec); });",
+              "  });",
+              "}",
+              "",
+              "std::error_code InProcessNode::doExtractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets,",
+              "                                                 std::vector<Crypto::PublicKey>& mixin_outputs) {",
+              "  try {",
+              "    core.extractKeyOutputKeys(amount, absolute_offsets, mixin_outputs);",
+              "  } catch (std::system_error& e) {",
+              "    return e.code();",
+              "  } catch (std::exception&) {",
+              "    return make_error_code(CryptoNote::error::INTERNAL_NODE_ERROR);",
+              "  }",
+              "",
+              "",
+              "  return std::error_code();",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/CryptoNoteCore/ICore.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes,",
+          "parameters": {
+            "text": [
+                "virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs) const = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/CryptoNoteCore/Core.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<BinaryArray>& transactions, std::vector<Crypto::Hash>& missedHashes) const override;",
+          "parameters": {
+            "text": [
+                "virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/CryptoNoteCore/Core.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void Core::getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<BinaryArray>& transactions,",
+          "parameters": {
+            "text": [
+                "void Core::extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs) const {",
+                "  assert(!chainsLeaves.empty());",
+                "  assert(!chainsStorage.empty());",
+                "  throwIfNotInitialized();",
+                "",
+                "  assert(amount != 0);",
+                "  assert(!absolute_offsets.empty());",
+                "",
+                "  // find in main chain",
+                "  uint32_t *ao_array = new uint32_t[absolute_offsets.size()];",
+                "  std::copy(absolute_offsets.begin(), absolute_offsets.end(), ao_array);",
+                "  chainsLeaves[0]->extractTransactionPublicKeys(amount, Common::ArrayView<uint32_t>(ao_array, absolute_offsets.size()), mixin_outputs);",
+
+                "  delete [] ao_array;",
+                "}",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/Rpc/RpcServer.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "bool onGetTransactionDetailsByHashes(const COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES::request& req, COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES::response& rsp);",
+          "parameters": {
+            "text": [
+              "  bool onGetKeyOutputKeys(const COMMAND_RPC_GET_KEY_OUTPUT_KEYS::request& req, COMMAND_RPC_GET_KEY_OUTPUT_KEYS ::response& rsp);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "{ \"/get_transaction_details_by_hashes.bin\", { binMethod<COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES>(&RpcServer::onGetTransactionDetailsByHashes), false } },",
+          "parameters": {
+            "text": [
+              " { \"/get_key_output_keys.bin\", { binMethod<COMMAND_RPC_GET_KEY_OUTPUT_KEYS>(&RpcServer::onGetKeyOutputKeys), false } },"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool RpcServer::onGetTransactionDetailsByHashes(const COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES::request& req, ",
+          "parameters": {
+            "text": [
+              "bool RpcServer::onGetKeyOutputKeys(const COMMAND_RPC_GET_KEY_OUTPUT_KEYS::request& req, COMMAND_RPC_GET_KEY_OUTPUT_KEYS ::response& rsp) {",
+              "  try {",
+              "    std::vector<Crypto::PublicKey> mixin_outputs;",
+              "    mixin_outputs.reserve(req.absolute_offsets.size());",
+              "",
+              "    m_core.extractKeyOutputKeys(req.amount, req.absolute_offsets, mixin_outputs);",
+              "",
+              "    rsp.mixin_outputs = std::move(mixin_outputs);",
+              "  } catch (std::system_error& e) {",
+              "    rsp.status = e.what();",
+              "    return false;",
+              "  } catch (std::exception& e) {",
+              "    rsp.status = \"Error: \" + std::string(e.what());",
+              "    return false;",
+              "  }",
+              "",
+              "  rsp.status = CORE_RPC_STATUS_OK;",
+              "  return true;",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/NodeRpcProxy/NodeRpcProxy.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<TransactionDetails>& transactions, const Callback& callback) override;",
+          "parameters": {
+            "text": [
+              "  virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) override;",
+              "  std::error_code doExtractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/NodeRpcProxy/NodeRpcProxy.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void NodeRpcProxy::getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<TransactionDetails>& transactions, const Callback& callback) {",
+          "parameters": {
+            "text": [
+              "void NodeRpcProxy::extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) {",
+              "  std::lock_guard<std::mutex> lock(m_mutex);",
+              "  if (m_state != STATE_INITIALIZED) {",
+              "    callback(make_error_code(error::NOT_INITIALIZED));",
+              "    return;",
+              "  }",
+              "",
+              "  scheduleRequest(std::bind(&NodeRpcProxy::doExtractKeyOutputKeys, this, amount, std::cref(absolute_offsets), std::ref(mixin_outputs)), callback);",
+              "}",
+              "",
+              "std::error_code NodeRpcProxy::doExtractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs) {",
+              "  COMMAND_RPC_GET_KEY_OUTPUT_KEYS::request req = AUTO_VAL_INIT(req);",
+              "  COMMAND_RPC_GET_KEY_OUTPUT_KEYS::response resp = AUTO_VAL_INIT(resp);",
+              "",
+              "  req.amount = amount;",
+              "  req.absolute_offsets = absolute_offsets;",
+              "  std::error_code ec = binaryCommand(\"/get_key_output_keys.bin\", req, resp);",
+              "  if (ec) {",
+              "    return ec;",
+              "  }",
+              "",
+              "  mixin_outputs = std::move(resp.mixin_outputs);",
+              "  return ec;",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "struct COMMAND_RPC_GET_TRANSACTION_DETAILS_BY_HASHES {",
+          "parameters": {
+            "text": [
+              "struct COMMAND_RPC_GET_KEY_OUTPUT_KEYS {",
+              "  struct request {",
+              "    uint64_t amount;",
+              "    std::vector<uint32_t> absolute_offsets;",
+              "",
+              "    void serialize(ISerializer &s) {",
+              "      KV_MEMBER(amount);",
+              "      serializeAsBinary(absolute_offsets, \"absolute_offsets\", s);",
+              "    }",
+              "  };",
+              "",
+              "  struct response {",
+              "    std::vector<Crypto::PublicKey> mixin_outputs;",
+              "    std::string status;",
+              "",
+              "    void serialize(ISerializer &s) {",
+              "      KV_MEMBER(status)",
+              "      KV_MEMBER(mixin_outputs)",
+              "    }",
+              "  };",
+              "};"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/src/PaymentGate/NodeFactory.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<CryptoNote::TransactionDetails>& transactions,",
+          "parameters": {
+            "text": [
+              "  virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) override {}"
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/tests/UnitTests/ICoreStub.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& txs_ids, std::vector<CryptoNote::BinaryArray>& txs, std::vector<Crypto::Hash>& missed_txs) const override;",
+          "parameters": {
+            "text": [
+              "  virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/tests/UnitTests/ICoreStub.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void ICoreStub::getTransactions(const std::vector<Crypto::Hash>& txs_ids, std::vector<CryptoNote::BinaryArray>& txs,",
+          "parameters": {
+            "text": [
+              "void ICoreStub::extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs) const {",
+              "",
+              "  // Maybe do real test someday",
+              "",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+
+
+
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/tests/UnitTests/INodeStubs.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual void getTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<CryptoNote::TransactionDetails>& transactions, const Callback& callback) override { callback(std::error_code()); };",
+          "parameters": {
+            "text": [
+              "  virtual void extractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) override { callback(std::error_code()); };"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void setGetNewBlocksLimit(size_t maxBlocks) { m_getMaxBlocks = maxBlocks; }",
+          "parameters": {
+            "text": [
+              "  void doExtractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode",
+      "path": "/tests/UnitTests/INodeStubs.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "void INodeTrivialRefreshStub::doGetTransactions(const std::vector<Crypto::Hash>& transactionHashes, std::vector<TransactionDetails>& transactions, const Callback& callback) {",
+          "parameters": {
+            "text": [
+              "void INodeTrivialRefreshStub::doExtractKeyOutputKeys(const uint64_t amount, const std::vector<uint32_t>& absolute_offsets, std::vector<Crypto::PublicKey>& mixin_outputs, const Callback& callback) {",
+              "  ContextCounterHolder counterHolder(m_asyncCounter);",
+              "  std::unique_lock<std::mutex> lock(m_walletLock);",
+              "",
+              "  // Maybe do real test someday",
+              "",
+              "  lock.unlock();",
+              "  callback(std::error_code());",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+
+
+
+    {
+      "description": "Adding extractKeyOutputKeys to INode. ",
+      "path": "/src/CryptoNoteCore/IBlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "virtual ExtractOutputKeysResult extractKeyOutputKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes, std::vector<Crypto::PublicKey>& publicKeys) const = 0;",
+          "parameters": {
+            "text": [
+              "virtual ExtractOutputKeysResult extractTransactionPublicKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes, std::vector<Crypto::PublicKey>& publicKeys) const = 0;",
+              "virtual ExtractOutputKeysResult extractTransactionPublicKeys(uint64_t amount, uint32_t blockIndex, Common::ArrayView<uint32_t> globalIndexes, std::vector<Crypto::PublicKey>& publicKeys) const = 0;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode. ",
+      "path": "/src/CryptoNoteCore/BlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "ExtractOutputKeysResult extractKeyOutputKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes, std::vector<Crypto::PublicKey>& publicKeys) const override;",
+          "parameters": {
+            "text": [
+              "ExtractOutputKeysResult extractTransactionPublicKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes, std::vector<Crypto::PublicKey>& publicKeys) const override;",
+              "ExtractOutputKeysResult extractTransactionPublicKeys(uint64_t amount, uint32_t blockIndex, Common::ArrayView<uint32_t> globalIndexes, std::vector<Crypto::PublicKey>& publicKeys) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode. ",
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "ExtractOutputKeysResult extractKeyOutputKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes,",
+          "parameters": {
+            "text": [
+              "ExtractOutputKeysResult extractTransactionPublicKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes,",
+              "                                             std::vector<Crypto::PublicKey>& publicKeys) const override;",
+              "ExtractOutputKeysResult extractTransactionPublicKeys(uint64_t amount, uint32_t blockIndex,",
+              "                                             Common::ArrayView<uint32_t> globalIndexes,",
+              "                                             std::vector<Crypto::PublicKey>& publicKeys) const override;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode. ",
+      "path": "/src/CryptoNoteCore/BlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "bool BlockchainCache::isTransactionSpendTimeUnlocked(uint64_t unlockTime, uint32_t blockIndex) const {",
+          "parameters": {
+            "text": [
+              "ExtractOutputKeysResult BlockchainCache::extractTransactionPublicKeys(uint64_t amount,",
+              "                                                              Common::ArrayView<uint32_t> globalIndexes,",
+              "                                                              std::vector<Crypto::PublicKey>& publicKeys) const {",
+              "  return extractTransactionPublicKeys(amount, getTopBlockIndex(), globalIndexes, publicKeys);",
+              "}",
+              "",
+              "ExtractOutputKeysResult BlockchainCache::extractTransactionPublicKeys(uint64_t amount, uint32_t blockIndex,",
+              "                                                              Common::ArrayView<uint32_t> globalIndexes,",
+              "                                                              std::vector<Crypto::PublicKey>& publicKeys) const {",
+              "  assert(!globalIndexes.isEmpty());",
+              "  assert(std::is_sorted(globalIndexes.begin(), globalIndexes.end()));                            // sorted",
+              "  assert(std::adjacent_find(globalIndexes.begin(), globalIndexes.end()) == globalIndexes.end()); // unique",
+              "",
+              "  return extractKeyOutputs(amount, blockIndex, globalIndexes, [&] (const CachedTransactionInfo& info, PackedOutIndex index, uint32_t globalIndex) {",
+              "    if (!isTransactionSpendTimeUnlocked(info.unlockTime, blockIndex)) {",
+              "      return ExtractOutputKeysResult::OUTPUT_LOCKED;",
+              "    }",
+              "",
+              "    // not really populating",
+              "",
+              "    return ExtractOutputKeysResult::SUCCESS;",
+              "  });",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "description": "Adding extractKeyOutputKeys to INode. ",
+      "path": "/src/CryptoNoteCore/DatabaseBlockchainCache.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "auto result = readDatabase(batch).getKeyOutputInfo();",
+          "parameters": {
+            "text": [
+              "uint64_t count = 0;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "tx.transactionHash = kv.second.transactionHash;",
+          "parameters": {
+            "text": [
+              "count++;"
+            ]
+          }
+        },
+
+        {
+          "action": "add_above",
+          "marker": "DatabaseBlockchainCache::extractKeyOutputKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes,",
+          "parameters": {
+            "text": [
+              "DatabaseBlockchainCache::extractTransactionPublicKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes,",
+              "                                              std::vector<Crypto::PublicKey>& publicKeys) const {",
+              "  return extractTransactionPublicKeys(amount, getTopBlockIndex(), globalIndexes, publicKeys);",
+              "}",
+              "",
+              "ExtractOutputKeysResult",
+              "DatabaseBlockchainCache::extractTransactionPublicKeys(uint64_t amount, uint32_t blockIndex,",
+              "                                              Common::ArrayView<uint32_t> globalIndexes,",
+              "                                              std::vector<Crypto::PublicKey>& publicKeys) const {",
+              "  return extractKeyOutputs(amount, blockIndex, globalIndexes, [this, &publicKeys, blockIndex] (const CachedTransactionInfo& info, PackedOutIndex index, uint32_t globalIndex) {",
+              "    if (!isTransactionSpendTimeUnlocked(info.unlockTime, blockIndex)) {",
+              "      logger(Logging::DEBUGGING) << \"extractTransactionPublicKeys: output \" << globalIndex << \" is locked\";",
+              "      return ExtractOutputKeysResult::OUTPUT_LOCKED;",
+              "    }",
+              "",
+              "    std::vector<CachedTransactionInfo> cachedTransactions;",
+              "    if (!requestCachedTransactionInfos({info.transactionHash}, database, cachedTransactions)) {",
+              "      return ExtractOutputKeysResult::INVALID_GLOBAL_INDEX;",
+              "}",
+              "",
+              "    if (cachedTransactions.empty()) {",
+              "      return ExtractOutputKeysResult::INVALID_GLOBAL_INDEX;",
+              "    }",
+              "",
+              "    RawBlock block;",
+              "    if (!requestRawBlock(database, cachedTransactions[0].blockIndex, block)) {",
+              "      return ExtractOutputKeysResult::INVALID_GLOBAL_INDEX;",
+              "    }",
+              "",
+              "    Transaction transaction = extractTransaction(block, cachedTransactions[0].transactionIndex);",
+              "",
+              "    Crypto::PublicKey txPublicKey = getTransactionPublicKeyFromExtra(transaction.extra);",
+              "    publicKeys.push_back(txPublicKey);",
+              "",
+              "    return ExtractOutputKeysResult::SUCCESS;",
+              "  });",
+              "}",
+              "",
+              "ExtractOutputKeysResult"
             ]
           }
         }

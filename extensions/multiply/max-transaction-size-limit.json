@@ -29,7 +29,7 @@
           "marker": "arg_testnet = { \"testnet\"",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<uint64_t> arg_MAX_TRANSACTION_SIZE_LIMIT  = {\"MAX_TRANSACTION_SIZE_LIMIT\", \"Max transaction limit size\", CryptoNote::parameters::MAX_TRANSACTION_SIZE_LIMIT};  "
+              "  const command_line::arg_descriptor<uint64_t> arg_MAX_TRANSACTION_SIZE_LIMIT  = {\"MAX_TRANSACTION_SIZE_LIMIT\", \"Max transaction limit size\", 0};  "
             ]
           }
         },
@@ -47,8 +47,14 @@
           "marker": "currencyBuilder.testnet(command_line::get_arg(vm, arg_testnet));",
           "parameters": {
             "text": [
-              "currencyBuilder.maxTransactionSizeLimit(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT));",
-              "currencyBuilder.fusionTxMaxSize(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT) * 30 / 100);"
+              "if (command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT) == 0) {",
+              "  uint64_t maxTxSizeLimit = command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE) * 110 / 100 - CryptoNote::parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;",
+              "  currencyBuilder.maxTransactionSizeLimit(maxTxSizeLimit);",
+              "  currencyBuilder.fusionTxMaxSize(maxTxSizeLimit * 30 / 100);",
+              "} else {",
+              "  currencyBuilder.maxTransactionSizeLimit(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT));",
+              "  currencyBuilder.fusionTxMaxSize(command_line::get_arg(vm, arg_MAX_TRANSACTION_SIZE_LIMIT) * 30 / 100);",
+              "}"
             ]
           }
         }
@@ -85,7 +91,7 @@
           "marker": "(\"DIFFICULTY_CUT\", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT), \"size_t\")",
           "parameters": {
             "text": [
-              "(\"MAX_TRANSACTION_SIZE_LIMIT\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MAX_TRANSACTION_SIZE_LIMIT), \"uint64_t\")"
+              "(\"MAX_TRANSACTION_SIZE_LIMIT\", po::value<uint64_t>()->default_value(0), \"uint64_t\")"
             ]
           }
         },
@@ -110,8 +116,14 @@
           "marker": "currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);",
           "parameters": {
             "text": [
-              "currencyBuilder.maxTransactionSizeLimit(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT);",
-              "currencyBuilder.fusionTxMaxSize(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT * 30 / 100);"
+                "if (config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT == 0) {",
+                "  uint64_t maxTxSizeLimit = config.coinBaseConfig.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 110 / 100 - CryptoNote::parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;",
+                "  currencyBuilder.maxTransactionSizeLimit(maxTxSizeLimit);",
+                "  currencyBuilder.fusionTxMaxSize(maxTxSizeLimit * 30 / 100);",
+                "} else {",
+                "  currencyBuilder.maxTransactionSizeLimit(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT);",
+                "  currencyBuilder.fusionTxMaxSize(config.coinBaseConfig.MAX_TRANSACTION_SIZE_LIMIT * 30 / 100);",
+                "}"
             ]
           }
         }

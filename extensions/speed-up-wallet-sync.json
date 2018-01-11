@@ -37,6 +37,7 @@
           "marker": "sub.syncStart.timestamp = std::max(creationTimestamp, ACCOUNT_CREATE_TIME_ACCURACY) - ACCOUNT_CREATE_TIME_ACCURACY;",
           "parameters": {
             "text": [
+              "//    sub.syncStart.height = 0;",
               "    sub.syncStart.height = m_totalBlockCount;"
             ]
           }
@@ -55,7 +56,8 @@
           "marker": "void WalletGreen::onSynchronizationProgressUpdated(uint32_t processedBlockCount, uint32_t totalBlockCount) {",
           "parameters": {
             "text": [
-              "  m_totalBlockCount = totalBlockCount;"
+              "//  m_totalBlockCount = totalBlockCount;",
+              "  m_totalBlockCount = 0;"
             ]
           }
         },
