@@ -85,13 +85,13 @@ function installUbuntu {
 
   if [[ $DISTRIB_ID=Ubuntu && $DISTRIB_RELEASE == 16.04 ]] ; then
     sudo apt-get update
-    sudo apt-get -y install build-essential python-dev gcc-4.9 g++-4.9 git cmake libboost1.58-all-dev librocksdb-dev
+    sudo apt-get -y install build-essential python-dev gcc-4.9 g++-4.9 git cmake libboost1.58-all-dev librocksdb-dev libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
     export CXXFLAGS="-std=gnu++11"
 
     doneMessage
   elif [[ $DISTRIB_ID=Ubuntu && $DISTRIB_RELEASE == 16.10 ]] ; then
     sudo apt-get update
-    sudo apt-get -y install build-essential python-dev gcc-4.9 g++-4.9 git cmake libboost1.61-all-dev librocksdb-dev
+    sudo apt-get -y install build-essential python-dev gcc-4.9 g++-4.9 git cmake libboost1.61-all-dev librocksdb-dev libgflags-dev libsnappy-dev zlib1g-dev libbz2-dev liblz4-dev libzstd-dev
     export CXXFLAGS="-std=gnu++11"
 
     doneMessage
