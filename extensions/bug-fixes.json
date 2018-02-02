@@ -64,67 +64,6 @@
       ]
     },
     {
-      "path": "/src/Transfers/SynchronizationState.cpp",
-      "changes": [
-        {
-          "action": "add_above",
-          "marker": "assert( size == height);",
-          "parameters": {
-            "text": [
-              "  // Dummy fix for simplewallet or walletd when sync",
-              "  if (height == 0)",
-              "    height = 1;"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/Rpc/RpcServer.cpp",
-      "changes": [
-        {
-          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
-          "action": "replace",
-          "marker": "if (m_core.getTopBlockIndex() + 1 < req.height) {",
-          "parameters": {
-            "text": [
-              "  if (m_core.getTopBlockIndex() < req.height) {"
-            ]
-          }
-        },
-        {
-          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
-          "action": "replace",
-          "marker": "std::string(\"To big height: \") + std::to_string(req.height) + \", current blockchain height = \" + std::to_string(m_core.getTopBlockIndex() + 1) };",
-          "parameters": {
-            "text": [
-              "      std::string(\"To big height: \") + std::to_string(req.height) + \", current blockchain height = \" + std::to_string(m_core.getTopBlockIndex()) };"
-            ]
-          }
-        },
-        {
-          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
-          "action": "replace",
-          "marker": "uint32_t index = static_cast<uint32_t>(req.height) - 1;",
-          "parameters": {
-            "text": [
-              "uint32_t index = static_cast<uint32_t>(req.height);"
-            ]
-          }
-        },
-        {
-          "descroption":"Fixing on_get_block_header_by_height incorrect height output",
-          "action": "replace",
-          "marker": "assert(cachedBlock.getBlockIndex() == req.height - 1);",
-          "parameters": {
-            "text": [
-              "assert(cachedBlock.getBlockIndex() == req.height);"
-            ]
-          }
-        }
-      ]
-    },
-    {
       "path": "/src/SimpleWallet/SimpleWallet.cpp",
       "changes": [
         {
@@ -142,38 +81,6 @@
           "parameters": {
             "text": [
               "  //m_consoleHandler.setHandler(\"stop_mining\", boost::bind(&simple_wallet::stop_mining, this, _1), \"Stop mining in daemon\");"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp",
-      "changes": [
-        {
-          "description": "Fix getinfo incorrect last_known_block_index when malicious is in place",
-          "action": "add_below",
-          "marker": "m_observedHeight = std::max(peerHeight, m_core.getTopBlockIndex() + 1);",
-          "parameters": {
-            "text": [
-              "    if (context.m_state == CryptoNoteConnectionContext::state_normal) {",
-              "      m_observedHeight = m_core.getTopBlockIndex();",
-              "    }"
-            ]
-          }
-        },
-        {
-          "description": "Fix getinfo incorrect last_known_block_index when malicious is in place",
-          "action": "replace",
-          "marker": "if (peerHeight > context.m_remote_blockchain_height) {",
-          "parameters": {
-            "text": [
-              "    if (context.m_remote_blockchain_height != 0 && context.m_last_response_height <= context.m_remote_blockchain_height - 1) {",
-              "      m_observedHeight = context.m_remote_blockchain_height - 1;",
-              "      if (m_observedHeight != height) {",
-              "        updated = true;",
-              "      }",
-              "    } else if (peerHeight > context.m_remote_blockchain_height) {"
             ]
           }
         }

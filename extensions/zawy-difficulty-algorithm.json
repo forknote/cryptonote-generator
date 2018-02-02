@@ -211,8 +211,8 @@
                 "    }",
 
                 "    uint64_t nextDiffZ = low / timeSpan;",
-                "    if (nextDiffZ <= 100) {",
-                "      nextDiffZ = 100;",
+                "    if (nextDiffZ <= 1) {",
+                "      nextDiffZ = 1;",
                 "    }",
                 "    return nextDiffZ;",
                 "  }",

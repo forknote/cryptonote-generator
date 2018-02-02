@@ -14,7 +14,7 @@
           "marker": "arg_testnet_on  = {\"testnet\"",
           "parameters": {
             "text": [
-              "  const command_line::arg_descriptor<bool> arg_blockexplorer_on = {\"enable_blockexplorer\", \"Enable blockchain explorer RPC\", false};"
+              "  const command_line::arg_descriptor<bool> arg_blockexplorer_on = {\"enable-blockexplorer\", \"Enable blockchain explorer RPC\", false};"
             ]
           }
         },
