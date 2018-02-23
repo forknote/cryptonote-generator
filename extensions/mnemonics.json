@@ -1,0 +1,443 @@
+{
+  "file": "mnemonics.json",
+  "description": "Adds mnemonic seed import and export to simplewallet",
+  "required": [
+    "core/bytecoin.json",
+    "simplewallet-import-keys.json",
+    "simplewallet-export-keys.json"
+  ],
+  "files": [
+    {
+      "action": "add",
+      "source": "/mnemonics/chinese_simplified.h",
+      "path": "/src/Mnemonics/chinese_simplified.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/dutch.h",
+      "path": "/src/Mnemonics/dutch.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/electrum-words.cpp",
+      "path": "/src/Mnemonics/electrum-words.cpp"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/electrum-words.h",
+      "path": "/src/Mnemonics/electrum-words.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/english.h",
+      "path": "/src/Mnemonics/english.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/english_old.h",
+      "path": "/src/Mnemonics/english_old.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/esperanto.h",
+      "path": "/src/Mnemonics/esperanto.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/french.h",
+      "path": "/src/Mnemonics/french.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/german.h",
+      "path": "/src/Mnemonics/german.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/italian.h",
+      "path": "/src/Mnemonics/italian.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/japanese.h",
+      "path": "/src/Mnemonics/japanese.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/language_base.h",
+      "path": "/src/Mnemonics/language_base.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/lojban.h",
+      "path": "/src/Mnemonics/lojban.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/portuguese.h",
+      "path": "/src/Mnemonics/portuguese.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/russian.h",
+      "path": "/src/Mnemonics/russian.h"
+    },
+    {
+      "action": "add",
+      "source": "/mnemonics/singleton.h",
+      "path": "/src/Mnemonics/singleton.h"
+    },
+    {
+      "path": "/src/CryptoNoteCore/Account.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#include \"CryptoNoteSerialization.h\"",
+          "parameters": {
+            "text": [
+              "#include \"crypto/keccak.c\""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "Crypto::generate_keys(m_keys.address.viewPublicKey, m_keys.viewSecretKey);",
+          "parameters": {
+            "text": [
+              "/* We derive the view secret key by taking our spend secret key, hashing",
+              "   with keccak-256, and then using this as the seed to generate a new set",
+              "   of keys - the public and private view keys. See generate_keys_from_seed */",
+              "generateViewFromSpend(m_keys.spendSecretKey, m_keys.viewSecretKey, m_keys.address.viewPublicKey);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void AccountBase::generate() {",
+          "parameters": {
+            "text": [
+              "void AccountBase::generateViewFromSpend(Crypto::SecretKey &spend, Crypto::SecretKey &viewSecret, Crypto::PublicKey &viewPublic) {",
+              "  Crypto::SecretKey viewKeySeed;",
+              "  keccak((uint8_t *)&spend, sizeof(spend), (uint8_t *)&viewKeySeed, sizeof(viewKeySeed));",
+              "  Crypto::generate_keys_from_seed(viewPublic, viewSecret, viewKeySeed);",
+              "}",
+              "//-----------------------------------------------------------------"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Account.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "void generate();",
+          "parameters": {
+            "text": [
+              "static void generateViewFromSpend(Crypto::SecretKey &, Crypto::SecretKey &, Crypto::PublicKey &);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/crypto.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "friend void generate_keys(PublicKey &, SecretKey &);",
+          "parameters": {
+            "text": [
+              "static void generate_keys_from_seed(PublicKey &, SecretKey &, SecretKey &);",
+              "friend void generate_keys_from_seed(PublicKey &, SecretKey &, SecretKey &);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "crypto_ops::generate_keys(pub, sec);",
+          "parameters": {
+            "text": [
+              "  }",
+              "",
+              "  /* Generate a new key pair from a seed",
+              "   */",
+              "  inline void generate_keys_from_seed(PublicKey &pub, SecretKey &sec, SecretKey &seed) {",
+              "    crypto_ops::generate_keys_from_seed(pub, sec, seed);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/crypto.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "bool crypto_ops::check_key(const PublicKey &key) {",
+          "parameters": {
+            "text": [
+              "void crypto_ops::generate_keys_from_seed(PublicKey &pub, SecretKey &sec, SecretKey &seed) {",
+              "  ge_p3 point;",
+              "  sec = seed;",
+              "  sc_reduce32(reinterpret_cast<unsigned char*>(&sec));",
+              "  ge_scalarmult_base(&point, reinterpret_cast<unsigned char*>(&sec));",
+              "  ge_p3_tobytes(reinterpret_cast<unsigned char*>(&pub), &point);",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/keccak.c",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "rsiz = sizeof(state_t) == mdlen ? HASH_DATA_AREA : 200 - 2 * mdlen;",
+          "parameters": {
+            "text": [
+              "/* for some reason the enum from hash-ops.h is not valid here when",
+              "   compiling - is this a C vs C++ thing? Anyhow, lets just redefine it for",
+              "   now. */",
+              "",
+              "const int HASH_DATA_AREA = 136;",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.h",
+      "changes" : [
+        {
+          "action": "add_below",
+          "marker": "void printConnectionError() const;",
+          "parameters": {
+            "text": [
+              "std::string generate_mnemonic(Crypto::SecretKey &);",
+              "void log_incorrect_words(std::vector<std::string>);",
+              "bool is_valid_mnemonic(std::string &, Crypto::SecretKey &);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes" : [
+        {
+          "action": "add_below",
+          "marker": "#include \"CryptoNoteProtocol/CryptoNoteProtocolHandler.h\"",
+          "parameters": {
+            "text": [
+              "#include \"Mnemonics/electrum-words.cpp\""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (m_generate_new.empty() && m_wallet_file_arg.empty()) {",
+          "parameters": {
+            "text": [
+              "bool key_import = true;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "std::cout << \"Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\\nWhat do you want to do?\\n[O]pen existing wallet, [G]enerate new wallet file, [I]mport wallet or [E]xit.\\n\";",
+          "parameters": {
+            "text": [
+              "std::cout << \"Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\\nWhat do you want to do?\n[O]pen existing wallet, [G]enerate new wallet file, [I]mport wallet, [M]nemonic import or [E]xit.\\n\";"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if (!(c == 'O' || c == 'G' || c == 'E' || c == 'I' || c == 'o' || c == 'g' || c == 'e' || c == 'i')) {",
+          "parameters": {
+            "text": [
+              "if (!(c == 'O' || c == 'G' || c == 'E' || c == 'I' || c == 'M' || c == 'o' || c == 'g' || c == 'e' || c == 'i' || c == 'm')) {"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "if (c == 'i' || c == 'I') {",
+          "parameters": {
+            "text": [
+              "  key_import = true;",
+              "  m_import_new = userInput;",
+              "} else if (c == 'm' || c == 'M') {",
+              "  key_import = false;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "std::string private_view_key_string",
+          "parameters": {
+            "text": [
+              "",
+              "Crypto::SecretKey private_spend_key;",
+              "Crypto::SecretKey private_view_key;",
+              "",
+              "if (key_import) {"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "} while (private_view_key_string.empty());",
+          "parameters": {
+            "text": [
+              "} else {",
+              "  std::string mnemonic_phrase;",
+              "",
+              "  do {",
+              "    std::cout << \"Mnemonics Phrase (25 words): \";",
+              "    std::getline(std::cin, mnemonic_phrase);",
+              "    boost::algorithm::trim(mnemonic_phrase);",
+              "    boost::algorithm::to_lower(mnemonic_phrase);",
+              "  } while (!is_valid_mnemonic(mnemonic_phrase, private_spend_key));",
+              "",
+              "  /* This is not used, but is needed to be passed to the function, not sure how we can avoid this */",
+              "  Crypto::PublicKey unused_dummy_variable;",
+              "",
+              "  AccountBase::generateViewFromSpend(private_spend_key, private_view_key, unused_dummy_variable);",
+              "}"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "  Crypto::Hash private_spend_key_hash;",
+          "parameters": {
+            "text": [
+              "/* We already have our keys if we import via mnemonic seed */",
+              "if (key_import) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "Crypto::SecretKey private_spend_key = *(struct Crypto::SecretKey *) &private_spend_key_hash;",
+          "parameters": {
+            "text": [
+              "private_spend_key = *(struct Crypto::SecretKey *) &private_spend_key_hash"
+
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "Crypto::SecretKey private_view_key = *(struct Crypto::SecretKey *) &private_view_key_hash;",
+          "parameters": {
+            "text": [
+              "private_view_key = *(struct Crypto::SecretKey *) &private_view_key_hash"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "bool simple_wallet::deinit() {",
+          "parameters": {
+            "text": [
+              "/* Be careful using this function. It does generate a mnemonic seed",
+              "perfectly well from a private spend key, however, simplewallet previously",
+              "generated a random spend and view key, which were unrelated. With this set of",
+              "commits, this has been changed, to make the view key derived from the spend",
+              "key. This is done by running keccak-256 on the input, and then using that as",
+              "a seed to create a set of private and public keys, the spend private and public",
+              "keys.",
+              "",
+              "With this implemented, users only need to save a private spend key, or the",
+              "mnemonic seed, which is a nice way of representing the spend key. However,",
+              "we don't want users with the old way of generating keys thinking they only need",
+              "to keep their mnemonic seed, because this will only generate their private",
+              "spend key, and NOT their private view key - and they won't be able to restore",
+              "their funds.",
+              "*/",
+              "std::string simple_wallet::generate_mnemonic(Crypto::SecretKey &private_spend_key) {",
+              "",
+              "  std::string mnemonic_str;",
+              "",
+              "  if (!crypto::ElectrumWords::bytes_to_words(private_spend_key, mnemonic_str, \"English\")) {",
+              "      logger(ERROR, BRIGHT_RED) << \"\nCant create the mnemonic for the private spend key!\";",
+              "  }",
+              "",
+              "  return mnemonic_str;",
+              "}",
+              "//----------------------------------------------------------------------------------------------------",
+              "void simple_wallet::log_incorrect_words(std::vector<std::string> words) {",
+              "  Language::Base *language = Language::Singleton<Language::English>::instance();",
+              "  const std::vector<std::string> &dictionary = language->get_word_list();",
+              "",
+              "  for (auto i : words) {",
+              "    if (std::find(dictionary.begin(), dictionary.end(), i) == dictionary.end()) {",
+              "      logger(ERROR, BRIGHT_RED) << i << \" is not in the english word list!\";",
+              "    }",
+              "  }",
+              "}",
+              "//----------------------------------------------------------------------------------------------------",
+              "bool simple_wallet::is_valid_mnemonic(std::string &mnemonic_phrase, Crypto::SecretKey &private_spend_key) {",
+              "",
+              "  /* Uncommenting these will allow importing of different languages, exporting",
+              "     in different languages however has not been added, as it will require",
+              "     changing the export_keys command to take an argument to specify what",
+              "     language the seed should be exported in. For now, multilanguage support",
+              "     has been disabled as there are a couple of issues - we can't print out",
+              "     what words aren't present in the dictionary if we don't know what",
+              "     dictionary they are using, and it's a lot more friendly to work that",
+              "     out automatically rather than asking, and secondly, it is possible that",
+              "     dictionaries of other words can overlap enough to allow an esperanto",
+              "     seed for example to be imported as an english seed */",
+              "",
+              "  //static std::string languages[] = {\"English\", \"Nederlands\", \"Français\", \"Português\", \"Italiano\", \"Deutsch\", \"русский язык\", \"简体中文 (中国)\", \"Esperanto\", \"Lojban\"};",
+              "  static std::string languages[] = {\"English\"};",
+              "  ",
+              "  //static const int num_of_languages = 10;",
+              "  static const int num_of_languages = 1;",
+              "",
+              "  static const int mnemonic_phrase_length = 25;",
+              "",
+              "  std::vector<std::string> words;",
+              "",
+              "  words = boost::split(words, mnemonic_phrase, ::isspace);",
+              "",
+              "  if (words.size() != mnemonic_phrase_length) {",
+              "    logger(ERROR, BRIGHT_RED) << \"Invalid mnemonic phrase!\";",
+              "    logger(ERROR, BRIGHT_RED) << \"Seed phrase is not 25 words! Please try again.\";",
+              "    log_incorrect_words(words);",
+              "    return false;",
+              "  }",
+              "",
+              "  /* Check every language for our phrase so the user doesn't have to specify",
+              "     it, this shouldn't be an issue as long as one language doesn't have enough",
+              "     of another languages words, might need some testing */",
+              "  for (int i = 0; i < num_of_languages; i++) {",
+              "    if (crypto::ElectrumWords::words_to_bytes(mnemonic_phrase, private_spend_key, languages[i])) {",
+              "      return true;",
+              "    }",
+              "  }",
+              "",
+              "  /* The issue with this is if we try and automagically determine what language",
+              "     the seed phrase is in, then we can't log words which aren't in the x",
+              "     dictionary, we will have to take an argument to know what language they",
+              "     are in, but this is less user friendly. */",
+              "  logger(ERROR, BRIGHT_RED) << \"Invalid mnemonic phrase!\";",
+              "  log_incorrect_words(words);",
+              "  return false;",
+              "}",
+              "//----------------------------------------------------------------------------------------------------"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
