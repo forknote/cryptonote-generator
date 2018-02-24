@@ -88,6 +88,53 @@
       "path": "/src/Mnemonics/singleton.h"
     },
     {
+      "action": "add",
+      "source": "/mnemonics/spanish.h",
+      "path": "/src/Mnemonics/spanish.h"
+    },
+    {
+      "path": "/external/rocksdb/utilities/persistent_cache/hash_table_evictable.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "#include \"util/random.h\"",
+          "parameters": {
+            "text": [
+              "#include <functional>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/SwappedMap.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#include <iomanip>",
+          "parameters": {
+            "text": [
+              "#include <iostream"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/external/rocksdb/utilities/persistent_cache/block_cache_tier_file.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "#include <list>",
+          "parameters": {
+            "text": [
+              "#include <functional>"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/CryptoNoteCore/Account.cpp",
       "changes": [
         {
@@ -188,6 +235,47 @@
               ""
             ]
           }
+        },
+        {
+          "action": "add_above",
+          "marker": "struct rs_comm {",
+          "parameters": {
+            "text": [
+              "  struct ec_point_pair {",
+              "    EllipticCurvePoint a, b;",
+              "  };"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "struct rs_comm {",
+          "parameters": {
+            "text": [
+              "  Hash h;",
+              "  struct ec_point_pair ab[];",
+              "};",
+              "/*"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "static inline size_t rs_comm_size(size_t pubs_count) {",
+          "parameters": {
+            "text": [
+              "*/"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return sizeof(rs_comm) + pubs_count * sizeof(rs_comm().ab[0]);",
+          "parameters": {
+            "text": [
+              "return sizeof(rs_comm) + pubs_count * sizeof(ec_point_pair);"
+            ]
+          }
         }
       ]
     },
@@ -218,9 +306,9 @@
           "marker": "void printConnectionError() const;",
           "parameters": {
             "text": [
-              "std::string generate_mnemonic(Crypto::SecretKey &);",
-              "void log_incorrect_words(std::vector<std::string>);",
-              "bool is_valid_mnemonic(std::string &, Crypto::SecretKey &);"
+              "    std::string generate_mnemonic(Crypto::SecretKey &);",
+              "    void log_incorrect_words(std::vector<std::string>);",
+              "    bool is_valid_mnemonic(std::string &, Crypto::SecretKey &);"
             ]
           }
         }
@@ -252,7 +340,7 @@
           "marker": "std::cout << \"Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\\nWhat do you want to do?\\n[O]pen existing wallet, [G]enerate new wallet file, [I]mport wallet or [E]xit.\\n\";",
           "parameters": {
             "text": [
-              "std::cout << \"Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\\nWhat do you want to do?\n[O]pen existing wallet, [G]enerate new wallet file, [I]mport wallet, [M]nemonic import or [E]xit.\\n\";"
+              "std::cout << \"Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\\nWhat do you want to do?\\n[O]pen existing wallet, [G]enerate new wallet file, [I]mport wallet, [M]nemonic import or [E]xit.\\n\";"
             ]
           }
         },
@@ -328,8 +416,7 @@
           "marker": "Crypto::SecretKey private_spend_key = *(struct Crypto::SecretKey *) &private_spend_key_hash;",
           "parameters": {
             "text": [
-              "private_spend_key = *(struct Crypto::SecretKey *) &private_spend_key_hash"
-
+              "      private_spend_key = *(struct Crypto::SecretKey *) &private_spend_key_hash;"
             ]
           }
         },
@@ -338,7 +425,30 @@
           "marker": "Crypto::SecretKey private_view_key = *(struct Crypto::SecretKey *) &private_view_key_hash;",
           "parameters": {
             "text": [
-              "private_view_key = *(struct Crypto::SecretKey *) &private_view_key_hash"
+              "      private_view_key = *(struct Crypto::SecretKey *) &private_view_key_hash;",
+              "    }"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "success_msg_writer(true) << \"View secret key: \" <<  Common::podToHex(keys.viewSecretKey);",
+          "parameters": {
+            "text": [
+              "  Crypto::PublicKey unused_dummy_variable;",
+              "  Crypto::SecretKey deterministic_private_view_key;",
+              "",
+              "  AccountBase::generateViewFromSpend(keys.spendSecretKey, deterministic_private_view_kew, unused_dummy_variable);",
+              "",
+              "  bool deterministic_private_keys = deterministic_private_view_key == keys.viewSecretKey",
+              "",
+              "/* Only output the mnemonic seed if it's valid for this wallet - the old",
+              "   wallet code generated random spend and view keys so we can't create a ",
+              "   mnemonic seed */",
+              "  if (deterministic_private_keys) {",
+              "    std::cout << \"Mnemonic seed: \" << generate_mnemonic(keys.spendSecretKey) << std::endl;",
+              "  }",
+              ""
             ]
           }
         },
@@ -367,7 +477,7 @@
               "  std::string mnemonic_str;",
               "",
               "  if (!crypto::ElectrumWords::bytes_to_words(private_spend_key, mnemonic_str, \"English\")) {",
-              "      logger(ERROR, BRIGHT_RED) << \"\nCant create the mnemonic for the private spend key!\";",
+              "      logger(ERROR, BRIGHT_RED) << \"Cant create the mnemonic for the private spend key!\";",
               "  }",
               "",
               "  return mnemonic_str;",

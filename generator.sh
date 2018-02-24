@@ -59,7 +59,7 @@ function generate_coin {
 	for extension in "${__CONFIG_extensions[@]}"
 	do
 		echo "${bold}Execute ${EXTENSIONS_PATH}/${extension}${normal}"
-		python "lib/file-modification.py" --extension "${EXTENSIONS_PATH}/${extension}" --config=$CONFIG_FILE --source=${TEMP_PATH}
+		python2 "lib/file-modification.py" --extension "${EXTENSIONS_PATH}/${extension}" --config=$CONFIG_FILE --source=${TEMP_PATH}
 	done
 
 	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
@@ -130,7 +130,7 @@ fi
 [ -d "${WORK_FOLDERS_PATH}" ] || mkdir -p "${WORK_FOLDERS_PATH}"
 
 # Get environment environment_variables
-python "lib/environment_variables.py" --config=$CONFIG_FILE --output=$BASH_CONFIG
+python2 "lib/environment_variables.py" --config=$CONFIG_FILE --output=$BASH_CONFIG
 if [ ! -f ${BASH_CONFIG} ]; then
 	echo "Config file was not translated to bash."
 	echo "Abort coin generation"
