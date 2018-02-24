@@ -139,6 +139,9 @@ for file in extension['files']:
         source_path = os.path.dirname(os.path.realpath(args.extension_file)) + file['source']
         if (os.path.isfile(source_path)):
             sys.__stdout__.write("- Adding file " + source_path + "\n")
+            path = os.path.dirname(args.source + file['path'])
+            if not os.path.exists(path):
+                os.makedirs(path)
             shutil.copyfile(source_path,args.source + file['path'])
         else:
             sys.__stdout__.write(bcolors.FAIL + "ERROR: file does not exists - " + source_path + bcolors.ENDC + "\n")
