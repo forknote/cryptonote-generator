@@ -114,7 +114,7 @@
           "marker": "#include <iomanip>",
           "parameters": {
             "text": [
-              "#include <iostream"
+              "#include <iostream>"
             ]
           }
         }
@@ -438,9 +438,9 @@
               "  Crypto::PublicKey unused_dummy_variable;",
               "  Crypto::SecretKey deterministic_private_view_key;",
               "",
-              "  AccountBase::generateViewFromSpend(keys.spendSecretKey, deterministic_private_view_kew, unused_dummy_variable);",
+              "  AccountBase::generateViewFromSpend(keys.spendSecretKey, deterministic_private_view_key, unused_dummy_variable);",
               "",
-              "  bool deterministic_private_keys = deterministic_private_view_key == keys.viewSecretKey",
+              "  bool deterministic_private_keys = deterministic_private_view_key == keys.viewSecretKey;",
               "",
               "/* Only output the mnemonic seed if it's valid for this wallet - the old",
               "   wallet code generated random spend and view keys so we can't create a ",
