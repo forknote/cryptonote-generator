@@ -235,66 +235,6 @@
               ""
             ]
           }
-        },
-        {
-          "action": "add_above",
-          "marker": "struct rs_comm {",
-          "parameters": {
-            "text": [
-              "  struct ec_point_pair {",
-              "    EllipticCurvePoint a, b;",
-              "  };"
-            ]
-          }
-        },
-        {
-          "action": "add_below",
-          "marker": "struct rs_comm {",
-          "parameters": {
-            "text": [
-              "  Hash h;",
-              "  struct ec_point_pair ab[];",
-              "};",
-              "/*"
-            ]
-          }
-        },
-        {
-          "action": "add_above",
-          "marker": "static inline size_t rs_comm_size(size_t pubs_count) {",
-          "parameters": {
-            "text": [
-              "*/"
-            ]
-          }
-        },
-        {
-          "action": "replace",
-          "marker": "return sizeof(rs_comm) + pubs_count * sizeof(rs_comm().ab[0]);",
-          "parameters": {
-            "text": [
-              "return sizeof(rs_comm) + pubs_count * sizeof(ec_point_pair);"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "path": "/src/crypto/keccak.c",
-      "changes": [
-        {
-          "action": "add_above",
-          "marker": "rsiz = sizeof(state_t) == mdlen ? HASH_DATA_AREA : 200 - 2 * mdlen;",
-          "parameters": {
-            "text": [
-              "/* for some reason the enum from hash-ops.h is not valid here when",
-              "   compiling - is this a C vs C++ thing? Anyhow, lets just redefine it for",
-              "   now. */",
-              "",
-              "const int HASH_DATA_AREA = 136;",
-              ""
-            ]
-          }
         }
       ]
     },

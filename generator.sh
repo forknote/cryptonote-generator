@@ -27,7 +27,7 @@ function finish {
 }
 trap finish EXIT
 
-# Generate source code and compile 
+# Generate source code and compile
 function generate_coin {
 	# Define coin paths
 	export BASE_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_base_coin_name}"
@@ -59,7 +59,7 @@ function generate_coin {
 	for extension in "${__CONFIG_extensions[@]}"
 	do
 		echo "${bold}Execute ${EXTENSIONS_PATH}/${extension}${normal}"
-		python2 "lib/file-modification.py" --extension "${EXTENSIONS_PATH}/${extension}" --config=$CONFIG_FILE --source=${TEMP_PATH}
+		python "lib/file-modification.py" --extension "${EXTENSIONS_PATH}/${extension}" --config=$CONFIG_FILE --source=${TEMP_PATH}
 	done
 
 	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
@@ -93,7 +93,7 @@ Reads a config file and creates and compiles Cryptonote coin. "config.json" as d
     -f          config file
     -c          compile arguments
 EOF
-}   
+}
 
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
@@ -123,14 +123,14 @@ if [[ "${CONFIG_FILE}" != /* ]]; then
 fi
 
 if [ ! -f ${CONFIG_FILE} ]; then
-	echo "ERROR: config file does not exist"	
+	echo "ERROR: config file does not exist"
 	exit
 fi
 
 [ -d "${WORK_FOLDERS_PATH}" ] || mkdir -p "${WORK_FOLDERS_PATH}"
 
 # Get environment environment_variables
-python2 "lib/environment_variables.py" --config=$CONFIG_FILE --output=$BASH_CONFIG
+python "lib/environment_variables.py" --config=$CONFIG_FILE --output=$BASH_CONFIG
 if [ ! -f ${BASH_CONFIG} ]; then
 	echo "Config file was not translated to bash."
 	echo "Abort coin generation"

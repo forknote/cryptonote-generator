@@ -33,7 +33,8 @@
     "multiply/bugged-zawy-difficulty-algorithm.json",
     "daemon-getrandom_outs-json.json",
     "simplewallet-import-keys.json",
-    "simplewallet-export-keys.json"
+    "simplewallet-export-keys.json",
+    "mnemonics.json"
   ],
   "base_coin": {
     "name": "bytecoin",
