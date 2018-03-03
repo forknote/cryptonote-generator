@@ -15,6 +15,7 @@
     "versionized-parameters.json",
     "zawy-difficulty-algorithm.json",
     "bugged-zawy-difficulty-algorithm.json",
+    "block-hosts.json",
     "blockchain-explorer.json",
     "enable-cors.json",
     "fee-address.json",
