@@ -87,6 +87,38 @@
       ]
     },
     {
+      "path": "/src/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp",
+      "changes": [
+        {
+          "description": "Fix getinfo incorrect last_known_block_index when malicious is in place",
+          "action": "add_below",
+          "marker": "m_observedHeight = std::max(peerHeight, m_core.getTopBlockIndex() + 1);",
+          "parameters": {
+            "text": [
+              "    if (context.m_state == CryptoNoteConnectionContext::state_normal) {",
+              "      m_observedHeight = m_core.getTopBlockIndex();",
+              "    }"
+            ]
+          }
+        },
+        {
+          "description": "Fix getinfo incorrect last_known_block_index when malicious is in place",
+          "action": "replace",
+          "marker": "if (peerHeight > context.m_remote_blockchain_height) {",
+          "parameters": {
+            "text": [
+              "    if (context.m_remote_blockchain_height != 0 && context.m_last_response_height <= context.m_remote_blockchain_height) {",
+              "      m_observedHeight = context.m_remote_blockchain_height ;",
+              "      if (m_observedHeight != height) {",
+              "        updated = true;",
+              "      }",
+              "    } else if (peerHeight > context.m_remote_blockchain_height) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/crypto/crypto.h",
       "changes": [
         {

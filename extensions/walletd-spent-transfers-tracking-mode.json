@@ -9,6 +9,33 @@
       "path": "/src/Transfers/TransfersContainer.h",
       "changes": [
         {
+          "description": "Adding known_outputs_keys & ",
+          "action": "add_below",
+          "marker": "> TransactionMultiIndex;",
+          "parameters": {
+            "text": [
+              "/*",
+              "typedef boost::multi_index_container<",
+              "  Crypto::PublicKey,",
+              "  boost::multi_index::indexed_by<",
+              "    boost::multi_index::hashed_unique<BOOST_MULTI_INDEX_MEMBER(Crypto::PublicKey, Crypto::Hash, transactionHash)>,",
+              "    boost::multi_index::ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(Crypto::PublicKey, uint32_t, blockHeight)>",
+              "  >",
+              "> KnownOutputsKeysMultiIndex;",
+              "",
+              "typedef boost::multi_index_container<",
+              "  TransferSpentOutput,",
+              "  boost::multi_index::indexed_by<",
+              "    boost::multi_index::hashed_unique<BOOST_MULTI_INDEX_MEMBER(TransferSpentOutput, Crypto::Hash, transactionHash)>,",
+              "    boost::multi_index::ordered_non_unique<BOOST_MULTI_INDEX_MEMBER(TransferSpentOutput, uint32_t, blockHeight)>",
+              "  >",
+              "> TransferSpentOutputsMultiIndex;",
+              "*/"
+            ]
+          }
+        },
+
+        {
           "action": "add_below",
           "marker": "  > SpentTransfersMultiIndex;",
           "parameters": {
@@ -135,6 +162,15 @@
         },
         {
           "action": "add_above",
+          "marker": "void updateTransfersVisibility(const Crypto::KeyImage& keyImage);",
+          "parameters": {
+            "text": [
+              "  void updateTrackingTransfersVisibility(const uint64_t amount, const uint32_t globalOutputIndex, const bool trackingMode = 1);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
           "marker": "void copyToSpent(const TransactionBlockInfo& block, const ITransactionReader& tx, size_t inputIndex, const TransactionOutputInformationEx& output);",
           "parameters": {
             "text": [
@@ -163,20 +199,22 @@
             "text": [
                 "    if (trackingMode == 0) {",
                 "      updateTransfersVisibility(transfer.keyImage);",
+                "    } else {",
+                "      updateTrackingTransfersVisibility(transfer.amount, transfer.globalOutputIndex);",
                 "    }"
             ]
           }
         },
-
-
         {
           "action": "replace",
           "marker": "updateTransfersVisibility(info.keyImage);",
           "parameters": {
             "text": [
-              "if (trackingMode == 0) {",
-              "  updateTransfersVisibility(info.keyImage);",
-              "}"
+              "    if (trackingMode == 0) {",
+              "      updateTransfersVisibility(info.keyImage);",
+              "    } else {",
+              "      updateTrackingTransfersVisibility(info.amount, info.globalOutputIndex);",
+              "    }"
             ]
           }
         },
@@ -358,6 +396,149 @@
           }
         },
         {
+          "description": "save: adding m_trackingModeSpentTransfers support",
+          "action": "add_below",
+          "marker": "spendingTransactionIndex.replace(transferIt, transfer);",
+          "parameters": {
+            "text": [
+              "    }",
+              "",
+              "    auto& trackingModeSpendingTransactionIndex = m_trackingModeSpentTransfers.get<SpendingTransactionIndex>();",
+              "    auto trackingModeSpentRange = trackingModeSpendingTransactionIndex.equal_range(transactionHash);",
+              "    for (auto transferIt = trackingModeSpentRange.first; transferIt != trackingModeSpentRange.second; ++transferIt) {",
+              "      auto transfer = *transferIt;",
+              "      assert(transfer.spendingBlock.height == WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT);",
+              "",
+              "      transfer.spendingBlock = block;",
+              "      trackingModeSpendingTransactionIndex.replace(transferIt, transfer);"
+            ]
+          }
+        },
+        {
+          "description": "save: adding m_trackingModeSpentTransfers support",
+          "action": "add_below",
+          "marker": "spendingTransactionIndex.replace(transferIt, spentTransfer);",
+          "parameters": {
+            "text": [
+              "    }",
+              "",
+              "    auto& trackingModeSpendingTransactionIndex = m_trackingModeSpentTransfers.get<SpendingTransactionIndex>();",
+              "    auto trackingModeSpentRange = trackingModeSpendingTransactionIndex.equal_range(transactionHash);",
+              "    for (auto transferIt = trackingModeSpentRange.first; transferIt != trackingModeSpentRange.second; ++transferIt) {",
+              "      auto trackingModeSpentTransfer = *transferIt;",
+              "      trackingModeSpentTransfer.spendingBlock.height = WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT;",
+              "      trackingModeSpentTransfer.spendingBlock.timestamp = 0;",
+              "      trackingModeSpentTransfer.spendingBlock.transactionIndex = 0;",
+              "",
+              "      trackingModeSpendingTransactionIndex.replace(transferIt, trackingModeSpentTransfer);"
+            ]
+          }
+        },
+        {
+          "description": "detach: adding m_trackingModeSpentTransfers support",
+          "action": "add_below",
+          "marker": "std::vector<Hash> deletedTransactions;",
+          "parameters": {
+            "text": [
+              "  auto& trackingModeSpendingTransactionIndex = m_trackingModeSpentTransfers.get<SpendingTransactionIndex>();"
+            ]
+          }
+        },
+        {
+          "description": "detach: adding m_trackingModeSpentTransfers support",
+          "action": "add_above",
+          "marker": "auto range = spendingTransactionIndex.equal_range(it->transactionHash);",
+          "parameters": {
+            "text": [
+              "      auto trackingModeRange = trackingModeSpendingTransactionIndex.equal_range(it->transactionHash);",
+              "      for (auto spentTransferIt = trackingModeRange.first; spentTransferIt != trackingModeRange.second; ++spentTransferIt) {",
+              "        if (spentTransferIt->blockHeight >= height) {",
+              "          doDelete = true;",
+              "          break;",
+              "        }",
+              "      }"
+            ]
+          }
+        },
+        {
+          "description": "save: adding m_trackingModeSpentTransfers support",
+          "action": "add_below",
+          "marker": "writeSequence<SpentTransactionOutput>(m_spentTransfers.begin(), m_spentTransfers.end(), \"spentTransfers\", s);",
+          "parameters": {
+            "text": [
+              "  writeSequence<SpentTransactionOutput>(m_trackingModeSpentTransfers.begin(), m_trackingModeSpentTransfers.end(), \"trackingModeSpentTransfers\", s);"
+            ]
+          }
+        },
+        {
+          "description": "repair: adding m_trackingModeSpentTransfers support",
+          "action": "add_above",
+          "marker": "for (auto it = m_spentTransfers.begin(); it != m_spentTransfers.end();) {",
+          "parameters": {
+            "text": [
+              "",
+              "for (auto it = m_trackingModeSpentTransfers.begin(); it != m_trackingModeSpentTransfers.end();) {",
+              "  assert(it->blockHeight != WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT);",
+              "  assert(it->globalOutputIndex != UNCONFIRMED_TRANSACTION_GLOBAL_OUTPUT_INDEX);",
+              "",
+              "  if (m_transactions.count(it->spendingTransactionHash) == 0) {",
+              "    bool isInputConfirmed = it->spendingBlock.height != WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT;",
+              "    m_logger(WARNING, BRIGHT_YELLOW) << \"Orphan input found, remove it and return output spent by them to available outputs:\\n\" <<",
+              "      \"    input       \" <<",
+              "      \": block \" << std::setw(7) << (isInputConfirmed ? static_cast<int32_t>(it->spendingBlock.height) : -1) <<",
+              "      \", transaction index \" << std::setw(2) << (isInputConfirmed ? static_cast<int32_t>(it->spendingBlock.transactionIndex) : -1) <<",
+              "      \", transaction hash \" << it->spendingTransactionHash <<",
+              "      \", input \" << std::setw(3) << it->inputInTransaction << '\\n' <<",
+              "      \"    spent output\" <<",
+              "      \": block \" << std::setw(7) << it->blockHeight <<",
+              "      \", transaction index \" << std::setw(2) << it->transactionIndex <<",
+              "      \", transaction hash \" << it->transactionHash <<",
+              "      \", output \" << std::setw(2) << it->outputInTransaction;",
+              "",
+              "    auto result = m_availableTransfers.emplace(static_cast<const TransactionOutputInformationEx&>(*it));",
+              "    assert(result.second);",
+              "    it = m_trackingModeSpentTransfers.erase(it);",
+              "",
+              "    if (result.first->type == TransactionTypes::OutputType::Key) {",
+              "      updateTrackingTransfersVisibility(result.first->amount, result.first->globalOutputIndex);",
+              "    }",
+              "",
+              "    ++deletedInputCount;",
+              "  } else {",
+              "    ++it;",
+              "  }",
+              "}",
+              ""
+            ]
+          }
+        },
+        {
+          "description": "transfersCount: adding m_trackingModeSpentTransfers support",
+          "action": "replace",
+          "marker": "return m_unconfirmedTransfers.size() + m_availableTransfers.size() + m_spentTransfers.size();",
+          "parameters": {
+            "text": [
+              "  return m_unconfirmedTransfers.size() + m_availableTransfers.size() + m_spentTransfers.size() + m_trackingModeSpentTransfers.size();"
+            ]
+          }
+        },
+        {
+          "description": "addTransactionOutputs: adding m_trackingModeSpentTransfers support",
+          "action": "add_above",
+          "marker": "if (duplicate) {",
+          "parameters": {
+            "text": [
+              "        auto trackingModeSpentRange = m_trackingModeSpentTransfers.get<SpentOutputDescriptorIndex>().equal_range(descriptor);",
+              "        for (auto it = trackingModeSpentRange.first; !duplicate && it != trackingModeSpentRange.second; ++it) {",
+              "          if (it->transactionHash == info.transactionHash && it->outputInTransaction == info.outputInTransaction) {",
+              "            duplicate = true;",
+              "          }",
+              "        }",
+              ""
+            ]
+          }
+        },
+        {
           "action": "replace",
           "marker": "bool TransfersContainer::addTransaction(const TransactionBlockInfo& block, const ITransactionReader& tx,",
           "parameters": {
@@ -382,6 +563,40 @@
               "}",
               "",
               "bool TransfersContainer::markTransactionConfirmed(const bool trackingMode, const TransactionBlockInfo& block, const Hash& transactionHash,"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "void TransfersContainer::updateTransfersVisibility(const KeyImage& keyImage) {",
+          "parameters": {
+            "text": [
+              "/**",
+              " * \\pre m_mutex is locked.",
+              " */",
+              "void TransfersContainer::updateTrackingTransfersVisibility(const uint64_t amount, const uint32_t globalOutputIndex, const bool trackingMode) {",
+              "  auto& unconfirmedIndex = m_unconfirmedTransfers.get<SpentOutputDescriptorIndex>();",
+              "  auto& availableIndex = m_availableTransfers.get<SpentOutputDescriptorIndex>();",
+              "  auto& spentIndex = m_trackingModeSpentTransfers.get<SpentOutputDescriptorIndex>();",
+              "",
+              "  SpentOutputDescriptor descriptor(amount, globalOutputIndex, trackingMode);",
+              "  auto unconfirmedRange = unconfirmedIndex.equal_range(descriptor);",
+              "  auto availableRange = availableIndex.equal_range(descriptor);",
+              "  auto spentRange = spentIndex.equal_range(descriptor);",
+              "",
+              "  size_t unconfirmedCount = std::distance(unconfirmedRange.first, unconfirmedRange.second);",
+              "  size_t spentCount = std::distance(spentRange.first, spentRange.second);",
+              "  assert(spentCount == 0 || spentCount == 1);",
+              "",
+              "  if (spentCount > 0) {",
+              "    updateVisibility(unconfirmedIndex, unconfirmedRange, false);",
+              "//    updateVisibility(availableIndex, availableRange, false);",
+              "    updateVisibility(spentIndex, spentRange, true);",
+              "  } else {",
+              "    updateVisibility(unconfirmedIndex, unconfirmedRange, unconfirmedCount == 1);",
+              "  }",
+              "}",
+              ""
             ]
           }
         },
@@ -422,6 +637,9 @@
                 "    auto result = m_availableTransfers.emplace(static_cast<const TransactionOutputInformationEx&>(*it));",
                 "    assert(result.second);",
                 "    it = trackingModeSpendingTransactionIndex.erase(it);",
+                "    if (result.first->type == TransactionTypes::OutputType::Key) {",
+                "      updateTrackingTransfersVisibility(result.first->amount, result.first->globalOutputIndex);",
+                "    }",
                 "  }",
                 ""
             ]
@@ -473,8 +691,8 @@
                 "          throw std::runtime_error(message);",
                 "        }",
                 "",
-                "//        assert(spendingTransferIt->keyImage == input.keyImage);",
                 "        trackingModeCopyToSpent(block, tx, i, *spendingTransferIt);",
+                "        updateTrackingTransfersVisibility(input.amount, spendingTransferIt->globalOutputIndex);",
                 "",
                 "        inputsAdded = true;",
                 "      }",
@@ -533,6 +751,27 @@
       ]
     },
     {
+      "path": "/include/CryptoNote.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "struct TransactionOutput {",
+          "parameters": {
+            "text": [
+                "struct TransferSpentOutput {",
+                "  uint64_t amount;",
+                "  std::string key_image;",
+                "  std::string tx_pub_key;",
+                "  uint64_t out_index;",
+                "  uint64_t mixin;",
+                "};",
+                ""
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/include/IWallet.h",
       "changes": [
         {
@@ -571,8 +810,6 @@
         }
       ]
     },
-
-
     {
       "path": "/src/Wallet/WalletGreen.cpp",
       "changes": [
@@ -616,13 +853,13 @@
               "  throwIfStopped();",
               "",
               "  m_logger(DEBUGGING) << \"Requesting transactions details\";",
-              "  System::RemoteContext<void> getTransactionsContext(m_dispatcher, [this, amount, absolute_offsets, &mixin_outputs, &requestFinished, &extractKeysError] () mutable {",
+              "  System::RemoteContext<void> getExtractKeyOutputKeysContext(m_dispatcher, [this, amount, absolute_offsets, &mixin_outputs, &requestFinished, &extractKeysError] () mutable {",
               "    m_node.extractKeyOutputKeys(amount, absolute_offsets, mixin_outputs, [&requestFinished, &extractKeysError, this] (std::error_code ec) mutable {",
               "      extractKeysError = ec;",
               "      m_dispatcher.remoteSpawn(std::bind(asyncRequestCompletion, std::ref(requestFinished)));",
               "    });",
               "  });",
-              "  getTransactionsContext.get();",
+              "  getExtractKeyOutputKeysContext.get();",
               "  requestFinished.wait();",
               "",
               "  if (extractKeysError) {",
@@ -680,10 +917,61 @@
         }
       ]
     },
-
+    {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcServer.h",
+      "changes": [
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "std::error_code handleGetUnconfirmedTransactionHashes(const GetUnconfirmedTransactionHashes::Request& request, GetUnconfirmedTransactionHashes::Response& response);",
+          "parameters": {
+            "text": [
+              "    std::error_code handleGetUnconfirmedTransactions(const GetUnconfirmedTransactions::Request& request, GetUnconfirmedTransactions::Response& response);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGate/PaymentServiceJsonRpcServer.cpp",
+      "changes": [
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "handlers.emplace(\"getUnconfirmedTransactionHashes\", jsonHandler<GetUnconfirmedTransactionHashes::Request, GetUnconfirmedTransactionHashes::Response>(std::bind(&PaymentServiceJsonRpcServer::handleGetUnconfirmedTransactionHashes, this, std::placeholders::_1, std::placeholders::_2)));",
+          "parameters": {
+            "text": [
+              "    handlers.emplace(\"getUnconfirmedTransactions\", jsonHandler<GetUnconfirmedTransactions::Request, GetUnconfirmedTransactions::Response>(std::bind(&PaymentServiceJsonRpcServer::handleGetUnconfirmedTransactions, this, std::placeholders::_1, std::placeholders::_2)));"
+            ]
+          }
+        },
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "std::error_code PaymentServiceJsonRpcServer::handleGetUnconfirmedTransactionHashes(const GetUnconfirmedTransactionHashes::Request& request, GetUnconfirmedTransactionHashes::Response& response) {",
+          "parameters": {
+            "text": [
+              "  std::error_code PaymentServiceJsonRpcServer::handleGetUnconfirmedTransactions(const GetUnconfirmedTransactions::Request& request, GetUnconfirmedTransactions::Response& response) {",
+              "    return service.getUnconfirmedTransactions(request.addresses, request.paymentId, response.items);",
+              "  }",
+              ""
+            ]
+          }
+        }
+      ]
+    },
     {
       "path": "/src/PaymentGate/PaymentServiceJsonRpcMessages.h",
       "changes": [
+        {
+          "action": "add_above",
+          "marker": "#include \"Serialization/ISerializer.h\"",
+          "parameters": {
+            "text": [
+              "#include \"CryptoNote.h\""
+            ]
+          }
+        },
         {
           "action": "add_below",
           "marker": "bool isBase;",
@@ -694,16 +982,37 @@
           }
         },
         {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "struct GetUnconfirmedTransactionHashes {",
+          "parameters": {
+            "text": [
+              "struct GetUnconfirmedTransactions {",
+              "  struct Request {",
+              "    std::vector<std::string> addresses;",
+              "    std::string paymentId;",
+              "",
+              "    void serialize(CryptoNote::ISerializer& serializer);",
+              "  };",
+              "",
+              "  struct Response {",
+              "    std::vector<TransactionsInBlockRpcInfo> items;",
+              "",
+              "    void serialize(CryptoNote::ISerializer& serializer);",
+              "  };",
+              "};",
+              ""
+            ]
+          }
+        },
+        {
           "action": "replace",
           "marker": "struct TransferRpcInfo {",
           "parameters": {
             "text": [
-                "struct TransferRpcSpentOutput {",
-                "  uint64_t amount;",
-                "  std::string key_image;",
-                "  std::string tx_pub_key;",
-                "  uint64_t out_index;",
-                "  uint64_t mixin;",
+                "struct TransferRpcSpentOutput: CryptoNote::TransferSpentOutput {",
+                "//  explicit TransferRpcSpentOutput(const CryptoNote::TransferSpentOutput& transferSpentOutput):",
+                "//    CryptoNote::TransferSpentOutput(transferSpentOutput) { }",
                 "",
                 "  void serialize(CryptoNote::ISerializer& serializer);",
                 "};",
@@ -724,6 +1033,24 @@
           "parameters": {
             "text": [
                 "  serializer(mixin, \"mixin\");"
+            ]
+          }
+        },
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "void GetUnconfirmedTransactionHashes::Request::serialize(CryptoNote::ISerializer& serializer) {",
+          "parameters": {
+            "text": [
+              "void GetUnconfirmedTransactions::Request::serialize(CryptoNote::ISerializer& serializer) {",
+              "  serializer(addresses, \"addresses\");",
+              "  serializer(paymentId, \"paymentId\");",
+              "}",
+              "",
+              "void GetUnconfirmedTransactions::Response::serialize(CryptoNote::ISerializer& serializer) {",
+              "  serializer(items, \"items\");",
+              "}",
+              ""
             ]
           }
         },
@@ -749,6 +1076,31 @@
     },
 
     {
+      "path": "/src/PaymentGate/WalletService.h",
+      "changes": [
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "std::error_code getTransactions(const std::vector<std::string>& addresses, const std::string& blockHash,",
+          "parameters": {
+            "text": [
+              "std::error_code getUnconfirmedTransactions(const std::vector<std::string>& addresses, const std::string& paymentId, std::vector<TransactionsInBlockRpcInfo>& transactionHashes);"
+            ]
+          }
+        },
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "  std::vector<TransactionsInBlockRpcInfo> getRpcTransactions(const Crypto::Hash& blockHash, size_t blockCount, const TransactionsInBlockInfoFilter& filter) const;",
+          "parameters": {
+            "text": [
+              "  std::vector<TransactionsInBlockRpcInfo> getRpcUnconfirmedTransactions(const TransactionsInBlockInfoFilter& filter) const;"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/PaymentGate/WalletService.cpp",
       "changes": [
         {
@@ -769,6 +1121,67 @@
             ]
           }
         },
+        {
+          "description": "Do not return empty blocks",
+          "action": "replace",
+          "marker": "rpcBlocks.push_back(std::move(rpcBlock));",
+          "parameters": {
+            "text": [
+              "    if (rpcBlock.transactions.size() > 0)",
+              "      rpcBlocks.push_back(std::move(rpcBlock));"
+            ]
+          }
+        },
+
+
+        {
+          "description": "Do not return empty transactions",
+          "action": "replace",
+          "marker": "transactionInfo.transfers.push_back(std::move(rpcTransfer));",
+          "parameters": {
+            "text": [
+              "    if ((rpcTransfer.amount > 0 && !rpcTransfer.address.empty()) || (rpcTransfer.address.empty() && rpcTransfer.spentOutputs.size() > 0)) {",
+              "      transactionInfo.transfers.push_back(std::move(rpcTransfer));",
+              "    }"
+            ]
+          }
+        },
+
+
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "std::error_code WalletService::getUnconfirmedTransactionHashes(const std::vector<std::string>& addresses, std::vector<std::string>& transactionHashes) {",
+          "parameters": {
+            "text": [
+              "std::error_code WalletService::getUnconfirmedTransactions(const std::vector<std::string>& addresses, const std::string& paymentId, std::vector<TransactionsInBlockRpcInfo>& transactions) {",
+              "  try {",
+              "    System::EventLock lk(readyEvent);",
+              "",
+              "    validateAddresses(addresses, currency, logger);",
+              "",
+              "    if (!paymentId.empty()) {",
+              "      validatePaymentId(paymentId, logger);",
+              "    }",
+              "",
+              "    TransactionsInBlockInfoFilter transactionFilter(addresses, paymentId);",
+              "",
+              "    transactions = getRpcUnconfirmedTransactions(transactionFilter);",
+              "  } catch (std::system_error& x) {",
+              "    logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << \"Error while getting unconfirmed transactions: \" << x.what();",
+              "    return x.code();",
+              "  } catch (std::exception& x) {",
+              "    logger(Logging::WARNING, Logging::BRIGHT_YELLOW) << \"Error while getting unconfirmed transactions: \" << x.what();",
+              "    return make_error_code(CryptoNote::error::INTERNAL_WALLET_ERROR);",
+              "  }",
+              "",
+              "  return std::error_code();",
+              "}",
+              ""
+            ]
+          }
+        },
+
         {
           "action": "replace",
           "marker": "std::vector<PaymentService::TransactionsInBlockRpcInfo> convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(",
@@ -811,6 +1224,28 @@
           "parameters": {
             "text": [
               "      PaymentService::TransactionRpcInfo transactionInfo = convertTransactionWithTransfersToTransactionRpcInfo(wallet, addresses, transactionWithTransfers, known_outputs_keys);"
+            ]
+          }
+        },
+        {
+          "description": "Add getUnconfirmedTransactions",
+          "action": "add_above",
+          "marker": "std::vector<TransactionsInBlockRpcInfo> WalletService::getRpcTransactions(uint32_t firstBlockIndex, size_t blockCount, const TransactionsInBlockInfoFilter& filter) const {",
+          "parameters": {
+            "text": [
+              "std::vector<TransactionsInBlockRpcInfo> WalletService::getRpcUnconfirmedTransactions(const TransactionsInBlockInfoFilter& filter) const {",
+              "  std::vector<CryptoNote::TransactionsInBlockInfo> allTransactions = {};",
+              "  std::vector<CryptoNote::WalletTransactionWithTransfers> unconfirmedTransactions = wallet.getUnconfirmedTransactions();",
+              "  for (const auto& unconfirmedTransaction: unconfirmedTransactions) {",
+              "    CryptoNote::TransactionsInBlockInfo transaction;",
+              "    Common::podFromHex(\"0000000000000000000000000000000000000000000000000000000000000000\", transaction.blockHash);",
+              "    transaction.transactions = unconfirmedTransactions;",
+              "    allTransactions.emplace_back(transaction);",
+              "  }",
+              "  std::vector<CryptoNote::TransactionsInBlockInfo> filteredTransactions = filterTransactions(allTransactions, filter);",
+              "  return convertTransactionsInBlockInfoToTransactionsInBlockRpcInfo(wallet, filter.addresses, filteredTransactions);",
+              "}",
+              ""
             ]
           }
         },
@@ -864,8 +1299,6 @@
             ]
           }
         },
-
-
         {
           "action": "add_above",
           "marker": "  for (const CryptoNote::WalletTransfer& transfer: transactionWithTransfers.transfers) {",
@@ -1005,16 +1438,6 @@
       "changes": [
         {
           "action": "add_above",
-          "marker": "#include <future>",
-          "parameters": {
-            "text": [
-              "//remove",
-              "#include <iostream>"
-            ]
-          }
-        },
-        {
-          "action": "add_above",
           "marker": "void InProcessNode::getTransactions(const std::vector<Crypto::Hash>& transactionHashes,",
           "parameters": {
             "text": [
@@ -1103,7 +1526,6 @@
                 "  uint32_t *ao_array = new uint32_t[absolute_offsets.size()];",
                 "  std::copy(absolute_offsets.begin(), absolute_offsets.end(), ao_array);",
                 "  chainsLeaves[0]->extractTransactionPublicKeys(amount, Common::ArrayView<uint32_t>(ao_array, absolute_offsets.size()), mixin_outputs);",
-
                 "  delete [] ao_array;",
                 "}",
                 ""
@@ -1361,9 +1783,6 @@
         }
       ]
     },
-
-
-
     {
       "description": "Adding extractKeyOutputKeys to INode",
       "path": "/src/CryptoNoteCore/IBlockchainCache.h",
@@ -1474,7 +1893,6 @@
             ]
           }
         },
-
         {
           "action": "add_above",
           "marker": "DatabaseBlockchainCache::extractKeyOutputKeys(uint64_t amount, Common::ArrayView<uint32_t> globalIndexes,",
