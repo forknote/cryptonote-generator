@@ -1,0 +1,6 @@
+{
+  "extension_folder":"bytecoin-v2",
+  "name": "bytecoin-v2",
+  "git": "https://github.com/amjuarez/bytecoin.git",
+  "branch":"frozen-master"
+}

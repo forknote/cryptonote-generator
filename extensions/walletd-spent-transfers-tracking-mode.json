@@ -1916,7 +1916,7 @@
               "    std::vector<CachedTransactionInfo> cachedTransactions;",
               "    if (!requestCachedTransactionInfos({info.transactionHash}, database, cachedTransactions)) {",
               "      return ExtractOutputKeysResult::INVALID_GLOBAL_INDEX;",
-              "}",
+              "    }",
               "",
               "    if (cachedTransactions.empty()) {",
               "      return ExtractOutputKeysResult::INVALID_GLOBAL_INDEX;",

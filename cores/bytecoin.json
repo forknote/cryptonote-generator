@@ -1,0 +1,6 @@
+{
+  "extension_folder":"bytecoin",
+  "name": "bytecoin",
+  "git": "https://github.com/bcndev/bytecoin.git",
+  "branch":"master"
+}

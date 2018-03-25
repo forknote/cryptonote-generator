@@ -6,10 +6,7 @@
     "mandatory-transaction-in-block.json",
     "genesis-block-reward.json"
   ],
-  "base_coin": {
-    "name": "bytecoin",
-    "git": "https://github.com/amjuarez/bytecoin.git"
-  },
+  "base_coin": "bytecoin-v2",
   "core": {
     "CRYPTONOTE_NAME": "crossnote.testnet",
     "DIFFICULTY_TARGET": 20,

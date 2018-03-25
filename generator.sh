@@ -30,26 +30,37 @@ trap finish EXIT
 # Generate source code and compile
 function generate_coin {
 	# Define coin paths
-	export BASE_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_base_coin_name}"
+	export BASE_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_BASE_COIN_extension_folder}"
 	export NEW_COIN_PATH="${WORK_FOLDERS_PATH}/${__CONFIG_core_CRYPTONOTE_NAME}"
 	if [ -d "${BASE_COIN_PATH}" ]; then
 		cd "${BASE_COIN_PATH}"
-		echo "Updating ${__CONFIG_base_coin_name}..."
+		echo "Updating ${__CONFIG_BASE_COIN_name}..."
+		git checkout master
 		git pull
 		cd "${PROJECT_DIR}"
 	else
-		echo "Cloning ${__CONFIG_base_coin_name}..."
-		git clone "${__CONFIG_base_coin_git}" "${BASE_COIN_PATH}"
+		echo "Cloning ${__CONFIG_BASE_COIN_name}..."
+		git clone "${__CONFIG_BASE_COIN_git}" "${BASE_COIN_PATH}"
+	fi
+
+	if [[ ! -z $BRANCH ]]; then
+		cd "${BASE_COIN_PATH}"
+		git checkout ${BRANCH}
+		cd "${PROJECT_DIR}"
+	else
+		cd "${BASE_COIN_PATH}"
+		git checkout ${__CONFIG_BASE_COIN_branch}
+		cd "${PROJECT_DIR}"
 	fi
 
 	# Exit if base coin does not exists
 	if [ ! -d "${BASE_COIN_PATH}" ]; then
-		echo "Base coin does not exists"
+		echo "Base coin does not exist"
 		echo "Abort clone generation"
 		exit 4
 	fi
 
-	echo "Make temporary ${__CONFIG_base_coin_name} copy..."
+	echo "Make temporary ${__CONFIG_BASE_COIN_name} copy..."
 	[ -d "${TEMP_PATH}" ] || mkdir -p "${TEMP_PATH}"
 	cp -af "${BASE_COIN_PATH}/." "${TEMP_PATH}"
 
@@ -81,6 +92,11 @@ function generate_coin {
 
 		bash "${SCRIPTS_PATH}/compile.sh" -c "${COMPILE_ARGS}" -z
 	fi
+
+	if [[ ! -z $BRANCH ]]; then
+		cd "${BASE_COIN_PATH}"
+		git checkout master
+	fi
 }
 
 # Usage info
@@ -91,6 +107,7 @@ Reads a config file and creates and compiles Cryptonote coin. "config.json" as d
 
     -h          display this help and exit
     -f          config file
+    -b          branch
     -c          compile arguments
 EOF
 }
@@ -100,15 +117,18 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 # Initialize our own variables:
 CONFIG_FILE='config.json'
+CORE_CONFIG_FILE=''
 COMPILE_ARGS=''
 
-while getopts "h?f:c:" opt; do
+while getopts "h?f:b:c:" opt; do
     case "$opt" in
     h|\?)
         show_help
         exit 0
         ;;
     f)  CONFIG_FILE=${OPTARG}
+        ;;
+    b)  BRANCH=${OPTARG}
         ;;
     c)  COMPILE_ARGS=${OPTARG}
         ;;
@@ -123,7 +143,7 @@ if [[ "${CONFIG_FILE}" != /* ]]; then
 fi
 
 if [ ! -f ${CONFIG_FILE} ]; then
-	echo "ERROR: config file does not exist"
+	echo "ERROR: config file does not exits"
 	exit
 fi
 
@@ -133,6 +153,27 @@ fi
 python "lib/environment_variables.py" --config=$CONFIG_FILE --output=$BASH_CONFIG
 if [ ! -f ${BASH_CONFIG} ]; then
 	echo "Config file was not translated to bash."
+	echo "Abort coin generation"
+	exit 3
+fi
+source ${BASH_CONFIG}
+
+CORE_CONFIG_FILE=${__CONFIG_base_coin}
+# Setting core config file
+if [[ "${CORE_CONFIG_FILE}" != /* ]]; then
+	CORE_CONFIG_FILE="${CORE_CONFIG_PATH}/cores/${CORE_CONFIG_FILE}.json"
+fi
+
+if [ ! -f ${CORE_CONFIG_FILE} ]; then
+	echo "ERROR: core config file does not exits"
+	echo "${CORE_CONFIG_FILE}"
+	exit
+fi
+
+# Get environment environment_variables
+python "lib/environment_variables.py" --config=$CORE_CONFIG_FILE --output=$BASH_CONFIG --prefix="_BASE_COIN"
+if [ ! -f ${BASH_CONFIG} ]; then
+	echo "Core config file was not translated to bash."
 	echo "Abort coin generation"
 	exit 3
 fi

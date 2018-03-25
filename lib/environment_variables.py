@@ -24,6 +24,10 @@ parser.add_argument('--output', action='store', dest='output',
                     default='config.cfg',
                     help='Output path. Format: string'
                     )
+parser.add_argument('--prefix', action='store', dest='prefix',
+                    default='',
+                    help='Prefix of the saved bash variables. Format: string'
+                    )
 
 args = parser.parse_args()
 
@@ -33,6 +37,6 @@ json_data.close()
 
 f = open(args.output, 'w+')
 sys.stdout = f
-convert_to_bash(config, '__CONFIG_')
+convert_to_bash(config, '__CONFIG' + args.prefix + '_')
 sys.stdout = sys.__stdout__
 f.close()

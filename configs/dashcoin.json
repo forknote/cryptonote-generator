@@ -7,10 +7,7 @@
     "simplewallet-import-keys.json",
     "simplewallet-export-keys.json"
   ],
-  "base_coin": {
-    "name": "bytecoin",
-    "git": "https://github.com/amjuarez/bytecoin.git"
-  },
+  "base_coin": "bytecoin-v2",
   "core": {
     "CRYPTONOTE_NAME": "dashcoin",
     "CRYPTONOTE_DISPLAY_DECIMAL_POINT": 12,
