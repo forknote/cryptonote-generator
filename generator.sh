@@ -69,8 +69,8 @@ function generate_coin {
 	export __CONFIG_extensions_text="${__CONFIG_extensions[@]}"
 	for extension in "${__CONFIG_extensions[@]}"
 	do
-		echo "${bold}Execute ${EXTENSIONS_PATH}/${extension}${normal}"
-		python "lib/file-modification.py" --extension "${EXTENSIONS_PATH}/${extension}" --config=$CONFIG_FILE --source=${TEMP_PATH}
+		echo "${bold}Execute ${EXTENSIONS_PATH}/${__CONFIG_BASE_COIN_extension_folder}/${extension}${normal}"
+		python "lib/file-modification.py" --extension "${EXTENSIONS_PATH}/${__CONFIG_BASE_COIN_extension_folder}/${extension}" --config=$CONFIG_FILE --source=${TEMP_PATH}
 	done
 
 	[ -d "${NEW_COIN_PATH}" ] || mkdir -p "${NEW_COIN_PATH}"
