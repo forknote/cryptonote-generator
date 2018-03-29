@@ -1,0 +1,705 @@
+{
+  "file": "aeon.json",
+  "description": "Changes for aeon",
+  "required": [
+    "core/monero.json"
+  ],
+  "files": [
+    {
+      "path": "/src/cryptonote_config.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#define DIFFICULTY_TARGET_V1",
+          "parameters": {
+            "text": [
+              "#define DIFFICULTY_TARGET_V1HF %s"
+            ],
+            "replace_text_alt": [
+              "#define DIFFICULTY_TARGET_V1HF                               DIFFICULTY_TARGET_V1"
+            ],
+            "var": "DIFFICULTY_TARGET_V1HF"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "#define DIFFICULTY_WINDOW                               720",
+          "parameters": {
+            "text": [
+              "#define DIFFICULTY_WINDOW_V1HF                               %s"
+            ],
+            "replace_text_alt": [
+              "#define DIFFICULTY_WINDOW_V1HF                               DIFFICULTY_WINDOW"
+            ],
+            "var": "DIFFICULTY_WINDOW_V1HF"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "#define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)",
+          "parameters": {
+            "text": [
+              "#define EMISSION_SPEED_FACTOR_PER_MINUTE_V1HF                (%s)"
+            ],
+            "replace_text_alt": [
+              "#define EMISSION_SPEED_FACTOR_PER_MINUTE_V1HF                EMISSION_SPEED_FACTOR_PER_MINUTE"
+            ],
+            "var": "EMISSION_SPEED_FACTOR_PER_MINUTE_V1HF"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "#define DIFFICULTY_CUT                                  60",
+          "parameters": {
+            "text": [
+              "#define MAINNET_HARDFORK_V1HF  ((uint64_t)(%s))"
+            ],
+            "replace_text_alt": [
+              "#define MAINNET_HARDFORK_V1HF                ((uint64_t)(-1))"
+            ],
+            "var": "MAINNET_HARDFORK_V1HF"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "#define DIFFICULTY_BLOCKS_COUNT                         DIFFICULTY_WINDOW + DIFFICULTY_LAG",
+          "parameters": {
+            "text": [
+              "#define POW_SPEED_MULTIPLIER_V1HF  %s"
+            ],
+            "var": "POW_SPEED_MULTIPLIER_V1HF"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "#define HASH_OF_HASHES_STEP                     256",
+          "parameters": {
+            "text": [
+              "#define MEMORY_MULTIPLIER_V1HF                     %s"
+            ],
+            "replace_text_alt": [
+              "#define MEMORY_MULTIPLIER_V1HF                1"
+            ],
+            "var": "MEMORY_MULTIPLIER_V1HF"
+          }
+        },
+
+
+        {
+          "description": "NO_FEE_PER_KB",
+          "action": "add_above",
+          "marker": "#define FEE_PER_KB_OLD",
+          "parameters": {
+            "text": [
+              "#define MINIMUM_RELAY_FEE                     %s"
+            ],
+            "replace_text_alt": [
+              "#define MINIMUM_RELAY_FEE                0"
+            ],
+            "var": "MINIMUM_RELAY_FEE"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_config.h",
+      "changes": [
+        {
+          "description": "NO_FEE_PER_KB",
+          "action": "add_above",
+          "marker": "#define FEE_PER_KB_OLD",
+          "parameters": {
+            "text": [
+              "#define DEFAULT_FEE                     %s"
+            ],
+            "replace_text_alt": [
+              "#define DEFAULT_FEE                0"
+            ],
+            "var": "DEFAULT_FEE"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_config.h",
+      "changes": [
+        {
+          "description": "NO_FEE_PER_KB",
+          "action": "add_above",
+          "marker": "#define FEE_PER_KB_OLD",
+          "parameters": {
+            "text": [
+              "#define NO_FEE_PER_KB_FEE_MAX_HEIGHT                     ((uint64_t)(%s))"
+            ],
+            "replace_text_alt": [
+              "#define NO_FEE_PER_KB_FEE_MAX_HEIGHT                ((uint64_t)(0))"
+            ],
+            "var": "NO_FEE_PER_KB_FEE_MAX_HEIGHT"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/slow-hash.c",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "#define state_index(x) (((*((uint64_t *)x) >> 4) & (TOTALBLOCKS - 1)) << 4)",
+          "parameters": {
+            "text": [
+              "#define state_index(x,mul) (((*((uint64_t *)x) >> 4) & ((int)(TOTALBLOCKS*(mul)) - 1)) << 4)"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "j = state_index(a); \\",
+          "parameters": {
+            "text": [
+              "   j = state_index(a, memory_multiplier); \\"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "j = state_index(c); \\",
+          "parameters": {
+            "text": [
+              "   j = state_index(c, memory_multiplier); \\"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "for(i = 0; i < MEMORY / INIT_SIZE_BYTE; i++)",
+          "parameters": {
+            "text": [
+              "        for(i = 0; i < (MEMORY * memory_multiplier) / INIT_SIZE_BYTE; i++)"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "for(i = 0; i < ITER / 2; i++)",
+          "parameters": {
+            "text": [
+              "        for(i = 0; i < (ITER * memory_multiplier) / 2; i++)"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "void cn_slow_hash(const void *data, size_t length, char *hash, int variant, int prehashed)",
+          "parameters": {
+            "text": [
+              "void cn_slow_hash(const void *data, size_t length, char *hash, int variant, int prehashed)",
+              "{",
+              "  cn_slow_hash_with_multiplier(data, length, hash, variant, prehashed, 1);",
+              "}",
+              "",
+              "void cn_slow_hash_with_multiplier_test(const void *data, size_t length, char *hash, int variant, int prehashed)",
+              "{",
+              "  cn_slow_hash_with_multiplier(data, length, hash, variant, prehashed, 0.5);",
+              "}",
+              "",
+              "void cn_slow_hash_with_multiplier(const void *data, size_t length, char *hash, int variant, int prehashed, double memory_multiplier)"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "for (i = 0; i < MEMORY / INIT_SIZE_BYTE; i++) {",
+          "parameters": {
+            "text": [
+              "    for (i = 0; i < (MEMORY * memory_multiplier) / INIT_SIZE_BYTE; i++) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "for (i = 0; i < ITER / 2; i++) {",
+          "parameters": {
+            "text": [
+              "    for (i = 0; i < (ITER * memory_multiplier) /  2; i++) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "j = e2i(a, MEMORY / AES_BLOCK_SIZE);",
+          "parameters": {
+            "text": [
+              "    j = e2i(a, (MEMORY * memory_multiplier) / AES_BLOCK_SIZE);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "assert(j == e2i(a, MEMORY / AES_BLOCK_SIZE));",
+          "parameters": {
+            "text": [
+              "    assert(j == e2i(a, (MEMORY * memory_multiplier) / AES_BLOCK_SIZE));"
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "path": "/src/crypto/hash-ops.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "void cn_slow_hash(const void *data, size_t length, char *hash, int variant, int prehashed);",
+          "parameters": {
+            "text": [
+              "void cn_slow_hash_with_multiplier_test(const void *data, size_t length, char *hash, int variant, int prehashed);",
+              "void cn_slow_hash_with_multiplier(const void *data, size_t length, char *hash, int variant, int prehashed, double memory_multiplier);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/hash.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "inline void cn_slow_hash(const void *data, std::size_t length, hash &hash, int variant = 0) {",
+          "parameters": {
+            "text": [
+              "inline void cn_slow_hash_with_multiplier_test(const void *data, std::size_t length, hash &hash, int variant = 0) {",
+              "  cn_slow_hash_with_multiplier_test(data, length, reinterpret_cast<char *>(&hash));",
+              "}",
+              "",
+              "inline void cn_slow_hash_with_multiplier(const void *data, std::size_t length, hash &hash, int variant = 0, double memory_multiplier) {",
+              "  cn_slow_hash_with_multiplier(data, length, reinterpret_cast<char *>(&hash), memory_multiplier);",
+              "}",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/cryptonote_basic/cryptonote_basic_impl.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "bool get_block_reward(size_t median_size, size_t current_block_size, uint64_t already_generated_coins, uint64_t &reward, uint8_t version);",
+          "parameters": {
+            "text": [
+              "  bool get_block_reward(size_t median_size, size_t current_block_size, uint64_t already_generated_coins, uint64_t &reward, uint8_t version, size_t height);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_basic/cryptonote_basic_impl.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "const int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - (target_minutes-1);",
+          "parameters": {
+            "text": [
+              "int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - (target_minutes-1);",
+              "emission_speed_factor = height < MAINNET_HARDFORK_V1HF ? EMISSION_SPEED_FACTOR_PER_MINUTE - (target_minutes-1) : EMISSION_SPEED_FACTOR_PER_MINUTE_V1HF - (target_minutes-1);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool get_block_reward(size_t median_size, size_t current_block_size, uint64_t already_generated_coins, uint64_t &reward, uint8_t version) {",
+          "parameters": {
+            "text": [
+              "bool get_block_reward(size_t median_size, size_t current_block_size, uint64_t already_generated_coins, uint64_t &reward, uint8_t version) {",
+              "  return get_block_reward(median_size, current_block_size, already_generated_coins, reward, version, 0);",
+              "}",
+              "",
+              "bool get_block_reward(size_t median_size, size_t current_block_size, uint64_t already_generated_coins, uint64_t &reward, uint8_t version, size_t height) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_core/blockchain.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "if (!get_block_reward(epee::misc_utils::median(last_blocks_sizes), cumulative_block_size, already_generated_coins, base_reward, version))",
+          "parameters": {
+            "text": [
+              "    if (!get_block_reward(epee::misc_utils::median(last_blocks_sizes), cumulative_block_size, already_generated_coins, base_reward, version, m_db->height()))"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if (!get_block_reward(median, 1, already_generated_coins, base_reward, version))",
+          "parameters": {
+            "text": [
+              "   if (!get_block_reward(median, 1, already_generated_coins, base_reward, version, m_db->height()))"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return next_difficulty(timestamps, difficulties, target);",
+          "parameters": {
+            "text": [
+              "return next_difficulty(timestamps, difficulties, target,  m_db->height());"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if (!m_tx_pool.fill_block_template(b, median_size, already_generated_coins, txs_size, fee, expected_reward, m_hardfork->get_current_version()))",
+          "parameters": {
+            "text": [
+              "  if (!m_tx_pool.fill_block_template(b, median_size, already_generated_coins, txs_size, fee, expected_reward, m_hardfork->get_current_version(), height))"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return get_current_hard_fork_version() < 2 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;",
+          "parameters": {
+            "text": [
+              "  uint64_t difficulty_target = DIFFICULTY_TARGET_V1;",
+              "  if (m_db->height() >= MAINNET_HARDFORK_V1HF)",
+              "    difficulty_target = DIFFICULTY_TARGET_V1HF;",
+              "  if (get_current_hard_fork_version() >= 2)",
+              "    difficulty_target = DIFFICULTY_TARGET_V2;",
+              "",
+              "return difficulty_target;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_basic/cryptonote_format_utils.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "crypto::cn_slow_hash(bd.data(), bd.size(), res, cn_variant);",
+          "parameters": {
+            "text": [
+              "    double memory_multiplier = 1;",
+              "    if (height >= MAINNET_HARDFORK_V1HF)",
+              "      memory_multiplier = MEMORY_MULTIPLIER_V1HF;",
+              "    crypto::cn_slow_hash_with_multiplier(bd.data(), bd.size(), res, cn_variant, memory_multiplier);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_core/cryptonote_tx_utils.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "if(!get_block_reward(median_size, current_block_size, already_generated_coins, block_reward, hard_fork_version))",
+          "parameters": {
+            "text": [
+              "    if(!get_block_reward(median_size, current_block_size, already_generated_coins, block_reward, hard_fork_version, height))"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/wallet/wallet2.cpp",
+      "changes": [
+        {
+          "description": "NO_FEE_PER_KB",
+          "action": "replace",
+          "marker": "uint64_t needed_fee = calculate_fee(fee_per_kb, estimated_tx_size, fee_multiplier);",
+          "parameters": {
+            "text": [
+              "  uint64_t needed_fee = 0;",
+              "  if (NO_FEE_PER_KB_FEE_MAX_HEIGHT <= m_blockchain.size())",
+              "    needed_fee = calculate_fee(DEFAULT_FEE, 1, fee_multiplier);",
+              "  else",
+              "    needed_fee = calculate_fee(fee_per_kb, estimated_tx_size, fee_multiplier);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/wallet/wallet2.cpp",
+      "multiline": true,
+      "changes": [
+        {
+          "description": "NO_FEE_PER_KB",
+          "action": "replace",
+          "marker": "transfer\\(dst_vector, fake_outs_count, unused_transfers_indices, unlock_time, needed_fee, extra, tx, ptx, trusted_daemon\\);[^a]+auto txBlob = t_serializable_object_to_blob\\(ptx.tx\\);[^n]+needed_fee = calculate_fee\\(fee_per_kb, txBlob, fee_multiplier\\);",
+          "parameters": {
+            "text": [
+              "transfer(dst_vector, fake_outs_count, unused_transfers_indices, unlock_time, needed_fee, extra, tx, ptx, trusted_daemon);",
+              "  auto txBlob = t_serializable_object_to_blob(ptx.tx);",
+              "  if (NO_FEE_PER_KB_FEE_MAX_HEIGHT <= m_blockchain.size())",
+              "    needed_fee = calculate_fee(DEFAULT_FEE, 1, fee_multiplier);",
+              "  else",
+              "    needed_fee = calculate_fee(fee_per_kb, txBlob, fee_multiplier);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/cryptonote_core/tx_pool.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "bool fill_block_template(block &bl, size_t median_size, uint64_t already_generated_coins, size_t &total_size, uint64_t &fee, uint64_t &expected_reward, uint8_t version);",
+          "parameters": {
+            "text": [
+              "    bool fill_block_template(block &bl, size_t median_size, uint64_t already_generated_coins, size_t &total_size, uint64_t &fee, uint64_t &expected_reward, uint8_t version, size_t height);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/cryptonote_core/tx_pool.cpp",
+      "changes": [
+      {
+          "description": "NO_FEE_PER_KB",
+          "action": "add_below",
+          "marker": "fee = inputs_amount - outputs_amount;",
+          "parameters": {
+            "text": [
+              "      if (!kept_by_block && fee < MINIMUM_RELAY_FEE)",
+              "      {",
+              "        LOG_PRINT_L1(\"transaction fee is not enough: \" << print_money(fee) << \", minumim fee: \" << print_money(DEFAULT_FEE));",
+              "        tvc.m_verifivation_failed = true;",
+              "        return false;",
+              "      }"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "bool tx_memory_pool::fill_block_template(block &bl, size_t median_size, uint64_t already_generated_coins, size_t &total_size, uint64_t &fee, uint64_t &expected_reward, uint8_t version)",
+          "parameters": {
+            "text": [
+              "  bool tx_memory_pool::fill_block_template(block &bl, size_t median_size, uint64_t already_generated_coins, size_t &total_size, uint64_t &fee, uint64_t &expected_reward, uint8_t version)",
+              "  {",
+              "    return fill_block_template(bl, median_size, already_generated_coins, total_size, fee, expected_reward, version, 0);",
+              "  }",
+              "  bool tx_memory_pool::fill_block_template(block &bl, size_t median_size, uint64_t already_generated_coins, size_t &total_size, uint64_t &fee, uint64_t &expected_reward, uint8_t version, size_t height)"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "get_block_reward(median_size, total_size, already_generated_coins, best_coinbase, version);",
+          "parameters": {
+            "text": [
+              "    get_block_reward(median_size, total_size, already_generated_coins, best_coinbase, version, height);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if(!get_block_reward(median_size, total_size + meta.blob_size, already_generated_coins, block_reward, version))",
+          "parameters": {
+            "text": [
+              "      if(!get_block_reward(median_size, total_size + meta.blob_size, already_generated_coins, block_reward, version, height))"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_basic/difficulty.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "difficulty_type next_difficulty(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds);",
+          "parameters": {
+            "text": [
+              "    difficulty_type next_difficulty(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds, uint64_t height);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_basic/difficulty.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "difficulty_type next_difficulty(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds) {",
+          "parameters": {
+            "text": [
+              "",
+              "  difficulty_type next_difficulty(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds) {",
+              "    return next_difficulty(timestamps, cumulative_difficulties, target_seconds, 0);",
+              "  }",
+              "",
+              "  difficulty_type next_difficulty(std::vector<std::uint64_t> timestamps, std::vector<difficulty_type> cumulative_difficulties, size_t target_seconds, uint64_t height) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return (low + time_span - 1) / time_span;",
+          "parameters": {
+            "text": [
+              "",
+              "      difficulty_type new_diff = (low + time_span - 1) / time_span;",
+              "",
+              "      if (height >= MAINNET_HARDFORK_V1HF && height < MAINNET_HARDFORK_V1HF+DIFFICULTY_WINDOW_V1HF) {",
+              "        new_diff += new_diff*(MAINNET_HARDFORK_V1HF+DIFFICULTY_WINDOW_V1HF-height)*(POW_SPEED_MULTIPLIER_V1HF-1)/DIFFICULTY_WINDOW_V1HF;",
+              "      }",
+              "",
+              "      return new_diff;"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/tests/performance_tests/CMakeLists.txt",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "cn_slow_hash.h",
+          "parameters": {
+            "text": [
+              "  cn_slow_hash_with_multiplier_test.h"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tests/hash/CMakeLists.txt",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "foreach (hash IN ITEMS fast slow slow-1 tree extra-blake extra-groestl extra-jh extra-skein)",
+          "parameters": {
+            "text": [
+              "foreach (hash IN ITEMS fast slow slow-1 slow-with-multiplier tree extra-blake extra-groestl extra-jh extra-skein)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tests/hash/main.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "} hashes[] = {{\"fast\", cn_fast_hash}, {\"slow\", cn_slow_hash_0}, {\"tree\", hash_tree},",
+          "parameters": {
+            "text": [
+              "} hashes[] = {{\"fast\", cn_fast_hash}, {\"slow\", cn_slow_hash_0}, {\"slow-with-multiplier\", cn_slow_hash_with_multiplier_test}, {\"tree\", hash_tree},"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tests/performance_tests/main.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#include \"cn_slow_hash.h\"",
+          "parameters": {
+            "text": [
+              "#include \"cn_slow_hash_with_multiplier_test.h\""
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "test_cn_slow_hash);",
+          "parameters": {
+            "text": [
+              "  TEST_PERFORMANCE0(test_cn_slow_hash_with_multiplier_test);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tests/performance_tests/cn_slow_hash_with_multiplier_test.h",
+      "action": "add",
+      "source": "/aeon/files/tests/performance_tests/cn_slow_hash_with_multiplier_test.h"
+    },
+    {
+      "path": "/tests/hash/tests-slow-with-multiplier.txt",
+      "action": "add",
+      "source": "/aeon/files/tests/hash/tests-slow-with-multiplier.txt"
+    },
+
+
+    {
+      "path": "/src/blocks/blocks.dat",
+      "action": "add",
+      "source": "/aeon/files/blocks.dat"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "monerod",
+      "replace": "aeond",
+      "file_pattern": "*"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "#monero-dev",
+      "replace": "#aeon",
+      "file_pattern": "*"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "monero-wallet-cli",
+      "replace": "aeon-wallet-cli",
+      "file_pattern": "*"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "monero-wallet-rpc",
+      "replace": "aeon-wallet-rpc",
+      "file_pattern": "*"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "monero-blockchain-export",
+      "replace": "aeon-blockchain-export",
+      "file_pattern": "*"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "monero-blockchain-import",
+      "replace": "aeon-blockchain-import",
+      "file_pattern": "*"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "monero-gen-trusted-multisig",
+      "replace": "aeon-gen-trusted-multisig",
+      "file_pattern": "*"
+    },
+    {
+      "action": "bulk_replace",
+      "find": "https://github.com/monero-project/monero",
+      "replace": "https://github.com/aeonix/aeon",
+      "file_pattern": "*"
+    }
+  ]
+}

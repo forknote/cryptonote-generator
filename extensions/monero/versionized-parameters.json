@@ -1,0 +1,83 @@
+{
+  "file": "versionized-parameters.json",
+  "description": "Change parameters when hardfork.",
+  "required": [],
+  "files": [
+    {
+      "path": "/src/cryptonote_config.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#define DIFFICULTY_WINDOW                               720",
+          "parameters": {
+            "text": [
+              "#define DIFFICULTY_WINDOW_V2                               %s"
+            ],
+            "replace_text_alt": [
+              "#define DIFFICULTY_WINDOW_V2                               DIFFICULTY_WINDOW"
+            ],
+            "var": "DIFFICULTY_WINDOW_V2"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "#define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)",
+          "parameters": {
+            "text": [
+              "#define EMISSION_SPEED_FACTOR_PER_MINUTE_V2                (%s)"
+            ],
+            "replace_text_alt": [
+              "#define EMISSION_SPEED_FACTOR_PER_MINUTE_V2                EMISSION_SPEED_FACTOR_PER_MINUTE"
+            ],
+            "var": "EMISSION_SPEED_FACTOR_PER_MINUTE_V2"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_config.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#define DIFFICULTY_WINDOW                               720",
+          "parameters": {
+            "text": [
+              "#define DIFFICULTY_WINDOW_V1                               %s"
+            ],
+            "replace_text_alt": [
+              "#define DIFFICULTY_WINDOW_V1                               DIFFICULTY_WINDOW"
+            ],
+            "var": "DIFFICULTY_WINDOW_V1"
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "#define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)",
+          "parameters": {
+            "text": [
+              "#define EMISSION_SPEED_FACTOR_PER_MINUTE_V1                (%s)"
+            ],
+            "replace_text_alt": [
+              "#define EMISSION_SPEED_FACTOR_PER_MINUTE_V1                EMISSION_SPEED_FACTOR_PER_MINUTE"
+            ],
+            "var": "EMISSION_SPEED_FACTOR_PER_MINUTE_V1"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/cryptonote_basic/cryptonote_basic_impl.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "const int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - (target_minutes-1);",
+          "parameters": {
+            "text": [
+              "const int emission_speed_factor = version < 2 ? EMISSION_SPEED_FACTOR_PER_MINUTE_V1 - (target_minutes-1) : EMISSION_SPEED_FACTOR_PER_MINUTE_V2 - (target_minutes-1);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

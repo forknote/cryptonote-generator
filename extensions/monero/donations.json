@@ -1,0 +1,77 @@
+{
+  "file": "donations.json",
+  "description": "Donation address for a dev team",
+  "required": [
+  ],
+  "files": [
+    {
+      "path": "/src/cryptonote_config.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "#define PER_KB_FEE_QUANTIZATION_DECIMALS",
+          "parameters": {
+            "text": [
+              "#define CONFIG_DONATION_ADDRESS \"%s\""
+            ],
+            "replace_text_alt": [
+              "#define CONFIG_DONATION_ADDRESS \"\""
+            ],
+            "var": "CONFIG_DONATION_ADDRESS"
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/cryptonote_basic/miner.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "const command_line::arg_descriptor<bool>        arg_bg_mining_enable =  {\"bg-mining-enable\", \"enable/disable background mining\", true, true};",
+          "parameters": {
+            "text": [
+              "// the 3rd and 4rd parameter are just copy paste. I don't know what they do",
+              "    const command_line::arg_descriptor<bool>        arg_donate          = {\"donate\", \"Enable background donation mining\", true, true};"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if(command_line::has_arg(vm, arg_start_mining))",
+          "parameters": {
+            "text": [
+              "    if(command_line::has_arg(vm, arg_start_mining) || command_line::has_arg(vm, arg_donate))"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if(!cryptonote::get_account_address_from_str(info, nettype, command_line::get_arg(vm, arg_start_mining)) || info.is_subaddress)",
+          "parameters": {
+            "text": [
+              "      if(command_line::has_arg(vm, arg_donate))",
+              "      {",
+        	    "        if (!cryptonote::get_account_address_from_str(info, testnet, std::string(CONFIG_DONATION_ADDRESS)))",
+        	    "        {",
+        	    "          LOG_ERROR(\"Internal error: malformed donation address\");",
+        	    "          return false;",
+            	"        }",
+              "      }",
+              "      else if(!cryptonote::get_account_address_from_str(info, nettype, command_line::get_arg(vm, arg_start_mining)) || info.is_subaddress)"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "command_line::add_arg(desc, arg_bg_mining_enable);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc, arg_donate);"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

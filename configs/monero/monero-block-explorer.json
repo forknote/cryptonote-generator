@@ -1,0 +1,11 @@
+{
+  "extensions": [
+    "core/monero.json",
+    "blockchain-explorer.json",
+    "enable-cors.json"
+  ],
+  "base_coin": "monero",
+  "core": {
+    "CRYPTONOTE_NAME": "monero-block-explorer"
+  }
+}

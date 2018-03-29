@@ -1,7 +1,7 @@
 cryptonote-generator
 ==================
 
-A python / bash Cryptonote source creator. Generate and compile new or maintain old code with a single command. 
+A python / bash Cryptonote source creator. Generate and compile new or maintain old code with a single command.
 
 #### Table of Contents
 
@@ -66,14 +66,11 @@ Explanation for each field:
 ```
 {
 
-/* Extensions to load */ 
+/* Extensions to load */
 "extensions": [ "core/bytecoin.json", "print-genesis-tx.json" ],
 
-/* Source coin. Bytecoin example */ 
-"base_coin":{
-	"name":"bytecoin",		
-	"git":"https://github.com/amjuarez/bytecoin.git"
-},
+/* Source coin. Bytecoin example. See the available base coins here: https://github.com/forknote/cryptonote-generator/tree/master/cores */
+"base_coin": "bytecoin-v2",
 
 "core":{
 	/* Check uniqueness with Google and Map of Coins. */
@@ -90,7 +87,7 @@ Explanation for each field:
 
 	/* Array with checkpoints. */
 	"CHECKPOINTS":["28000:70d2531151529ac00bf875281e15f51324934bc85e5733dcd92e1ccb1a665ff8", "40000:c181ec9223a91fef8658c7aa364c093c41c28d250870ca1ed829bf74f0abf038", "55000:5289fe9f2dce8f51441019b9fbc85c70ad85ff49a666ef0109f3269890c6af6d", "70000:193e335f34b8b8f1fab3857111cb668c2720340e80176a25155071e573481acb", "87500:cce8a035f34457ec1098ab41e5949cac3db00ebff3503e26f36bfa057543095a", "91453:ad46d069bb2726a9bc5962cda6b2108376c0b95c157da0f09ee32458f486d87f"],
-	
+
 	/* Created with connectivity_tool. Leave empty if not needed */
 	"P2P_STAT_TRUSTED_PUB_KEY":"4d26c4df7f4ca7037950ad026f9ab36dd05d881952662992f2e4dcfcafbe57eb",
 
@@ -173,15 +170,15 @@ Change the _GENESIS_COINBASE_TX_HEX_ in your configuration file, then [3) Genera
 To generate Dashcoin:
 ```
 	git clone https://github.com/forknote/cryptonote-generator.git generator && cd generator
-	bash install_dependencies.sh && bash generator.sh -f configs/dashcoin.json
+	bash install_dependencies.sh && bash generator.sh -f configs/bytecoin-v2/dashcoin.json
 ```
 
-#### 1) Forknote - http://forknote.net
+#### 2) Forknote - http://forknote.net
 
 To generate Forknote:
 ```
 	git clone https://github.com/forknote/cryptonote-generator.git generator && cd generator
-	bash install_dependencies.sh && bash generator.sh -f configs/forknote.json
+	bash install_dependencies.sh && bash generator.sh -f configs/bytecoin-v2/forknote.json
 ```
 
 
@@ -227,4 +224,3 @@ License
 Released under the GNU General Public License v2
 
 http://www.gnu.org/licenses/gpl-2.0.html
-	
