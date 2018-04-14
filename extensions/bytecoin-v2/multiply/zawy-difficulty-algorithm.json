@@ -17,8 +17,7 @@
           "parameters": {
             "text": [
               "  const command_line::arg_descriptor<uint32_t>    arg_ZAWY_DIFFICULTY_BLOCK_INDEX  = {\"ZAWY_DIFFICULTY_BLOCK_INDEX\", \"uint32_t\", 0};",
-              "  const command_line::arg_descriptor<size_t>    arg_ZAWY_DIFFICULTY_V2  = {\"ZAWY_DIFFICULTY_V2\", \"size_t\", 0};",
-              "  const command_line::arg_descriptor<uint8_t>    arg_ZAWY_DIFFICULTY_BLOCK_VERSION  = {\"ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION\", \"uint8_t\", 0};"
+              "  const command_line::arg_descriptor<uint32_t>    arg_ZAWY_DIFFICULTY_LAST_BLOCK  = {\"ZAWY_DIFFICULTY_LAST_BLOCK\", \"uint32_t\", 0};"
             ]
           }
         },
@@ -28,8 +27,7 @@
           "parameters": {
             "text": [
               "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_BLOCK_INDEX);",
-              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_V2);",
-              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_BLOCK_VERSION);"
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_DIFFICULTY_LAST_BLOCK);"
             ]
           }
         },
@@ -39,13 +37,7 @@
           "parameters": {
             "text": [
               "    currencyBuilder.zawyDifficultyBlockIndex(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_BLOCK_INDEX));",
-              "    currencyBuilder.zawyDifficultyV2(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_V2));",
-              "//uint8_t recognized as char",
-              "    if (command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_BLOCK_VERSION) == 0) {",
-              "      currencyBuilder.zawyDifficultyBlockVersion(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_BLOCK_VERSION));",
-              "    } else {",
-              "      currencyBuilder.zawyDifficultyBlockVersion(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_BLOCK_VERSION) - '0');",
-              "    }"
+              "    currencyBuilder.zawyDifficultyLastBlock(command_line::get_arg(vm, arg_ZAWY_DIFFICULTY_LAST_BLOCK));"
             ]
           }
         }
@@ -60,8 +52,7 @@
           "parameters": {
             "text": [
               "  uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX;",
-              "  size_t ZAWY_DIFFICULTY_V2;",
-              "  uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION;"
+              "  uint32_t ZAWY_DIFFICULTY_LAST_BLOCK;"
             ]
           }
         }
@@ -76,8 +67,7 @@
           "parameters": {
             "text": [
               "    ZAWY_DIFFICULTY_BLOCK_INDEX=CryptoNote::parameters::ZAWY_DIFFICULTY_BLOCK_INDEX;",
-              "    ZAWY_DIFFICULTY_V2=CryptoNote::parameters::ZAWY_DIFFICULTY_V2;",
-              "    ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION=CryptoNote::parameters::ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION;"
+              "    ZAWY_DIFFICULTY_LAST_BLOCK=CryptoNote::parameters::ZAWY_DIFFICULTY_LAST_BLOCK;"
             ]
           }
         },
@@ -87,8 +77,7 @@
           "parameters": {
             "text": [
               "    (\"ZAWY_DIFFICULTY_BLOCK_INDEX\", po::value<uint32_t>()->default_value(0), \"uint32_t\")",
-              "    (\"ZAWY_DIFFICULTY_V2\", po::value<size_t>()->default_value(0), \"size_t\")",
-              "    (\"ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION\", po::value<uint8_t>()->default_value(0), \"uint8_t\")"
+              "    (\"ZAWY_DIFFICULTY_LAST_BLOCK\", po::value<uint32_t>()->default_value(0), \"uint32_t\")"
             ]
           }
         },
@@ -100,11 +89,8 @@
               "  if (options.count(\"ZAWY_DIFFICULTY_BLOCK_INDEX\")) {",
               "    ZAWY_DIFFICULTY_BLOCK_INDEX = options[\"ZAWY_DIFFICULTY_BLOCK_INDEX\"].as<uint32_t>();",
               "  }",
-              "  if (options.count(\"ZAWY_DIFFICULTY_V2\")) {",
-              "    ZAWY_DIFFICULTY_V2 = options[\"ZAWY_DIFFICULTY_V2\"].as<size_t>();",
-              "  }",
-              "  if (options.count(\"ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION\")) {",
-              "    ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION = options[\"ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION\"].as<uint8_t>();",
+              "  if (options.count(\"ZAWY_DIFFICULTY_LAST_BLOCK\")) {",
+              "    ZAWY_DIFFICULTY_LAST_BLOCK = options[\"ZAWY_DIFFICULTY_LAST_BLOCK\"].as<uint32_t>();",
               "  }"
             ]
           }
@@ -120,13 +106,7 @@
           "parameters": {
             "text": [
               "  currencyBuilder.zawyDifficultyBlockIndex(config.coinBaseConfig.ZAWY_DIFFICULTY_BLOCK_INDEX);",
-              "  currencyBuilder.zawyDifficultyV2(config.coinBaseConfig.ZAWY_DIFFICULTY_V2);",
-              "//uint8_t recognized as char",
-              "  if (config.coinBaseConfig.ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION == 0) {",
-              "    currencyBuilder.zawyDifficultyBlockVersion(config.coinBaseConfig.ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION);",
-              "  } else {",
-              "    currencyBuilder.zawyDifficultyBlockVersion(config.coinBaseConfig.ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION - '0');",
-              "  }"
+              "  currencyBuilder.zawyDifficultyLastBlock(config.coinBaseConfig.ZAWY_DIFFICULTY_LAST_BLOCK);"
             ]
           }
         }
@@ -143,8 +123,7 @@
           "parameters": {
             "text": [
               "  uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX;",
-              "  size_t ZAWY_DIFFICULTY_V2;",
-              "  uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION;"
+              "  uint32_t ZAWY_DIFFICULTY_LAST_BLOCK;"
             ]
           }
         },
@@ -154,8 +133,7 @@
           "parameters": {
             "text": [
               "    KV_MEMBER(ZAWY_DIFFICULTY_BLOCK_INDEX)",
-              "    KV_MEMBER(ZAWY_DIFFICULTY_V2)",
-              "    KV_MEMBER(ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION)"
+              "    KV_MEMBER(ZAWY_DIFFICULTY_LAST_BLOCK)"
             ]
           }
         }
@@ -170,8 +148,7 @@
           "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
           "parameters": {
             "text": [
-              "  if (m_core.getCurrency().zawyDifficultyV2() != 0 || m_core.getCurrency().zawyDifficultyBlockVersion() != 0 ||",
-              "       m_core.getCurrency().zawyDifficultyBlockIndex() != 0 ) {",
+              "  if (m_core.getCurrency().zawyDifficultyBlockIndex() != 0 ) {",
               "    res.extensions.push_back(\"zawy-difficulty-algorithm.json\");",
               "  }"
             ]
@@ -183,8 +160,7 @@
           "parameters": {
             "text": [
               "  res.core.ZAWY_DIFFICULTY_BLOCK_INDEX = m_core.getCurrency().zawyDifficultyBlockIndex();",
-              "  res.core.ZAWY_DIFFICULTY_V2 = m_core.getCurrency().zawyDifficultyV2();",
-              "  res.core.ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION = m_core.getCurrency().zawyDifficultyBlockVersion();"
+              "  res.core.ZAWY_DIFFICULTY_LAST_BLOCK = m_core.getCurrency().zawyDifficultyLastBlock();"
             ]
           }
         }

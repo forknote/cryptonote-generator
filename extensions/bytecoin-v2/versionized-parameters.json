@@ -135,13 +135,13 @@
           "marker": "Difficulty nextDifficulty(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;",
           "parameters": {
             "text": [
-              "Difficulty nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;"
+              "Difficulty nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;",
+              "Difficulty nextDifficultyDefault(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;"
             ]
           }
         }
       ]
     },
-
     {
       "path": "/src/CryptoNoteCore/Currency.cpp",
       "changes": [
@@ -217,6 +217,11 @@
           "parameters": {
             "text": [
               "Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps,",
+              "  std::vector<Difficulty> cumulativeDifficulties) const {",
+              "  return nextDifficultyDefault(version, blockIndex, timestamps, cumulativeDifficulties);",
+              "}",
+              "",
+              "Difficulty Currency::nextDifficultyDefault(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps,",
               "  std::vector<Difficulty> cumulativeDifficulties) const {",
               "",
               "  size_t c_difficultyWindow = difficultyWindowByBlockVersion(version);",

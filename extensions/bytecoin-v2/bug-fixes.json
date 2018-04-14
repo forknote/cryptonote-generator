@@ -211,6 +211,21 @@
       ]
     },
     {
+      "path": "/src/crypto/slow-hash.cpp",
+      "multiline": true,
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "(if \\(munmap\\(data, MAP_SIZE\\) != 0\\) {)[^}]+(})",
+          "parameters": {
+            "text": [
+              "\\1\n      std::terminate();\n    \\2"
+            ]
+          }
+        }
+      ]
+    },
+    {
       "path": "/src/crypto/keccak.c",
       "changes": [
         {
@@ -224,6 +239,188 @@
               "",
               "const int HASH_DATA_AREA = 136;",
               ""
+            ]
+          }
+        }
+      ]
+    },
+
+
+    {
+      "descritption": "Fix warning as error",
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "Tools::SignalHandler::install([&wrpc, &wallet] {",
+          "parameters": {
+            "text": [
+              "    Tools::SignalHandler::install([&wrpc] {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "descritption": "Fix warning as error",
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "node->init([&log, &nodeInitStatus](std::error_code ec) {",
+          "parameters": {
+            "text": [
+              "  node->init([&nodeInitStatus](std::error_code ec) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "descritption": "Fix warning as error",
+      "path": "/src/BlockchainExplorer/BlockchainExplorer.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "[this, blockIndexesPtr, blocksPtr, topIndex](std::error_code ec) {",
+          "parameters": {
+            "text": [
+              "    [this, blockIndexesPtr, blocksPtr](std::error_code ec) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "descritption": "Fix warning as error",
+      "path": "/src/Wallet/WalletGreen.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "bool r = txIdIndex.modify(it, [this, transactionId, &info, totalAmount, &updated](WalletTransaction& transaction) {",
+          "parameters": {
+            "text": [
+              "  bool r = txIdIndex.modify(it, [&info, totalAmount, &updated](WalletTransaction& transaction) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "return eraseTransfers(transactionId, firstTransferIdx, [this, &knownAddresses, eraseOutputTransfers](bool isOutput, const std::string& transferAddress) {",
+          "parameters": {
+            "text": [
+              "  return eraseTransfers(transactionId, firstTransferIdx, [&knownAddresses, eraseOutputTransfers](bool isOutput, const std::string& transferAddress) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "m_transactions.get<TransactionIndex>().modify(it, [this, &transactionHash, &updated](CryptoNote::WalletTransaction& tx) {",
+          "parameters": {
+            "text": [
+              "  m_transactions.get<TransactionIndex>().modify(it, [&updated](CryptoNote::WalletTransaction& tx) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "descritption": "Fix warning as error",
+      "path": "/tests/UnitTests/INodeStubs.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "getNewBlocks(std::move(knownBlockIds), *resultHolder, startHeight, [resultHolder, callback, &startHeight, &newBlocks](std::error_code ec)",
+          "parameters": {
+            "text": [
+              "  getNewBlocks(std::move(knownBlockIds), *resultHolder, startHeight, [resultHolder, callback, &newBlocks](std::error_code ec)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "descritption": "Fix warning as error",
+      "path": "/tests/UnitTests/TestBlockchainExplorer.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "[&status, this](const std::vector<BlockDetails>& newBlocks, const std::vector<BlockDetails>& orphanedBlocks) {",
+          "parameters": {
+            "text": [
+              "      [&status](const std::vector<BlockDetails>& newBlocks, const std::vector<BlockDetails>& orphanedBlocks) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "[&status, &blockHashes, this, NUMBER_OF_BLOCKS](const std::vector<BlockDetails>& newBlocks,",
+          "parameters": {
+            "text": [
+              "    [&status, &blockHashes, NUMBER_OF_BLOCKS](const std::vector<BlockDetails>& newBlocks,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "[&status, this](const std::vector<TransactionDetails>& newTransactions,",
+          "parameters": {
+            "text": [
+              "    [&status](const std::vector<TransactionDetails>& newTransactions,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "[&status, &poolTxs, this, POOL_TX_NUMBER](const std::vector<TransactionDetails>& newTransactions,",
+          "parameters": {
+            "text": [
+              "        [&status, &poolTxs, POOL_TX_NUMBER](const std::vector<TransactionDetails>& newTransactions,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "> cb1 = [&status, this](const std::vector<BlockDetails>& newBlocks,",
+          "parameters": {
+            "text": [
+              "    > cb1 = [](const std::vector<BlockDetails>& newBlocks,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "[&status, this](const std::vector<BlockDetails>& newBlocks,",
+          "parameters": {
+            "text": [
+              "    [](const std::vector<BlockDetails>& newBlocks,"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "[this](const std::vector<BlockDetails>& newBlocks, const std::vector<BlockDetails>& orphanedBlocks) {",
+          "parameters": {
+            "text": [
+              "    [](const std::vector<BlockDetails>& newBlocks, const std::vector<BlockDetails>& orphanedBlocks) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "[&status, this](const std::vector<BlockDetails>& newBlocks, const std::vector<BlockDetails>& orphanedBlocks) {",
+          "parameters": {
+            "text": [
+              "    [&status](const std::vector<BlockDetails>& newBlocks, const std::vector<BlockDetails>& orphanedBlocks) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "[&status, this](const std::vector<TransactionDetails>& newTransactions,",
+          "parameters": {
+            "text": [
+              "    [&status](const std::vector<TransactionDetails>& newTransactions,"
             ]
           }
         }

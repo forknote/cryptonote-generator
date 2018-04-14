@@ -1,0 +1,416 @@
+{
+  "file": "core/bytecoin.json",
+  "description": "Makes essensial parameters editable.",
+  "required": [],
+  "files": [
+    {
+      "path": "/CMakeLists.txt",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "project(bytecoin)",
+          "parameters": {
+            "text": [
+              "project(%s)"
+            ],
+            "var": "CRYPTONOTE_NAME"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.hpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "CRYPTONOTE_NAME[]",
+          "parameters": {
+            "text": [
+              "const char     CRYPTONOTE_NAME[]                             = \"%s\";"
+            ],
+            "var": "CRYPTONOTE_NAME"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const int P2P_DEFAULT_PORT",
+          "parameters": {
+            "text": [
+              "const int P2P_DEFAULT_PORT                              =  %s;"
+            ],
+            "var": "P2P_DEFAULT_PORT"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const int RPC_DEFAULT_PORT",
+          "parameters": {
+            "text": [
+              "const int RPC_DEFAULT_PORT                              =  %s;"
+            ],
+            "var": "RPC_DEFAULT_PORT"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX",
+          "parameters": {
+            "text": [
+              "const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = %s;"
+            ],
+            "var": "CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "P2P_STAT_TRUSTED_PUB_KEY[]",
+          "parameters": {
+            "text": [
+              "const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = \"%s\";"
+            ],
+            "replace_text_alt": [
+              "const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = \"\";"
+            ],
+            "var": "P2P_STAT_TRUSTED_PUB_KEY"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint64_t MONEY_SUPPLY",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const uint64_t MONEY_SUPPLY = UINT64_C(%s);"
+            ],
+            "var": "MONEY_SUPPLY"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const unsigned EMISSION_SPEED_FACTOR = %s;"
+            ],
+            "var": "EMISSION_SPEED_FACTOR"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint32_t DIFFICULTY_TARGET",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const uint32_t DIFFICULTY_TARGET = %s; // seconds"
+            ],
+            "var": "DIFFICULTY_TARGET"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t CRYPTONOTE_DISPLAY_DECIMAL_POINT",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t CRYPTONOTE_DISPLAY_DECIMAL_POINT = %s;"
+            ],
+            "var": "CRYPTONOTE_DISPLAY_DECIMAL_POINT"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint64_t MINIMUM_FEE",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const uint64_t MINIMUM_FEE = UINT64_C(%s);"
+            ],
+            "var": "MINIMUM_FEE"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint64_t DEFAULT_DUST_THRESHOLD",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(%s);"
+            ],
+            "var": "DEFAULT_DUST_THRESHOLD"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW         = %s;"
+            ],
+            "var": "CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE =",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = %s; //size of block (bytes) after which reward for block calculated using block size"
+            ],
+            "var": "CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 =",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 = %s;"
+            ],
+            "var": "CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 =",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 = %s;"
+            ],
+            "var": "CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t MAX_BLOCK_SIZE_INITIAL",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t MAX_BLOCK_SIZE_INITIAL = %s;"
+            ],
+            "var": "MAX_BLOCK_SIZE_INITIAL"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = %s;"
+            ],
+            "var": "EXPECTED_NUMBER_OF_BLOCKS_PER_DAY"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t DIFFICULTY_WINDOW",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t DIFFICULTY_WINDOW                                = %s;"
+            ],
+            "var": "DIFFICULTY_WINDOW"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t DIFFICULTY_CUT",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t DIFFICULTY_CUT                                = %s;  // timestamps to cut after sorting"
+            ],
+            "var": "DIFFICULTY_CUT"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const size_t DIFFICULTY_LAG",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const size_t DIFFICULTY_LAG                                = %s;  // !!!"
+            ],
+            "var": "DIFFICULTY_LAG"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint32_t UPGRADE_HEIGHT_V2",
+          "parameters": {
+            "text": [
+              "const uint32_t UPGRADE_HEIGHT_V2                                = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t UPGRADE_HEIGHT_V2                                = 1;"
+            ],
+            "var": "UPGRADE_HEIGHT_V2"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint32_t UPGRADE_HEIGHT_V3",
+          "parameters": {
+            "text": [
+              "const uint32_t UPGRADE_HEIGHT_V3                                = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t UPGRADE_HEIGHT_V3                                = 2;"
+            ],
+            "var": "UPGRADE_HEIGHT_V3"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX",
+          "parameters": {
+            "text": [
+              "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;"
+            ],
+            "var": "KEY_IMAGE_CHECKING_BLOCK_INDEX"
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "const CheckpointData CHECKPOINTS[] = {",
+          "parameters": {
+            "text": [
+              "const std::initializer_list<CheckpointData> CHECKPOINTS = {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "multiline": true,
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "(const std::initializer_list<CheckpointData> CHECKPOINTS = {)([^;]+)(};)",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "\\1 %s \\3"
+            ],
+            "var": "CHECKPOINTS",
+            "separator": ", "
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "(const char\\* const\\s+SEED_NODES\\[\\] = {)[^;]+(};)",
+          "parameters": {
+            "text": [
+              "\\1 %s \\2"
+            ],
+            "var": "SEED_NODES",
+            "separator": ", ",
+            "quote_it": true
+          }
+        }
+      ]
+    },
+    {
+      "description": "Normalize checkpoints if added",
+      "path": "/src/CryptoNoteConfig.h",
+      "multiline": true,
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "(\\d+):([0-9a-fA-F]{64})",
+          "may_not_exist": true,
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "{\\1, \"\\2\"}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "std::string genesisCoinbaseTxHex",
+          "parameters": {
+            "text": [
+              "  std::string genesisCoinbaseTxHex = \"%s\";"
+            ],
+            "var": "GENESIS_COINBASE_TX_HEX"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/P2p/P2pNetworks.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "const static boost::uuids::uuid BYTECOIN_NETWORK",
+          "parameters": {
+            "text": [
+              "  const static boost::uuids::uuid BYTECOIN_NETWORK = { { %s } };"
+            ],
+            "var": "BYTECOIN_NETWORK"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/P2p/P2pNetworks.h",
+      "multiline": true,
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "(const static boost::uuids::uuid BYTECOIN_NETWORK = { { )([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})( } };)",
+          "parameters": {
+            "text": [
+              "\\1 0x\\2, 0x\\3, 0x\\4, 0x\\5, 0x\\6, 0x\\7, 0x\\8, 0x\\9, 0x\\10, 0x\\11, 0x\\12, 0x\\13, 0x\\14, 0x\\15, 0x\\16, 0x\\17 \\18"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/RpcNodeConfiguration.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "(\"daemon-port\", po::value<uint16_t>()->default_value(8081), \"bytecoind port\");",
+          "parameters": {
+            "text": [
+              "    (\"daemon-port\", po::value<uint16_t>()->default_value(%s), \"daemon port\");"
+            ],
+            "var": "RPC_DEFAULT_PORT"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "const command_line::arg_descriptor<uint16_t> arg_daemon_port = { \"daemon-port\", \"Use daemon instance at port <arg> instead of 8081\", 0 };",
+          "parameters": {
+            "text": [
+              "const command_line::arg_descriptor<uint16_t> arg_daemon_port = { \"daemon-port\", \"Use daemon instance at port <arg> instead of %s\", 0 };"
+            ],
+            "var": "RPC_DEFAULT_PORT"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -15,8 +15,7 @@
           "parameters": {
             "text": [
               "  uint32_t m_zawyDifficultyBlockIndex;",
-              "  size_t m_zawyDifficultyV2;",
-              "  uint8_t m_zawyDifficultyBlockVersion;"
+              "  uint32_t m_zawyDifficultyLastBlock;"
             ]
           }
         },
@@ -26,8 +25,7 @@
           "parameters": {
             "text": [
               "  CurrencyBuilder& zawyDifficultyBlockIndex(uint32_t val) { m_currency.m_zawyDifficultyBlockIndex = val; return *this; }",
-              "  CurrencyBuilder& zawyDifficultyV2(size_t val) { m_currency.m_zawyDifficultyV2 = val; return *this; }",
-              "  CurrencyBuilder& zawyDifficultyBlockVersion(uint8_t val) { m_currency.m_zawyDifficultyBlockVersion = val; return *this; }"
+              "  CurrencyBuilder& zawyDifficultyLastBlock(uint32_t val) { m_currency.m_zawyDifficultyLastBlock = val; return *this; }"
             ]
           }
         },
@@ -37,8 +35,7 @@
           "parameters": {
             "text": [
               "  uint32_t zawyDifficultyBlockIndex() const { return m_zawyDifficultyBlockIndex; }",
-              "  size_t zawyDifficultyV2() const { return m_zawyDifficultyV2; }",
-              "  uint8_t zawyDifficultyBlockVersion() const { return m_zawyDifficultyBlockVersion; }"
+              "  uint32_t zawyDifficultyLastBlock() const { return m_zawyDifficultyLastBlock; }"
             ]
           }
         }
@@ -53,8 +50,7 @@
           "parameters": {
             "text": [
               "zawyDifficultyBlockIndex(parameters::ZAWY_DIFFICULTY_BLOCK_INDEX);",
-              "zawyDifficultyV2(parameters::ZAWY_DIFFICULTY_V2);",
-              "zawyDifficultyBlockVersion(parameters::ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION);"
+              "zawyDifficultyLastBlock(parameters::ZAWY_DIFFICULTY_LAST_BLOCK);"
             ]
           }
         },
@@ -64,8 +60,7 @@
           "parameters": {
             "text": [
               "m_zawyDifficultyBlockIndex(currency.m_zawyDifficultyBlockIndex),",
-              "m_zawyDifficultyV2(currency.m_zawyDifficultyV2),",
-              "m_zawyDifficultyBlockVersion(currency.m_zawyDifficultyBlockVersion),"
+              "m_zawyDifficultyLastBlock(currency.m_zawyDifficultyLastBlock),"
             ]
           }
         }
@@ -97,30 +92,26 @@
           "marker": "const unsigned EMISSION_SPEED_FACTOR",
           "parameters": {
             "text": [
-              "const size_t ZAWY_DIFFICULTY_V2                          = %s;"
+              "const uint32_t ZAWY_DIFFICULTY_LAST_BLOCK                 = %s;"
             ],
             "replace_text_alt": [
-              "const size_t ZAWY_DIFFICULTY_V2                          = 0;"
+              "const uint32_t ZAWY_DIFFICULTY_LAST_BLOCK                 = 0;"
             ],
-            "var": "ZAWY_DIFFICULTY_V2"
+            "var": "ZAWY_DIFFICULTY_LAST_BLOCK"
           }
         }
       ]
     },
     {
-      "path": "/src/CryptoNoteConfig.h",
+      "path": "/src/CryptoNoteCore/Currency.h",
       "changes": [
         {
-          "action": "add_above",
-          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "action": "add_below",
+          "marker": "Difficulty nextDifficulty(std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;",
           "parameters": {
             "text": [
-              "const uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION   = %s;"
-            ],
-            "replace_text_alt": [
-              "const uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION   = 0;"
-            ],
-            "var": "ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION"
+              "Difficulty nextDifficultyZawyV1(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps, std::vector<Difficulty> cumulativeDifficulties) const;"
+            ]
           }
         }
       ]
@@ -130,56 +121,45 @@
       "changes": [
         {
           "action": "add_above",
-          "marker": "size_t c_difficultyWindow = difficultyWindowByBlockVersion(version);",
+          "marker": "return nextDifficultyDefault(version, blockIndex, timestamps, cumulativeDifficulties);",
           "parameters": {
             "text": [
-              "std::vector<uint64_t> timestamps_o(timestamps);",
-              "std::vector<uint64_t> cumulativeDifficulties_o(cumulativeDifficulties);"
+              "  if (m_zawyDifficultyBlockIndex && m_zawyDifficultyBlockIndex <= blockIndex && (m_zawyDifficultyLastBlock == 0 || m_zawyDifficultyLastBlock >= blockIndex)) {",
+              "    return nextDifficultyZawyV1(version, blockIndex, timestamps, cumulativeDifficulties);",
+              "}"
             ]
           }
         },
         {
           "action": "add_above",
-          "marker": "return (low + timeSpan - 1) / timeSpan;  // with version",
+          "marker": "Difficulty Currency::nextDifficultyDefault(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps,",
           "parameters": {
             "text": [
-                "  uint8_t c_zawyDifficultyBlockVersion = m_zawyDifficultyBlockVersion;",
-                "  if (m_zawyDifficultyV2) {",
-                "    c_zawyDifficultyBlockVersion = 2;",
-                "  }",
-                "  if (version >= c_zawyDifficultyBlockVersion && c_zawyDifficultyBlockVersion) {",
-                "    if (high != 0) {",
-                "      return 0;",
-                "    }",
-                "    uint64_t nextDiffZ = low / timeSpan;",
+                "Difficulty Currency::nextDifficultyZawyV1(uint8_t version, uint32_t blockIndex, std::vector<uint64_t> timestamps,",
+                "  std::vector<Difficulty> cumulativeDifficulties) const {",
+                "// Difficulty calculation based on Zawy difficulty algorithm v1.0",
+                "// next Diff = Avg past N Diff * TargetInterval / Avg past N solve times",
+                "// as described at https://github.com/monero-project/research-lab/issues/3",
+                "// Window time span and total difficulty is taken instead of average as suggested by Nuclear_chaos",
                 "",
-                "    return nextDiffZ;",
-                "  }",
-                "",
-                "  if (m_zawyDifficultyBlockIndex && m_zawyDifficultyBlockIndex <= blockIndex) {",
-                "    if (high != 0) {",
-                "      return 0;",
-                "    }",
-                "",
-                "/*",
-                "  Recalculating 'low' and 'timespan' with hardcoded values:",
-                "  DIFFICULTY_CUT=0",
-                "  DIFFICULTY_LAG=0",
-                "  DIFFICULTY_WINDOW=17",
-                "*/",
-                "    c_difficultyWindow = 17;",
-                "    c_difficultyCut = 0;",
+                "// Hardcoded values:",
+                "// DIFFICULTY_CUT=0",
+                "// DIFFICULTY_LAG=0",
+                "// DIFFICULTY_WINDOW=17",
+                "    size_t c_difficultyWindow = 17;",
+                "    size_t c_difficultyCut = 0;",
                 "",
                 "    assert(c_difficultyWindow >= 2);",
                 "",
+
                 "    size_t t_difficultyWindow = c_difficultyWindow;",
                 "    if (c_difficultyWindow > timestamps.size()) {",
                 "      t_difficultyWindow = timestamps.size();",
                 "    }",
-                "    std::vector<uint64_t> timestamps_tmp(timestamps_o.end() - t_difficultyWindow, timestamps_o.end());",
-                "    std::vector<uint64_t> cumulativeDifficulties_tmp(cumulativeDifficulties_o.end() - t_difficultyWindow, cumulativeDifficulties_o.end());",
+                "    std::vector<uint64_t> timestamps_tmp(timestamps.end() - t_difficultyWindow, timestamps.end());",
+                "    std::vector<uint64_t> cumulativeDifficulties_tmp(cumulativeDifficulties.end() - t_difficultyWindow, cumulativeDifficulties.end());",
                 "",
-                "    length = timestamps_tmp.size();",
+                "    size_t length = timestamps_tmp.size();",
                 "    assert(length == cumulativeDifficulties_tmp.size());",
                 "    assert(length <= c_difficultyWindow);",
                 "    if (length <= 1) {",
@@ -189,6 +169,7 @@
                 "    sort(timestamps_tmp.begin(), timestamps_tmp.end());",
                 "",
                 "    assert(2 * c_difficultyCut <= c_difficultyWindow - 2);",
+                "    size_t cutBegin, cutEnd;",
                 "    if (length <= c_difficultyWindow - 2 * c_difficultyCut) {",
                 "      cutBegin = 0;",
                 "      cutEnd = length;",
@@ -197,14 +178,15 @@
                 "      cutEnd = cutBegin + (c_difficultyWindow - 2 * c_difficultyCut);",
                 "    }",
                 "    assert(/*cut_begin >= 0 &&*/ cutBegin + 2 <= cutEnd && cutEnd <= length);",
-                "    timeSpan = timestamps_tmp[cutEnd - 1] - timestamps_tmp[cutBegin];",
+                "    uint64_t timeSpan = timestamps_tmp[cutEnd - 1] - timestamps_tmp[cutBegin];",
                 "    if (timeSpan == 0) {",
                 "      timeSpan = 1;",
                 "    }",
                 "",
-                "    totalWork = cumulativeDifficulties_tmp[cutEnd - 1] - cumulativeDifficulties_tmp[cutBegin];",
+                "    Difficulty totalWork = cumulativeDifficulties_tmp[cutEnd - 1] - cumulativeDifficulties_tmp[cutBegin];",
                 "    assert(totalWork > 0);",
                 "",
+                "    uint64_t low, high;",
                 "    low = mul128(totalWork, m_difficultyTarget, &high);",
                 "    if (high != 0 || std::numeric_limits<uint64_t>::max() - low < (timeSpan - 1)) {",
                 "      return 0;",
@@ -215,7 +197,7 @@
                 "      nextDiffZ = 1;",
                 "    }",
                 "    return nextDiffZ;",
-                "  }",
+                "}",
                 ""
             ]
           }
