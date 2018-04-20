@@ -512,6 +512,50 @@
           }
         }
       ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "changes": [
+        {
+          "description": "https://github.com/amjuarez/bytecoin/pull/197",
+          "action": "replace",
+          "marker": "logger(INFO) << \"[on_send_raw_tx]: tx verification failed\";",
+          "parameters": {
+            "text": [
+              "     logger(DEBUGGING) << \"[on_send_raw_tx]: tx verification failed\";"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Makefile",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "cmake-release:",
+          "parameters": {
+            "text": [
+              "cmake-release-static:",
+              "\tmkdir -p build/release",
+              "\tcd build/release && cmake -D STATIC=ON -D CMAKE_BUILD_TYPE=Release ../..",
+              "",
+              "build-release-static: cmake-release-static",
+              "\tcd build/release && $(MAKE)",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": ".PHONY: all cmake-debug build-debug test-debug all-debug cmake-release build-release test-release all-release clean tags",
+          "parameters": {
+            "text": [
+              ".PHONY: all cmake-debug build-debug test-debug all-debug cmake-release-static build-release-static cmake-release build-release test-release all-release clean tags"
+            ]
+          }
+        }
+      ]
     }
   ]
 }
