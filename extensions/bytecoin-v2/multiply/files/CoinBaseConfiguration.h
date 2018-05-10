@@ -70,6 +70,7 @@ public:
   size_t DIFFICULTY_WINDOW;
   size_t DIFFICULTY_CUT;
   size_t DIFFICULTY_LAG;
+  uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
 };
 
 } //namespace PaymentService

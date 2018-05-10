@@ -556,6 +556,23 @@
           }
         }
       ]
+    },
+    {
+      "path": "/src/Transfers/TransfersConsumer.cpp",
+      "changes": [
+        {
+          "description": "",
+          "action": "replace",
+          "marker": "m_syncStart = res->getSyncStart();",
+          "parameters": {
+            "text": [
+              "    auto subStart = res->getSyncStart();",
+              "    m_syncStart.height = std::min(m_syncStart.height, subStart.height);",
+              "    m_syncStart.timestamp = std::min(m_syncStart.timestamp, subStart.timestamp);"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

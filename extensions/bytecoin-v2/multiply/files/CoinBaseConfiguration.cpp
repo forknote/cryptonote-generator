@@ -60,6 +60,7 @@ CoinBaseConfiguration::CoinBaseConfiguration() {
     DIFFICULTY_WINDOW=CryptoNote::parameters::DIFFICULTY_WINDOW;
     DIFFICULTY_CUT=CryptoNote::parameters::DIFFICULTY_CUT;
     DIFFICULTY_LAG=CryptoNote::parameters::DIFFICULTY_LAG;
+    CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT=CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
 }
 
 void CoinBaseConfiguration::initOptions(boost::program_options::options_description& desc) {
@@ -85,6 +86,7 @@ void CoinBaseConfiguration::initOptions(boost::program_options::options_descript
     ("DIFFICULTY_WINDOW", po::value<size_t>()->default_value(0), "size_t")
     ("DIFFICULTY_CUT", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_CUT), "size_t")
     ("DIFFICULTY_LAG", po::value<size_t>()->default_value(CryptoNote::parameters::DIFFICULTY_LAG), "size_t")
+    ("CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT", po::value<uint64_t>()->default_value(CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT), "uint64_t")
     ;
 
 }
@@ -152,6 +154,9 @@ void CoinBaseConfiguration::init(const boost::program_options::variables_map& op
   }
   if (options.count("DIFFICULTY_LAG")) {
     DIFFICULTY_LAG = options["DIFFICULTY_LAG"].as<size_t>();
+  }
+  if (options.count("CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT")) {
+    DIFFICULTY_LAG = options["CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT"].as<uint64_t>();
   }
 }
 

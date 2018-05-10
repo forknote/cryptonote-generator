@@ -241,6 +241,17 @@
         },
         {
           "action": "replace",
+          "marker": "const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT",
+          "parameters": {
+            "mandatory": false,
+            "text": [
+              "const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = %s;"
+            ],
+            "var": "CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT"
+          }
+        },
+        {
+          "action": "replace",
           "marker": "const uint32_t UPGRADE_HEIGHT_V2",
           "parameters": {
             "text": [

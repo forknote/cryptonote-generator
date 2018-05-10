@@ -224,8 +224,8 @@
           "marker": "uint32_t startOffset = result.newBlockHeight - interval.startHeight;",
           "parameters": {
             "text": [
-              "    if (result.newBlockHeight == 0)",
-              "      startOffset = 0;"
+              "//    if (result.newBlockHeight == 0)",
+              "//      startOffset = 0;"
             ]
           }
         }

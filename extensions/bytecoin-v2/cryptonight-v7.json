@@ -1,0 +1,537 @@
+{
+  "file": "cryptonight-v7.json",
+  "description": "Add Monero's CryptoNightV7 POW.",
+  "status": "Not tested",
+  "required": [
+    "core/bytecoin.json",
+    "versionized-parameters.json"
+  ],
+  "files": [
+    {
+      "path": "/src/CryptoNoteCore/Currency.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "size_t m_blockGrantedFullRewardZone;",
+          "parameters": {
+            "text": [
+              "  uint32_t m_POWCryptoNightV7BlockIndex;",
+              "  uint32_t m_POWCryptoNightV7LastBlock;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "CurrencyBuilder& blockGrantedFullRewardZone(size_t val)",
+          "parameters": {
+            "text": [
+              "  CurrencyBuilder& POWCryptoNightV7BlockIndex(uint32_t val) { m_currency.m_POWCryptoNightV7BlockIndex = val; return *this; }",
+              "  CurrencyBuilder& POWCryptoNightV7LastBlock(uint32_t val) { m_currency.m_POWCryptoNightV7LastBlock = val; return *this; }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "size_t blockGrantedFullRewardZone()",
+          "parameters": {
+            "text": [
+              "  uint32_t POWCryptoNightV7BlockIndex() const { return m_POWCryptoNightV7BlockIndex; }",
+              "  uint32_t POWCryptoNightV7LastBlock() const { return m_POWCryptoNightV7LastBlock; }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);",
+          "parameters": {
+            "text": [
+              "POWCryptoNightV7BlockIndex(parameters::POW_CRYPTONIGHT_V7_BLOCK_INDEX);",
+              "POWCryptoNightV7LastBlock(parameters::POW_CRYPTONIGHT_V7_LAST_BLOCK);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "m_testnet(currency.m_testnet),",
+          "parameters": {
+            "text": [
+              "m_POWCryptoNightV7BlockIndex(currency.m_POWCryptoNightV7BlockIndex),",
+              "m_POWCryptoNightV7LastBlock(currency.m_POWCryptoNightV7LastBlock),"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint32_t POW_CRYPTONIGHT_V7_BLOCK_INDEX                 = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t POW_CRYPTONIGHT_V7_BLOCK_INDEX                 = 0;"
+            ],
+            "var": "POW_CRYPTONIGHT_V7_BLOCK_INDEX"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint32_t POW_CRYPTONIGHT_V7_LAST_BLOCK                 = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint32_t POW_CRYPTONIGHT_V7_LAST_BLOCK                 = 0;"
+            ],
+            "var": "POW_CRYPTONIGHT_V7_LAST_BLOCK"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "return check_hash(block.getBlockLongHash(context), currentDifficulty);",
+          "parameters": {
+            "text": [
+              "  uint32_t cn_variant = 0;",
+              "  if (m_POWCryptoNightV7BlockIndex >= block.getBlockIndex() && m_POWCryptoNightV7LastBlock <= block.getBlockIndex())",
+              "    cn_variant = 1;",
+              "  return check_hash(block.getBlockLongHash(context, cn_variant), currentDifficulty);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "if (!check_hash(cachedBlock.getBlockLongHash(context), currentDifficulty)) {",
+          "parameters": {
+            "text": [
+              "  uint32_t cn_variant = 0;",
+              "  if (m_POWCryptoNightV7BlockIndex >= cachedBlock.getBlockIndex() && m_POWCryptoNightV7LastBlock <= cachedBlock.getBlockIndex())",
+              "    cn_variant = 1;",
+              "  if (!check_hash(cachedBlock.getBlockLongHash(context, cn_variant), currentDifficulty)) {"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/Miner.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "CachedBlock cb(b);",
+          "parameters": {
+            "text": [
+              "      uint32_t cn_variant = 0;",
+              "      if (m_currency.POWCryptoNightV7BlockIndex() >= cb.getBlockIndex() && m_currency.POWCryptoNightV7LastBlock() <= cb.getBlockIndex())",
+              "        cn_variant = 1;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "h = cb.getBlockLongHash(localctx);",
+          "parameters": {
+            "text": [
+              "              h = cb.getBlockLongHash(localctx, cn_variant);"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "CachedBlock cb(lb);",
+          "parameters": {
+            "text": [
+              "            uint32_t cn_variant = 0;",
+              "//            if (m_currency.POWCryptoNightV7BlockIndex() >= cb.getBlockIndex() && m_currency.POWCryptoNightV7LastBlock() <= cb.getBlockIndex())",
+              "//              cn_variant = 1;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "CachedBlock cb(bl);",
+          "parameters": {
+            "text": [
+              "        uint32_t cn_variant = 0;",
+              "//        if (m_currency.POWCryptoNightV7BlockIndex() >= cb.getBlockIndex() && m_currency.POWCryptoNightV7LastBlock() <= cb.getBlockIndex())",
+              "//          cn_variant = 1;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "h = cb.getBlockLongHash(context);",
+          "parameters": {
+            "text": [
+              "          h = cb.getBlockLongHash(context, cn_variant);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Miner/MiningConfig.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "int64_t blockTimestampInterval;",
+          "parameters": {
+            "text": [
+              "  uint32_t cryptonightVariant;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Miner/MiningConfig.cpp",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "(\"first-block-timestamp\", po::value<uint64_t>()->default_value(0), \"Set timestamp to the first mined block. 0 means leave timestamp unchanged\")",
+          "parameters": {
+            "text": [
+              "      (\"cryptonight-variant\", po::value<uint32_t>()->default_value(0), \"CryptoNight variant. 0 for default. 1 for CryptoNightV7\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "firstBlockTimestamp = options[\"first-block-timestamp\"].as<uint64_t>();",
+          "parameters": {
+            "text": [
+              "  cryptonightVariant = options[\"cryptonight-variant\"].as<uint32_t>();"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Miner/MinerManager.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "m_minedBlock = m_miner.mine(params, m_config.threadCount);",
+          "parameters": {
+            "text": [
+              "  m_minedBlock = m_miner.mine(params, m_config.threadCount, m_config.cryptonightVariant);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Miner/Miner.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "BlockTemplate mine(const BlockMiningParameters& blockMiningParameters, size_t threadCount);",
+          "parameters": {
+            "text": [
+              "  BlockTemplate mine(const BlockMiningParameters& blockMiningParameters, size_t threadCount, uint32_t cryptonightVariant = 0);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "void runWorkers(BlockMiningParameters blockMiningParameters, size_t threadCount);",
+          "parameters": {
+            "text": [
+              "  void runWorkers(BlockMiningParameters blockMiningParameters, size_t threadCount, uint32_t cryptonightVariant = 0);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "void workerFunc(const BlockTemplate& blockTemplate, Difficulty difficulty, uint32_t nonceStep);",
+          "parameters": {
+            "text": [
+              "  void workerFunc(const BlockTemplate& blockTemplate, Difficulty difficulty, uint32_t nonceStep, uint32_t cryptonightVariant = 0);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Miner/Miner.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "BlockTemplate Miner::mine(const BlockMiningParameters& blockMiningParameters, size_t threadCount) {",
+          "parameters": {
+            "text": [
+              "BlockTemplate Miner::mine(const BlockMiningParameters& blockMiningParameters, size_t threadCount, uint32_t cryptonightVariant) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "runWorkers(blockMiningParameters, threadCount);",
+          "parameters": {
+            "text": [
+              "runWorkers(blockMiningParameters, threadCount, cryptonightVariant);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threadCount) {",
+          "parameters": {
+            "text": [
+              "void Miner::runWorkers(BlockMiningParameters blockMiningParameters, size_t threadCount, uint32_t cryptonightVariant) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "new System::RemoteContext<void>(m_dispatcher, std::bind(&Miner::workerFunc, this, blockMiningParameters.blockTemplate, blockMiningParameters.difficulty, threadCount)))",
+          "parameters": {
+            "text": [
+              "        new System::RemoteContext<void>(m_dispatcher, std::bind(&Miner::workerFunc, this, blockMiningParameters.blockTemplate, blockMiningParameters.difficulty, threadCount, cryptonightVariant)))"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "void Miner::workerFunc(const BlockTemplate& blockTemplate, Difficulty difficulty, uint32_t nonceStep) {",
+          "parameters": {
+            "text": [
+              "void Miner::workerFunc(const BlockTemplate& blockTemplate, Difficulty difficulty, uint32_t nonceStep, uint32_t cryptonightVariant) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "Crypto::Hash hash = cachedBlock.getBlockLongHash(cryptoContext);",
+          "parameters": {
+            "text": [
+              "      Crypto::Hash hash = cachedBlock.getBlockLongHash(cryptoContext, cryptonightVariant);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/CachedBlock.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "const Crypto::Hash& getBlockLongHash(Crypto::cn_context& cryptoContext) const;",
+          "parameters": {
+            "text": [
+              "  const Crypto::Hash& getBlockLongHash(Crypto::cn_context& cryptoContext, uint32_t variant = 0) const;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteCore/CachedBlock.cpp",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "const Crypto::Hash& CachedBlock::getBlockLongHash(cn_context& cryptoContext) const {",
+          "parameters": {
+            "text": [
+              "const Crypto::Hash& CachedBlock::getBlockLongHash(cn_context& cryptoContext, uint32_t variant) const {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "cn_slow_hash(cryptoContext, rawHashingBlock.data(), rawHashingBlock.size(), blockLongHash.get());",
+          "parameters": {
+            "text": [
+              "      cn_slow_hash(cryptoContext, rawHashingBlock.data(), rawHashingBlock.size(), blockLongHash.get(), variant);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/hash-ops.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "void cn_slow_hash_f(void *, const void *, size_t, void *);",
+          "parameters": {
+            "text": [
+              "void cn_slow_hash_f(void *, const void *, size_t, void *, int);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/hash.h",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "friend inline void cn_slow_hash(cn_context &, const void *, size_t, Hash &);",
+          "parameters": {
+            "text": [
+              "      friend inline void cn_slow_hash(cn_context &, const void *, size_t, Hash &, int);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "inline void cn_slow_hash(cn_context &context, const void *data, size_t length, Hash &hash) {",
+          "parameters": {
+            "text": [
+              "    inline void cn_slow_hash(cn_context &context, const void *data, size_t length, Hash &hash, int variant = 0) {"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "(*cn_slow_hash_f)(context.data, data, length, reinterpret_cast<void *>(&hash));",
+          "parameters": {
+            "text": [
+              "      (*cn_slow_hash_f)(context.data, data, length, reinterpret_cast<void *>(&hash), variant);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/slow-hash.c",
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "void (*cn_slow_hash_fp)(void *, const void *, size_t, void *);",
+          "parameters": {
+            "text": [
+              "void(*cn_slow_hash_fp)(void *, const void *, size_t, void *, int);"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "void cn_slow_hash_f(void * a, const void * b, size_t c, void * d){",
+          "parameters": {
+            "text": [
+              "void cn_slow_hash_f(void * a, const void * b, size_t c, void * d, int v){"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "(*cn_slow_hash_fp)(a, b, c, d);",
+          "parameters": {
+            "text": [
+              "(*cn_slow_hash_fp)(a, b, c, d, v);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/slow-hash.inl",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "// along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.",
+          "parameters": {
+            "text": [
+              "// Cryptonight V7 (variant 1) code credits: Monero, Karbo",
+              "",
+              "#include <stdio.h>",
+              "#if defined(WIN32)",
+              "#include <io.h>",
+              "#else",
+              "#include <unistd.h>",
+              "#endif",
+              "",
+              "#define xor64(a, b) *((uint64_t*)a) ^= b",
+              "",
+              "#define VARIANT1_1(p) \\",
+              "  do if (variant > 0) \\",
+              "  { \\",
+              "    const uint8_t tmp = ((const uint8_t*)(p))[11]; \\",
+              "    static const uint32_t table = 0x75310; \\",
+              "    const uint8_t index = (((tmp >> 3) & 6) | (tmp & 1)) << 1; \\",
+              "    ((uint8_t*)(p))[11] = tmp ^ ((table >> index) & 0x30); \\",
+              "  } while(0);",
+              "",
+              "#define VARIANT1_2(p) \\",
+              "  do if (variant > 0) \\",
+              "  { \\",
+              "    xor64(p, tweak1_2); \\",
+              "  } while(0);",
+              "",
+              "#define VARIANT1_CHECK() \\",
+              "  do if (length < 43) \\",
+              "  { \\",
+              "    fprintf(stderr, \"Cryptonight variants need at least 43 bytes of data. Exiting.\"); \\",
+              "    _exit(1); \\",
+              "  } while(0);",
+              "",
+              "#define NONCE_POINTER (((const uint8_t*)data)+35)",
+              "",
+              "#define VARIANT1_PORTABLE_INIT() \\",
+              "  uint8_t tweak1_2[8]; \\",
+              "  do if (variant > 0) \\",
+              "  { \\",
+              "    VARIANT1_CHECK(); \\",
+              "    memcpy(&tweak1_2, &state.hs.b[192], sizeof(tweak1_2)); \\",
+              "    xor64(tweak1_2, NONCE_POINTER); \\",
+              "  } while(0)",
+              "",
+              "#define VARIANT1_INIT64() \\",
+              "  if (variant > 0) \\",
+              "  { \\",
+              "    VARIANT1_CHECK(); \\",
+              "  } \\",
+              "  const uint64_t tweak1_2 = variant > 0 ? (ctx->state.hs.w[24] ^ (*((const uint64_t*)NONCE_POINTER))) : 0",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "(void *restrict context, const void *restrict data, size_t length, void *restrict hash)",
+          "parameters": {
+            "text": [
+              "(void *restrict context, const void *restrict data, size_t length, void *restrict hash, int variant)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/crypto/slow-hash.inl",
+      "multiline": true,
+      "changes": [
+        {
+          "action": "replace",
+          "marker": "(hash_process\\(&ctx\\-\\>state\\.hs, \\(const uint8_t\\*\\) data, length\\);)([^;]+)(memcpy\\(ctx\\-\\>text, ctx\\-\\>state\\.init, INIT_SIZE_BYTE\\);)",
+          "parameters": {
+            "text": [
+              "  \\1\n  \\3\n\nVARIANT1_INIT64();\n\n"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

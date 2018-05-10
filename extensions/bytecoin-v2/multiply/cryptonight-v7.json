@@ -1,0 +1,170 @@
+{
+  "file": "multiply/cryptonight-v7.json",
+  "description": "Add Zawy LWMA difficulty algorithm option in multiply (https://github.com/zawy12/difficulty-algorithms/issues/3)",
+  "required": [
+    "core/bytecoin.json",
+    "cryptonight-v7.json",
+    "multiply.json",
+    "get-blockchain-settings.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<uint32_t>    arg_POW_CRYPTONIGHT_V7_BLOCK_INDEX = {\"POW_CRYPTONIGHT_V7_BLOCK_INDEX\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_POW_CRYPTONIGHT_V7_LAST_BLOCK  = {\"POW_CRYPTONIGHT_V7_LAST_BLOCK\", \"uint32_t\", 0};"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_POW_CRYPTONIGHT_V7_BLOCK_INDEX);",
+              "    command_line::add_arg(desc_cmd_sett, arg_POW_CRYPTONIGHT_V7_LAST_BLOCK);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.testnet(testnet_mode);",
+          "parameters": {
+            "text": [
+              "    currencyBuilder.POWCryptoNightV7BlockIndex(command_line::get_arg(vm, arg_POW_CRYPTONIGHT_V7_BLOCK_INDEX));",
+              "    currencyBuilder.POWCryptoNightV7LastBlock(command_line::get_arg(vm, arg_POW_CRYPTONIGHT_V7_LAST_BLOCK));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint64_t MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "  uint32_t POW_CRYPTONIGHT_V7_BLOCK_INDEX;",
+              "  uint32_t POW_CRYPTONIGHT_V7_LAST_BLOCK;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "    POW_CRYPTONIGHT_V7_BLOCK_INDEX=CryptoNote::parameters::POW_CRYPTONIGHT_V7_BLOCK_INDEX;",
+              "    POW_CRYPTONIGHT_V7_LAST_BLOCK=CryptoNote::parameters::POW_CRYPTONIGHT_V7_LAST_BLOCK;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
+          "parameters": {
+            "text": [
+              "    (\"POW_CRYPTONIGHT_V7_BLOCK_INDEX\", po::value<uint32_t>()->default_value(0), \"(uint32_t) Hardfork height to CryptoNightV7. \")",
+              "    (\"POW_CRYPTONIGHT_V7_LAST_BLOCK\", po::value<uint32_t>()->default_value(0), \"(uint32_t) End height of CryptoNightV7\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"POW_CRYPTONIGHT_V7_BLOCK_INDEX\")) {",
+              "    POW_CRYPTONIGHT_V7_BLOCK_INDEX = options[\"POW_CRYPTONIGHT_V7_BLOCK_INDEX\"].as<uint32_t>();",
+              "  }",
+              "  if (options.count(\"POW_CRYPTONIGHT_V7_LAST_BLOCK\")) {",
+              "    POW_CRYPTONIGHT_V7_LAST_BLOCK = options[\"POW_CRYPTONIGHT_V7_LAST_BLOCK\"].as<uint32_t>();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.POWCryptoNightV7BlockIndex(config.coinBaseConfig.POW_CRYPTONIGHT_V7_BLOCK_INDEX);",
+              "  currencyBuilder.POWCryptoNightV7LastBlock(config.coinBaseConfig.POW_CRYPTONIGHT_V7_LAST_BLOCK);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::string BYTECOIN_NETWORK;",
+          "parameters": {
+            "text": [
+              "  uint32_t POW_CRYPTONIGHT_V7_BLOCK_INDEX;",
+              "  uint32_t POW_CRYPTONIGHT_V7_LAST_BLOCK;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
+          "parameters": {
+            "text": [
+              "    KV_MEMBER(POW_CRYPTONIGHT_V7_BLOCK_INDEX)",
+              "    KV_MEMBER(POW_CRYPTONIGHT_V7_LAST_BLOCK)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().POWCryptoNightV7BlockIndex() != 0 ) {",
+              "    res.extensions.push_back(\"cryptonight-v7.json\");",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+          "parameters": {
+            "text": [
+              "  res.core.POW_CRYPTONIGHT_V7_BLOCK_INDEX = m_core.getCurrency().POWCryptoNightV7BlockIndex();",
+              "  res.core.POW_CRYPTONIGHT_V7_LAST_BLOCK = m_core.getCurrency().POWCryptoNightV7LastBlock();"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

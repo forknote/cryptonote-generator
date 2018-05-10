@@ -185,6 +185,7 @@
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
+              "  const command_line::arg_descriptor<uint64_t>      arg_CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT  = {\"CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT};",
               "  const command_line::arg_descriptor<std::string> arg_CRYPTONOTE_NAME  = {\"CRYPTONOTE_NAME\", \"Cryptonote name. Used for storage directory\", \"\"};",
               "  const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT  = {\"CHECKPOINT\", \"Checkpoints. Format: HEIGHT:HASH\"};"
             ]
@@ -215,6 +216,7 @@
               "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_WINDOW);",
               "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_CUT);",
               "    command_line::add_arg(desc_cmd_sett, arg_DIFFICULTY_LAG);",
+              "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT);",
               "    command_line::add_arg(desc_cmd_sett, arg_CRYPTONOTE_NAME);",
               "    command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);"
             ]
@@ -267,8 +269,9 @@
               "    {",
               "      currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
               "    }",
+              "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
               "    currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-              "    currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
+              "    currencyBuilder.blockFutureTimeLimit(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT));"
             ]
           }
         },
@@ -472,6 +475,7 @@
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_WINDOW  = {\"DIFFICULTY_WINDOW\", \"size_t\", 0};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_CUT  = {\"DIFFICULTY_CUT\", \"size_t\", CryptoNote::parameters::DIFFICULTY_CUT};",
               "  const command_line::arg_descriptor<size_t>      arg_DIFFICULTY_LAG  = {\"DIFFICULTY_LAG\", \"size_t\", CryptoNote::parameters::DIFFICULTY_LAG};",
+              "  const command_line::arg_descriptor<uint64_t>      arg_CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT  = {\"CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT\", \"uint64_t\", CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT};",
               "  const command_line::arg_descriptor<std::string> arg_rpc_bind_port = {\"rpc-bind-port\", \"\", std::to_string(RPC_DEFAULT_PORT)};"
             ]
           }
@@ -523,8 +527,9 @@
               "  {",
               "    currencyBuilder.difficultyWindow(command_line::get_arg(vm, arg_DIFFICULTY_WINDOW));",
               "  }",
+              "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));",
               "  currencyBuilder.difficultyLag(command_line::get_arg(vm, arg_DIFFICULTY_LAG));",
-              "  currencyBuilder.difficultyCut(command_line::get_arg(vm, arg_DIFFICULTY_CUT));"
+              "  currencyBuilder.blockFutureTimeLimit(command_line::get_arg(vm, arg_CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT));"
             ]
           }
         },
@@ -565,6 +570,7 @@
               "  command_line::add_arg(desc_params, arg_DIFFICULTY_WINDOW);",
               "  command_line::add_arg(desc_params, arg_DIFFICULTY_CUT);",
               "  command_line::add_arg(desc_params, arg_DIFFICULTY_LAG);",
+              "  command_line::add_arg(desc_params, arg_CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT);",
               "  command_line::add_arg(desc_params, arg_rpc_bind_port);"
             ]
           }
@@ -973,7 +979,8 @@
               "    currencyBuilder.difficultyWindow(config.coinBaseConfig.DIFFICULTY_WINDOW);",
               "  }",
               "  currencyBuilder.difficultyLag(config.coinBaseConfig.DIFFICULTY_LAG);",
-              "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);"
+              "  currencyBuilder.difficultyCut(config.coinBaseConfig.DIFFICULTY_CUT);",
+              "  currencyBuilder.blockFutureTimeLimit(config.coinBaseConfig.CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT);"
             ]
           }
         },

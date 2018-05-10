@@ -1,6 +1,7 @@
 {
   "file": "block-hosts.json",
   "description": "Block failing hosts",
+  "status": "In development",
   "required": [
     "core/bytecoin.json"
   ],
