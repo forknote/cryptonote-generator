@@ -15,7 +15,8 @@
           "parameters": {
             "text": [
               "  uint32_t m_zawyDifficultyBlockIndex;",
-              "  uint32_t m_zawyDifficultyLastBlock;"
+              "  uint32_t m_zawyDifficultyLastBlock;",
+              "  uint64_t m_zawyDifficultyMin;"
             ]
           }
         },
@@ -25,7 +26,8 @@
           "parameters": {
             "text": [
               "  CurrencyBuilder& zawyDifficultyBlockIndex(uint32_t val) { m_currency.m_zawyDifficultyBlockIndex = val; return *this; }",
-              "  CurrencyBuilder& zawyDifficultyLastBlock(uint32_t val) { m_currency.m_zawyDifficultyLastBlock = val; return *this; }"
+              "  CurrencyBuilder& zawyDifficultyLastBlock(uint32_t val) { m_currency.m_zawyDifficultyLastBlock = val; return *this; }",
+              "  CurrencyBuilder& zawyDifficultyMin(uint64_t val) { m_currency.m_zawyDifficultyMin = val; return *this; }"
             ]
           }
         },
@@ -35,7 +37,8 @@
           "parameters": {
             "text": [
               "  uint32_t zawyDifficultyBlockIndex() const { return m_zawyDifficultyBlockIndex; }",
-              "  uint32_t zawyDifficultyLastBlock() const { return m_zawyDifficultyLastBlock; }"
+              "  uint32_t zawyDifficultyLastBlock() const { return m_zawyDifficultyLastBlock; }",
+              "  uint64_t zawyDifficultyMin() const { return m_zawyDifficultyMin; }"
             ]
           }
         }
@@ -50,7 +53,8 @@
           "parameters": {
             "text": [
               "zawyDifficultyBlockIndex(parameters::ZAWY_DIFFICULTY_BLOCK_INDEX);",
-              "zawyDifficultyLastBlock(parameters::ZAWY_DIFFICULTY_LAST_BLOCK);"
+              "zawyDifficultyLastBlock(parameters::ZAWY_DIFFICULTY_LAST_BLOCK);",
+              "zawyDifficultyMin(parameters::ZAWY_DIFFICULTY_MIN);"
             ]
           }
         },
@@ -60,7 +64,8 @@
           "parameters": {
             "text": [
               "m_zawyDifficultyBlockIndex(currency.m_zawyDifficultyBlockIndex),",
-              "m_zawyDifficultyLastBlock(currency.m_zawyDifficultyLastBlock),"
+              "m_zawyDifficultyLastBlock(currency.m_zawyDifficultyLastBlock),",
+              "m_zawyDifficultyMin(currency.m_zawyDifficultyMin),"
             ]
           }
         }
@@ -98,6 +103,24 @@
               "const uint32_t ZAWY_DIFFICULTY_LAST_BLOCK                 = 0;"
             ],
             "var": "ZAWY_DIFFICULTY_LAST_BLOCK"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/CryptoNoteConfig.h",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "const unsigned EMISSION_SPEED_FACTOR",
+          "parameters": {
+            "text": [
+              "const uint64_t ZAWY_DIFFICULTY_MIN                 = %s;"
+            ],
+            "replace_text_alt": [
+              "const uint64_t ZAWY_DIFFICULTY_MIN                 = 1;"
+            ],
+            "var": "ZAWY_DIFFICULTY_MIN"
           }
         }
       ]
@@ -193,8 +216,8 @@
                 "    }",
 
                 "    uint64_t nextDiffZ = low / timeSpan;",
-                "    if (nextDiffZ <= 1) {",
-                "      nextDiffZ = 1;",
+                "    if (nextDiffZ <= m_zawyDifficultyMin) {",
+                "      nextDiffZ = m_zawyDifficultyMin;",
                 "    }",
                 "    return nextDiffZ;",
                 "}",
