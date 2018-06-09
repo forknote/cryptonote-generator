@@ -278,8 +278,19 @@
             "text": [
               "  sub.syncStart.timestamp = m_account.get_createtime() - ACCOUN_CREATE_TIME_ACCURACY;",
               "  if (m_syncAll == 1)",
-              "    sub.syncStart.timestamp = 0;",
-              "  std::cout << \"Sync from timestamp: \" << sub.syncStart.timestamp << std::endl;"
+              "    sub.syncStart.timestamp = 0;"
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "m_account.set_createtime(ACCOUN_CREATE_TIME_ACCURACY);",
+          "parameters": {
+            "text": [
+              "  uint64_t createTime = ACCOUN_CREATE_TIME_ACCURACY;",
+              "  if (m_syncAll == 1)",
+              "    createTime = 0;",
+              "  m_account.set_createtime(createTime);"
             ]
           }
         },

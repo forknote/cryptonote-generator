@@ -533,6 +533,21 @@
       "changes": [
         {
           "action": "add_above",
+          "marker": "cmake-debug:",
+          "parameters": {
+            "text": [
+              "cmake-debug-static:",
+              "\tmkdir -p build/debug",
+              "\tcd build/debug && cmake -D STATIC=ON -D CMAKE_BUILD_TYPE=Debug ../..",
+              "",
+              "build-debug-static: cmake-debug-static",
+              "\tcd build/debug && $(MAKE)",
+              ""
+            ]
+          }
+        },
+        {
+          "action": "add_above",
           "marker": "cmake-release:",
           "parameters": {
             "text": [

@@ -53,6 +53,25 @@ function generate_coin {
 		cd "${PROJECT_DIR}"
 	fi
 
+	# Install dependencies
+	echo "Installing dependencies..."
+	export __CONFIG_BASE_COIN_dependencies_text="${__CONFIG_BASE_COIN_dependencies[@]}"
+	for dependency in "${__CONFIG_BASE_COIN_dependencies[@]}"
+	do
+		dependency_dir=$(basename $dependency)
+		DEPENDENCY_PATH="${WORK_FOLDERS_PATH}/${dependency_dir}"
+
+		if [ -d "${DEPENDENCY_PATH}" ]; then
+			cd "${DEPENDENCY_PATH}"
+			echo "Updating dependency ${dependency}..."
+			git pull
+			cd "${PROJECT_DIR}"
+		else
+			echo "Cloning dependency ${dependency}..."
+			git clone "${dependency}" "${DEPENDENCY_PATH}"
+		fi
+	done
+
 	# Exit if base coin does not exists
 	if [ ! -d "${BASE_COIN_PATH}" ]; then
 		echo "Base coin does not exist"

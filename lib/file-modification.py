@@ -29,18 +29,20 @@ def reverse_enumerate(iterable):
     """
     return itertools.izip(reversed(xrange(len(iterable))), reversed(iterable))
 
-def findReplace(directory, find, replace, filePattern):
+def findReplace(directory, file):
+    replace_text = text_creator(file['changes'][0])
     for path, dirs, files in os.walk(os.path.abspath(directory)):
-        for filename in fnmatch.filter(files, filePattern):
+        for filename in fnmatch.filter(files, file['file_pattern']):
             filepath = os.path.join(path, filename)
             stats = os.stat(filepath)
             if ".git" in filepath:
                 continue
             with open(filepath) as f:
                 s = f.read()
-            s = s.decode('utf-8', errors='ignore').encode('utf-8').replace(find, replace)
+            s = s.decode('utf-8', errors='ignore').encode('utf-8').replace(file['find'], replace_text)
             with open(filepath, "w") as f:
                 f.write(s)
+
 
 def text_creator(change):
     replace_text = ''
@@ -124,13 +126,12 @@ if not (set(required_extensions) <= set(loaded_extensions)):
 
 for file in extension['files']:
     # Bulk replace text
-
     if 'action' in file.keys() and file['action'] == 'bulk_replace':
-        if 'find' in file.keys() and 'replace' in file.keys() and 'file_pattern' in file.keys():
-            sys.__stdout__.write("- Bulk replacing " + file['find'] + " with " + file['replace'] + "\n")
-            findReplace(args.source, file['find'], file['replace'], file['file_pattern'])
+        if 'find' in file.keys() and 'file_pattern' in file.keys():
+            sys.__stdout__.write("- Bulk replacing " + file['find'] + " with pattern \"" + file['file_pattern'] + "\"\n")
+            findReplace(args.source, file)
         else:
-            sys.__stdout__.write(bcolors.FAIL + "ERROR: find, replace and file_pattern are mandatory with bulk_replace" + bcolors.ENDC + "\n")
+            sys.__stdout__.write(bcolors.FAIL + "ERROR: find and file_pattern are mandatory with bulk_replace" + bcolors.ENDC + "\n")
             exit(4)
         continue
 

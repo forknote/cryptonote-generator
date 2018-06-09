@@ -69,7 +69,7 @@
               "const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = \"%s\";"
             ],
             "replace_text_alt": [
-              "const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = \"\";"
+              "const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = \"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0\";"
             ],
             "var": "P2P_STAT_TRUSTED_PUB_KEY"
           }
@@ -197,22 +197,22 @@
         },
         {
           "action": "replace",
-          "marker": "const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY",
+          "marker": "return 24 * 60 * 60 / difficulty_target;",
           "parameters": {
             "mandatory": false,
             "text": [
-              "const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = %s;"
+              "return %s;"
             ],
             "var": "EXPECTED_NUMBER_OF_BLOCKS_PER_DAY"
           }
         },
         {
           "action": "replace",
-          "marker": "const size_t DIFFICULTY_WINDOW",
+          "marker": "return EXPECTED_NUMBER_OF_BLOCKS_PER_DAY(difficulty_target);",
           "parameters": {
             "mandatory": false,
             "text": [
-              "const size_t DIFFICULTY_WINDOW                                = %s;"
+              "return %s;"
             ],
             "var": "DIFFICULTY_WINDOW"
           }
@@ -264,38 +264,16 @@
             ],
             "var": "UPGRADE_HEIGHT_V3"
           }
-        },
-        {
-          "action": "replace",
-          "marker": "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX",
-          "parameters": {
-            "text": [
-              "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = %s;"
-            ],
-            "replace_text_alt": [
-              "const uint32_t KEY_IMAGE_CHECKING_BLOCK_INDEX                = 0;"
-            ],
-            "var": "KEY_IMAGE_CHECKING_BLOCK_INDEX"
-          }
-        },
-        {
-          "action": "replace",
-          "marker": "const CheckpointData CHECKPOINTS[] = {",
-          "parameters": {
-            "text": [
-              "const std::initializer_list<CheckpointData> CHECKPOINTS = {"
-            ]
-          }
         }
       ]
     },
     {
-      "path": "/src/CryptoNoteConfig.h",
+      "path": "/src/CryptoNoteConfig.hpp",
       "multiline": true,
       "changes": [
         {
           "action": "replace",
-          "marker": "(const std::initializer_list<CheckpointData> CHECKPOINTS = {)([^;]+)(};)",
+          "marker": "(constexpr const CheckpointData CHECKPOINTS\\[\\] = {)([^;]+)(};)",
           "parameters": {
             "mandatory": false,
             "text": [
@@ -307,10 +285,10 @@
         },
         {
           "action": "replace",
-          "marker": "(const char\\* const\\s+SEED_NODES\\[\\] = {)[^;]+(};)",
+          "marker": "\"207.246.127.160:8080\", \"108.61.174.232:8080\", \"45.32.156.183:8080\", \"45.76.29.96:8080\"};",
           "parameters": {
             "text": [
-              "\\1 %s \\2"
+              "%s };"
             ],
             "var": "SEED_NODES",
             "separator": ", ",
@@ -321,7 +299,7 @@
     },
     {
       "description": "Normalize checkpoints if added",
-      "path": "/src/CryptoNoteConfig.h",
+      "path": "/src/CryptoNoteConfig.hpp",
       "multiline": true,
       "changes": [
         {
@@ -338,42 +316,63 @@
       ]
     },
     {
-      "path": "/src/CryptoNoteCore/Currency.cpp",
+      "path": "/src/Core/Currency.cpp",
       "changes": [
         {
+          "description": "GENESIS_COINBASE_TX_HEX",
           "action": "replace",
-          "marker": "std::string genesisCoinbaseTxHex",
+          "marker": "\"010a01ff0001ffffffffffff0f029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f\"",
           "parameters": {
             "text": [
-              "  std::string genesisCoinbaseTxHex = \"%s\";"
+              ""
+            ]
+          }
+        },
+        {
+          "action": "replace",
+          "marker": "\"5142ee494ffbbd08807121013c086a48c15fb637a96991bc6d53caf77068b5ba6eeb3c82357228c49790584a\";",
+          "parameters": {
+            "text": [
+              "%s ;"
             ],
-            "var": "GENESIS_COINBASE_TX_HEX"
+            "var": "GENESIS_COINBASE_TX_HEX",
+            "separator": ", ",
+            "quote_it": true
           }
         }
       ]
     },
     {
-      "path": "/src/P2p/P2pNetworks.h",
+      "path": "/src/Core/Config.cpp",
       "changes": [
         {
           "action": "replace",
-          "marker": "const static boost::uuids::uuid BYTECOIN_NETWORK",
+          "marker": "const static UUID BYTECOIN_NETWORK{{",
           "parameters": {
             "text": [
-              "  const static boost::uuids::uuid BYTECOIN_NETWORK = { { %s } };"
+              "  const static UUID BYTECOIN_NETWORK{{ %s }};"
             ],
             "var": "BYTECOIN_NETWORK"
           }
+        },
+        {
+          "action": "replace",
+          "marker": "0x01, 0x10}};",
+          "parameters": {
+            "text": [
+              ""
+            ]
+          }
         }
       ]
     },
     {
-      "path": "/src/P2p/P2pNetworks.h",
+      "path": "/src/Core/Config.cpp",
       "multiline": true,
       "changes": [
         {
           "action": "replace",
-          "marker": "(const static boost::uuids::uuid BYTECOIN_NETWORK = { { )([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})( } };)",
+          "marker": "(const static UUID BYTECOIN_NETWORK{{ )([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})-([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})( }};)",
           "parameters": {
             "text": [
               "\\1 0x\\2, 0x\\3, 0x\\4, 0x\\5, 0x\\6, 0x\\7, 0x\\8, 0x\\9, 0x\\10, 0x\\11, 0x\\12, 0x\\13, 0x\\14, 0x\\15, 0x\\16, 0x\\17 \\18"
@@ -383,14 +382,29 @@
       ]
     },
     {
-      "path": "/src/PaymentGateService/RpcNodeConfiguration.cpp",
+      "file_pattern": "src/main_bytecoind.cpp",
+      "action": "bulk_replace",
+      "find": "8080",
       "changes": [
         {
-          "action": "replace",
-          "marker": "(\"daemon-port\", po::value<uint16_t>()->default_value(8081), \"bytecoind port\");",
           "parameters": {
             "text": [
-              "    (\"daemon-port\", po::value<uint16_t>()->default_value(%s), \"daemon port\");"
+              "%s"
+            ],
+            "var": "P2P_DEFAULT_PORT"
+          }
+        }
+      ]
+    },
+    {
+      "file_pattern": "src/main_bytecoind.cpp",
+      "action": "bulk_replace",
+      "find": "8081",
+      "changes": [
+        {
+          "parameters": {
+            "text": [
+              "%s"
             ],
             "var": "RPC_DEFAULT_PORT"
           }
@@ -398,19 +412,54 @@
       ]
     },
     {
-      "path": "/src/SimpleWallet/SimpleWallet.cpp",
+      "file_pattern": "src/main_walletd.cpp",
+      "action": "bulk_replace",
+      "find": "8080",
       "changes": [
         {
-          "action": "replace",
-          "marker": "const command_line::arg_descriptor<uint16_t> arg_daemon_port = { \"daemon-port\", \"Use daemon instance at port <arg> instead of 8081\", 0 };",
           "parameters": {
             "text": [
-              "const command_line::arg_descriptor<uint16_t> arg_daemon_port = { \"daemon-port\", \"Use daemon instance at port <arg> instead of %s\", 0 };"
+              "%s"
+            ],
+            "var": "P2P_DEFAULT_PORT"
+          }
+        }
+      ]
+    },
+    {
+      "file_pattern": "src/main_walletd.cpp",
+      "action": "bulk_replace",
+      "find": "8081",
+      "changes": [
+        {
+          "parameters": {
+            "text": [
+              "%s"
             ],
             "var": "RPC_DEFAULT_PORT"
           }
         }
       ]
+    },
+    {
+      "file_pattern": "CMakeLists.txt",
+      "action": "bulk_replace",
+      "find": "bytecoind ",
+      "changes": [
+        {
+          "parameters": {
+            "text": [
+              "%sd "
+            ],
+            "var": "CRYPTONOTE_NAME"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/Makefile",
+      "action": "add",
+      "source": "/files/Makefile"
     }
   ]
 }
