@@ -1,0 +1,196 @@
+{
+  "file": "multiply/zawy-lwma2-difficulty-algorithm.json",
+  "description": "Add Zawy LWMA2 difficulty algorithm option in multiply (https://github.com/zawy12/difficulty-algorithms/issues/3)",
+  "required": [
+    "core/bytecoin.json",
+    "zawy-lwma2-difficulty-algorithm.json",
+    "multiply.json",
+    "get-blockchain-settings.json"
+  ],
+  "files": [
+    {
+      "path": "/src/Daemon/Daemon.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "const command_line::arg_descriptor< std::vector<std::string> > arg_CHECKPOINT",
+          "parameters": {
+            "text": [
+              "  const command_line::arg_descriptor<uint32_t>    arg_ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX = {\"ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<uint32_t>    arg_ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK  = {\"ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK\", \"uint32_t\", 0};",
+              "  const command_line::arg_descriptor<uint64_t>    arg_ZAWY_LWMA2_DIFFICULTY_MIN  = {\"ZAWY_LWMA2_DIFFICULTY_MIN\", \"uint64_t\", 1};",
+              "  const command_line::arg_descriptor<size_t>    arg_ZAWY_LWMA2_DIFFICULTY_N  = {\"ZAWY_LWMA2_DIFFICULTY_N\", \"size_t\", 0};"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "command_line::add_arg(desc_cmd_sett, arg_CHECKPOINT);",
+          "parameters": {
+            "text": [
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX);",
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK);",
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_LWMA2_DIFFICULTY_MIN);",
+              "    command_line::add_arg(desc_cmd_sett, arg_ZAWY_LWMA2_DIFFICULTY_N);"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "currencyBuilder.testnet(testnet_mode);",
+          "parameters": {
+            "text": [
+              "    currencyBuilder.zawyLWMA2DifficultyBlockIndex(command_line::get_arg(vm, arg_ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX));",
+              "    currencyBuilder.zawyLWMA2DifficultyLastBlock(command_line::get_arg(vm, arg_ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK));",
+              "    currencyBuilder.zawyLWMA2DifficultyMin(command_line::get_arg(vm, arg_ZAWY_LWMA2_DIFFICULTY_MIN));",
+              "    currencyBuilder.zawyLWMA2DifficultyN(command_line::get_arg(vm, arg_ZAWY_LWMA2_DIFFICULTY_N));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.h",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "uint64_t MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "  uint32_t ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX;",
+              "  uint32_t ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK;",
+              "  uint64_t ZAWY_LWMA2_DIFFICULTY_MIN;",
+              "  size_t ZAWY_LWMA2_DIFFICULTY_N;"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/CoinBaseConfiguration.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "MONEY_SUPPLY=CryptoNote::parameters::MONEY_SUPPLY;",
+          "parameters": {
+            "text": [
+              "    ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX=CryptoNote::parameters::ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX;",
+              "    ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK=CryptoNote::parameters::ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK;",
+              "    ZAWY_LWMA2_DIFFICULTY_MIN=CryptoNote::parameters::ZAWY_LWMA2_DIFFICULTY_MIN;",
+              "    ZAWY_LWMA2_DIFFICULTY_N=CryptoNote::parameters::ZAWY_LWMA2_DIFFICULTY_N;"
+            ]
+          }
+        },
+        {
+          "action": "add_below",
+          "marker": "(\"MONEY_SUPPLY\", po::value<uint64_t>()->default_value(CryptoNote::parameters::MONEY_SUPPLY), \"uint64_t\")",
+          "parameters": {
+            "text": [
+              "    (\"ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX\", po::value<uint32_t>()->default_value(0), \"uint32_t\")",
+              "    (\"ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK\", po::value<uint32_t>()->default_value(0), \"uint32_t\")",
+              "    (\"ZAWY_LWMA2_DIFFICULTY_MIN\", po::value<uint64_t>()->default_value(1), \"uint64_t\")",
+              "    (\"ZAWY_LWMA2_DIFFICULTY_N\", po::value<size_t>()->default_value(0), \"size_t\")"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "if (options.count(\"EMISSION_SPEED_FACTOR\")) {",
+          "parameters": {
+            "text": [
+              "  if (options.count(\"ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX\")) {",
+              "    ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX = options[\"ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX\"].as<uint32_t>();",
+              "  }",
+              "  if (options.count(\"ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK\")) {",
+              "    ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK = options[\"ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK\"].as<uint32_t>();",
+              "  }",
+              "  if (options.count(\"ZAWY_LWMA2_DIFFICULTY_MIN\")) {",
+              "    ZAWY_LWMA2_DIFFICULTY_MIN = options[\"ZAWY_LWMA2_DIFFICULTY_MIN\"].as<uint64_t>();",
+              "  }",
+              "  if (options.count(\"ZAWY_LWMA2_DIFFICULTY_N\")) {",
+              "    ZAWY_LWMA2_DIFFICULTY_N = options[\"ZAWY_LWMA2_DIFFICULTY_N\"].as<size_t>();",
+              "  }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/PaymentGateService/PaymentGateService.cpp",
+      "changes": [
+        {
+          "action": "add_below",
+          "marker": "currencyBuilder.moneySupply(config.coinBaseConfig.MONEY_SUPPLY);",
+          "parameters": {
+            "text": [
+              "  currencyBuilder.zawyLWMA2DifficultyBlockIndex(config.coinBaseConfig.ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX);",
+              "  currencyBuilder.zawyLWMA2DifficultyLastBlock(config.coinBaseConfig.ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK);",
+              "  currencyBuilder.zawyLWMA2DifficultyMin(config.coinBaseConfig.ZAWY_LWMA2_DIFFICULTY_MIN);",
+              "  currencyBuilder.zawyLWMA2DifficultyN(config.coinBaseConfig.ZAWY_LWMA2_DIFFICULTY_N);"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "path": "/src/Rpc/CoreRpcServerCommandsDefinitions.h",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "std::string BYTECOIN_NETWORK;",
+          "parameters": {
+            "text": [
+              "  uint32_t ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX;",
+              "  uint32_t ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK;",
+              "  uint64_t ZAWY_LWMA2_DIFFICULTY_MIN;",
+              "  size_t ZAWY_LWMA2_DIFFICULTY_N;"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "KV_MEMBER(BYTECOIN_NETWORK)",
+          "parameters": {
+            "text": [
+              "    KV_MEMBER(ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX)",
+              "    KV_MEMBER(ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK)",
+              "    KV_MEMBER(ZAWY_LWMA2_DIFFICULTY_MIN)",
+              "    KV_MEMBER(ZAWY_LWMA2_DIFFICULTY_N)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "path": "/src/Rpc/RpcServer.cpp",
+      "description": "Changes for get-blockchain-settings.json",
+      "changes": [
+        {
+          "action": "add_above",
+          "marker": "res.core.CRYPTONOTE_NAME = m_core.getCurrency().cryptonoteName();",
+          "parameters": {
+            "text": [
+              "  if (m_core.getCurrency().zawyLWMA2DifficultyBlockIndex() != 0 ) {",
+              "    res.extensions.push_back(\"zawy-lwma2-difficulty-algorithm.json\");",
+              "  }"
+            ]
+          }
+        },
+        {
+          "action": "add_above",
+          "marker": "res.core.P2P_DEFAULT_PORT = m_p2p.get_this_peer_port();",
+          "parameters": {
+            "text": [
+              "  res.core.ZAWY_LWMA2_DIFFICULTY_BLOCK_INDEX = m_core.getCurrency().zawyLWMA2DifficultyBlockIndex();",
+              "  res.core.ZAWY_LWMA2_DIFFICULTY_LAST_BLOCK = m_core.getCurrency().zawyLWMA2DifficultyLastBlock();",
+              "  res.core.ZAWY_LWMA2_DIFFICULTY_MIN = m_core.getCurrency().zawyLWMA2DifficultyMin();",
+              "  res.core.ZAWY_LWMA2_DIFFICULTY_N = m_core.getCurrency().zawyLWMA2DifficultyN();"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
