@@ -112,7 +112,7 @@
           "parameters": {
             "text": [
               "  uint32_t cn_variant = 0;",
-              "  if (m_POWCryptoNightV7BlockIndex && m_POWCryptoNightV7BlockIndex <= block.getBlockIndex() && (m_POWCryptoNightV7LastBlock == 0 || m_POWCryptoNightV7LastBlock >= block.getBlockIndex()))",
+              "  if (m_POWCryptoNightV7BlockIndex <= block.getBlockIndex() && m_POWCryptoNightV7LastBlock > block.getBlockIndex())",
               "    cn_variant = 1;",
               "  return check_hash(block.getBlockLongHash(context, cn_variant), currentDifficulty);"
             ]
@@ -124,7 +124,7 @@
           "parameters": {
             "text": [
               "  uint32_t cn_variant = 0;",
-              "  if (m_POWCryptoNightV7BlockIndex && m_POWCryptoNightV7BlockIndex <= cachedBlock.getBlockIndex() && (m_POWCryptoNightV7LastBlock == 0 || m_POWCryptoNightV7LastBlock >= cachedBlock.getBlockIndex()))",
+              "  if (m_POWCryptoNightV7BlockIndex <= cachedBlock.getBlockIndex() && m_POWCryptoNightV7LastBlock > cachedBlock.getBlockIndex())",
               "    cn_variant = 1;",
               "  if (!check_hash(cachedBlock.getBlockLongHash(context, cn_variant), currentDifficulty)) {"
             ]
@@ -141,7 +141,7 @@
           "parameters": {
             "text": [
               "      uint32_t cn_variant = 0;",
-              "      if (m_currency.POWCryptoNightV7BlockIndex() && m_currency.POWCryptoNightV7BlockIndex() <= cb.getBlockIndex() && (m_currency.POWCryptoNightV7LastBlock() == 0 || m_currency.POWCryptoNightV7LastBlock() >= cb.getBlockIndex()))",
+              "      if ( m_currency.POWCryptoNightV7BlockIndex() <= cb.getBlockIndex() && m_currency.POWCryptoNightV7LastBlock() > cb.getBlockIndex())",
               "        cn_variant = 1;"
             ]
           }
